@@ -1,10 +1,32 @@
-# Minotaur - Base
-Proyecto de videojuego actualizado a **Unity 2022.3.40f1**, diseñado para servir como punto de partida en algunas prácticas de desarrollo de videojuegos.
+# Inteligencia Artificial para Videojuegos - Práctica 2: El secreto del laberinto
 
-Consiste en un entorno virtual 3D que representa el legendario Laberinto del Minotauro, generado a partir de una descripción en forma de fichero de texto, con un personaje controlable por el jugador que es Teseo y uno o varios minotauros que actúan como enemigos.
+> [!NOTE]
+> Versión: 0
 
-## Licencia
-Federico Peinado, autor de la documentación, código y recursos de este trabajo, concedo permiso permanente a los alumnos de la Facultad de Informática de la Universidad Complutense de Madrid para utilizar este material, con sus comentarios y evaluaciones, con fines educativos o de investigación; ya sea para obtener datos agregados de forma anónima como para utilizarlo total o parcialmente reconociendo expresamente mi autoría.
+## Índice
+1. [Autores](#autores)
+2. [Resumen](#resumen)
+3. [Instalación y uso](#instalación-y-uso)
+4. [Introducción](#introducción)
+5. [Punto de partida](#punto-de-partida)
+6. [Planteamiento del problema](#planteamiento-del-problema)
+7. [Diseño de la solución](#diseño-de-la-solución)
+8. [Implementación](#implementación)
+9. [Pruebas y métricas](#pruebas-y-métricas)
+10. [Ampliaciones](#ampliaciones)
+11. [Conclusiones](#conclusiones)
+12. [Licencia](#licencia)
+13. [Referencias](#referencias)
+
+## Autores
+- Nieves Alonso Gilsanz [@nievesag](https://github.com/nievesag)
+- Cynthia Tristán Álvarez [@cyntrist](https://github.com/cyntrist)
+
+## Resumen
+el proyecto consiste en un entorno virtual 3D que representa el legendario Laberinto del Minotauro, generado a partir de una descripción en forma de fichero de texto, con un personaje controlable por el jugador que es Teseo y uno o varios minotauros que actúan como enemigos.
+
+## Instalación y uso
+Todo el contenido del proyecto está disponible en este repositorio, con **Unity 6000.0.66f2** o posterior siendo capaces de bajar todos los paquetes necesarios y editar el proyecto.
 
 ## Introducción
 Este proyecto está pensado para implementar el A* con una estructura de registro de nodo MUY SIMPLE (el identificador del nodo y el coste f) y ligada a los propios GameObjects que son baldosas del escenario. Sólo se plantea usar una lista de apertura (sin tener lista de cierre) y se asume que es posible tener la información completa del grafo (costes incluidos) en forma de una matriz en memoria.
@@ -13,7 +35,21 @@ Según el pseudocódigo que plantea Millington en su libro, la estructura de reg
 
 La cola de prioridad se puede implementar con PriorityQueue<TElement, TPriority>, estructura que se encuentra en el espacio de nombres System.Collections.Generic y fue introducida en .NET 6, siempre que el proyecto de Visual Studio esté configurado para ello. Si se usa un lenguaje C# antiguo, se podría usar una implementación de BinaryHeap como esta: https://github.com/NikolajLeischner/csharp-binary-heap.
 
-## Estructura del proyecto
+## Punto de partida
+Hemos partido de un proyecto base proporcionado por el profesor y disponible en este repositorio: [Minotaur - Base](https://github.com/narratech/minotaur-base)
+
+La base consiste en el entorno del pueblo ya preparado para desarrollar la IA, con cada prefab de los tres tipos de agentes ya instanciados y componentes de agentes y de animaciones configurados pero sin el código de cada tipo de movimiento implementado. Cuenta con una interfaz básica meramente informativa con: 
+- FPS
+- Contador de ratas
+- Controles:
+    - Crear o destruir ratas (O / P).
+    - Activar o desactivar obstáculos (T).
+    - Cambiar cámara (N).
+    - Cambiar ratio de FPS entre 30 y 60 (F).
+    - Reiniciar juego (R).
+También cuenta con movimiento del avatar del jugador con WASD y dos modos de cámara que siguen al jugador, aérea y en tercera persona.
+
+### Estructura del proyecto
 
 Los recursos que conforman el proyecto están organizados de esta forma:
 
@@ -34,7 +70,7 @@ Los recursos que conforman el proyecto están organizados de esta forma:
   * **Extra**. Las clases adicionales para un tema del menú y la implementación de la cola de prioridad (en caso de que se quiera usar esta en lugar de la estándar de C#).
   * **Graphs**. Las clases necesarias para representar el espacio de búsqueda en forma de grafo, grafo basado en una rejilla y estructuras auxiliares como los nodos de dicho grafo. 
 
-## Estructura de las escenas
+### Estructura de las escenas
 
 Hay sólamente dos escenas en el juego.
 
@@ -44,9 +80,37 @@ Se muestra el título del juego y una lista de mapas de laberintos disponibles p
 ### Principal
 La escena genera un laberinto en base al mapa que es haya elegido en el menú, generando el suelo y los muros casilla por casilla. Además, se guardan la casilla de entrada y la de salida. Otros game objects son el avatar del jugador y el minotaur manager, que instancia y controla los minotauros, con su correspondiente esfera de deceleración.
 
-## Diagrama de clases
+## Planteamiento del problema
 
-Las clases principales que se han desarrollados son las siguientes (habría que renombrarlsa para tenerlo todo en español o todo en inglés):
+**El prototipo permitirá:**
+* **A.** Hay un mundo virtual (el laberinto del Minotauro) con habitaciones y pasillos de tamaño y complejidad configurable, con un esquema de división de grafo de baldosas que incluye una baldosa de entrada, donde se ubica inicialmente el avatar (Teseo), y una baldosa de salida. Hay varios caminos alternativos para llegar a la salida, alguno ancho y alguno estrecho (pasillos de una única baldosa de anchura, donde es muy probable toparnos con el enemigo). El avatares controlado por el jugador mediante el ratón. Si el puntero está más allá de cierta distancia del avatar, este camina en línea recta hacia la posición del puntero. Mientras se mantiene pulsado el clic izquierdo, el avatar corre más rápido.
+
+* **B.** En mitad del laberinto están los enemigos (uno o varios minotauros, de dos tipos y número también configurable). Unos son vigías que permanecen quietos en su sitio, rotando aleatoriamente. Otros son patrulleros que siempre están caminando en línea recta, pudiendo cambiar de dirección aleatoriamente al llegar a las encrucijadas del laberinto. Los dos tipos de minotauro tienen un cono de visión y si detectan al avatar del jugador se ponen a perseguirlo. También tienen un área de influencia, que se muestra visualmente, consistente en las baldosas vecinas (vecindad Manhattan de radio 3 sin que haya obstáculos por medio) que ralentizan a Teseo si intenta atravesarlas para «escenificar» que héroe y minotauro están en pleno combate.
+
+* **C.** El camino más corto a la baldosa de salida (¡sin poder hacer navegación en diagonal, ojo!) calculado mediante A* (hilo de Ariadna) se representa pintado con una línea blanca y marcando cada baldosa que lo compone con una esfera blanca (ovillo) en el centro de la baldosa. Un nuevo hilo se crea cada vez que intentamos salir del laberinto (con el clic derecho del ratón se crea o se destruye, como un interruptor). Se tienen en cuenta todos los costes, incluidos los de las baldosas con minotauros (coste infinito) y las baldosas de sus zonas de influencia (coste 5), siendo 1 el coste de una baldosa normal. La conexión que permite llegar a una baldosa es la que tiene el coste de esa baldosa de destino. Desde una opción de la interfaz de usuario es posible elegir la heurística a utilizar en el algoritmo A*, habiendo al menos 2 diferentes.
+
+* **D.** También se puede elegir si queremos suavizar o no el camino generado por el algoritmo anterior (activando o desactivando la funcionalidad desde otra opción de la interfaz de usuario). Esto reduce las baldosas que forman parte del camino original a la salida, y por tanto también reduce la cantidad de esferas blancas mostradas sobre ellas.
+
+* **E.** El avatar navega y se mueve automáticamente (con comportamientos de dirección creados en el proyecto) hacia la baldosa de salida en cuanto creamos un nuevo hilo de Ariadna. Este movimiento va haciendo desaparecer la parte del hilo ya recorrida, para que sólo quede la parte del camino que falta por recorrer. Si destruimos el hilo, el avatar vuelve a su estado habitual, volviendo a ser controlado por el jugador. La implementación es eficiente y consigue maximizar las métricas (ej. escapar de un laberinto que tiene un gran número de casillas por el camino más corto, tardando el menor tiempo posible en calcular la ruta y explorando el menor número de nodos posibles durante esos cálculos).
+
+## Diseño de la solución
+
+### Estados de los agentes
+
+Lo distintos algoritmos usados han sido para cada agente de IA:
+
+## Implementación
+**Tareas:**
+Las tareas y el esfuerzo ha sido repartido de manera equitativa entre las autoras.
+
+| Estado  |  Tarea  |  Fecha  |  
+|:-:|:--|:-:|
+| ✔ | Movimiento del avatar con input de ratón | X-X-2026 |
+|  | AMPLIACIONES |  |
+| ✖ |   |  |
+
+**Diagrama de clases:**
+Las clases principales que se han desarrollados son las siguientes (habría que renombrarlas para tenerlo todo en español o todo en inglés):
 
 ```mermaid
 classDiagram
@@ -228,6 +292,42 @@ Es una clase que posee un atributo de tipo Grid, pensada para acompañar a Teseo
 También es importante mencionar los scripts animal animation controller y player animator, encargados de las animaciones de los minotauros y el jugador respectivamente, al igual que el script cameraFollow, que simplemente sigue al jugador con un cierto offset. Estos scripts no se mencionan en más detalle pues no son muy relevantes en cuanto a la implementación de la solución.
 
 Adicionalmente, el script dropdown es solo usado para recoger información sobre el laberinto desde el menú.
+
+
+## Pruebas y métricas
+
+### Plan de pruebas
+Serie corta y rápida posible de pruebas que pueden realizarse para verificar que se cumplen las características requeridas:
+
+* **1. (A).** Prueba 1.
+* 
+### Métricas tomadas
+En un PC de estas características:
+- **CPU:** Intel Core i5-12600KF a 3.70 GHz
+- **GPU:** NVIDIA GeForce RTX 5070 Ti con 16 GB
+- **RAM:** 32 GB (16x2) de 4800 MT/s
+- **SO:** Windows 11
+- **Versión de Unity:** 6000.0.66f2
+
+```mermaid
+xychart-beta
+title "Título"
+x-axis "X" [0, 1]
+y-axis "Y" 0 --> 1
+line [0, 0]
+line [0, 0]
+```
+
+### Vídeo
+- [Vídeo demostración](https://youtu.be/HxN5z2ei1y8)
+
+## Ampliaciones
+
+
+## Conclusiones
+
+## Licencia
+Nieves Alonso Gilsanz y Cynthia Tristán Álvarez, con el permiso de Federico Peinado, autores de la documentación, código y recursos de este trabajo, concedemos permiso permanente para utilizar este material, con sus comentarios y evaluaciones, con fines educativos o de investigación; ya sea para obtener datos agregados de forma anónima como para utilizarlo total o parcialmente reconociendo expresamente nuestra autoría. 
 
 ## Referencias
 Los recursos de terceros utilizados son de uso público.
