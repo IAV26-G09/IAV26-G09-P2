@@ -29,18 +29,28 @@ namespace UCM.IAV.Movimiento
         float minimuRadius = 3.0f; // radio alrededor del jugador en el que no moverse
 
         private float velocidadMaxNormal;
-        private float velocidadMaxRapida;
         private float aceleracionNormal;
+        private float velocidadMaxRapida;
         private float aceleracionRapida;
 
         private bool able = true;
         private bool sprinting = false;
 
+
+        private void Start()
+        {
+            velocidadMaxNormal = agente.velocidadMax;
+            velocidadMaxRapida = velocidadMaxNormal * 2;
+
+            aceleracionNormal = agente.aceleracionMax;
+            aceleracionRapida = aceleracionNormal * 2;
+        }
+
         public override Direccion GetDireccion()
         {
             Direccion direccion = new Direccion();
 
-            Debug.Log("0");
+            //Debug.Log("0");
 
             if (!able)
             {
@@ -62,15 +72,15 @@ namespace UCM.IAV.Movimiento
             if (Physics.Raycast(ray, out hit, 100, layerMask))
             { // Cogemos la direccion y nos congelamos en altura
 
-                Debug.Log("eing");
                 direccion.lineal = hit.point - transform.position;
                 direccion.lineal.y = 0;
+                //Debug.Log(direccion.lineal);
             }
 
             // Si la colision, aunque valida esta en un radio cercano al jugador
             if (direccion.lineal.magnitude < minimuRadius)
             {
-                Debug.Log("2");
+                //Debug.Log("NO ME MUEVO");
                 return new Direccion();
             }
 
@@ -81,20 +91,20 @@ namespace UCM.IAV.Movimiento
             {
                 agente.aceleracionMax = aceleracionRapida;
                 agente.velocidadMax = velocidadMaxRapida;
-                Debug.Log("3");
+                //Debug.Log("3");
             }
             else
             {
                 agente.aceleracionMax = aceleracionNormal;
                 agente.velocidadMax = velocidadMaxNormal;
-                Debug.Log("4");
+                //Debug.Log("4");
             }
 
             // Resto de calculo de movimiento
             direccion.lineal.Normalize();
             direccion.lineal *= agente.aceleracionMax;
 
-            Debug.Log("5");
+            //Debug.Log("5");
 
             return direccion;
         }
