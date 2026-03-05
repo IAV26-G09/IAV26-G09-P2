@@ -38,6 +38,7 @@ La cola de prioridad se puede implementar con PriorityQueue<TElement, TPriority>
 ## Punto de partida
 Hemos partido de un proyecto base proporcionado por el profesor y disponible en este repositorio: [Minotaur - Base](https://github.com/narratech/minotaur-base)
 
+<!--
 La base consiste en el entorno del pueblo ya preparado para desarrollar la IA, con cada prefab de los tres tipos de agentes ya instanciados y componentes de agentes y de animaciones configurados pero sin el código de cada tipo de movimiento implementado. Cuenta con una interfaz básica meramente informativa con: 
 - FPS
 - Contador de ratas
@@ -48,6 +49,7 @@ La base consiste en el entorno del pueblo ya preparado para desarrollar la IA, c
     - Cambiar ratio de FPS entre 30 y 60 (F).
     - Reiniciar juego (R).
 También cuenta con movimiento del avatar del jugador con WASD y dos modos de cámara que siguen al jugador, aérea y en tercera persona.
+-->
 
 ### Estructura del proyecto
 
