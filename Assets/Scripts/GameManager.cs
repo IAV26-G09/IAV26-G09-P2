@@ -46,7 +46,8 @@ namespace UCM.IAV.Movimiento
 
         GameObject exit = null;
 
-        int numMinos = 1;
+        int numMinosPatrulleros = 1;
+        int numMinosEstaticos = 1;
 
         private void Awake()
         {
@@ -155,16 +156,25 @@ namespace UCM.IAV.Movimiento
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
-
-
-        public void setNumMinos()
+       
+        public void setNumMinosPatrulleros()
         {
-            numMinos = int.Parse(label2.text);
+            numMinosPatrulleros = int.Parse(label2.text);
         }
 
-        public int getNumMinos()
+        public int getNumMinosPatrulleros()
         {
-            return numMinos;
+            return numMinosPatrulleros;
+        }
+
+        public void setNumMinosEstaticos()
+        {
+            numMinosEstaticos = int.Parse(label2.text);
+        }
+
+        public int getNumMinosEstaticos()
+        {
+            return numMinosEstaticos;
         }
 
         public void goToScene(string scene)

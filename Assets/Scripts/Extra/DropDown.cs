@@ -15,13 +15,25 @@ using UnityEngine;
 public class DropDown : MonoBehaviour
 {
     public bool mino = false;
+
+    enum DropdownType
+    {
+        SIZE,
+        PATRULLEROS,
+        ESTATICOS
+    };
+
+    [SerializeField]
+    DropdownType type = 0;
+
     void Start()
     {
        // Establece changeSize al OnValueChanged del Dropdown
-        if(!mino)
+        if(type == DropdownType.SIZE)
             gameObject.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { UCM.IAV.Movimiento.GameManager.instance.ChangeSize(); });
+       else if(type == DropdownType.PATRULLEROS)
+            gameObject.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { UCM.IAV.Movimiento.GameManager.instance.setNumMinosPatrulleros(); });
        else
-            gameObject.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { UCM.IAV.Movimiento.GameManager.instance.setNumMinos(); });
-
+            gameObject.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { UCM.IAV.Movimiento.GameManager.instance.setNumMinosEstaticos(); });
     }
 }

@@ -13,18 +13,26 @@ using UnityEngine;
 
 namespace UCM.IAV.Navegacion
 {
-
+   
     public class MinoManager : MonoBehaviour
     {
         public GameObject minotaur;
 
         private Graph graph;
 
-        public int numMinos = 1;
+        public int numMinosPatrulleros = 1;
+        public int numMinosEstaticos = 1;
+
+        enum MinoType
+        {
+            PATRULLEROS,
+            ESTATICOS
+        };
 
         private void Start()
         {
-            numMinos = GameManager.instance.getNumMinos();
+            numMinosPatrulleros = GameManager.instance.getNumMinosPatrulleros();
+            numMinosEstaticos = GameManager.instance.getNumMinosEstaticos();
             StartUp();
         }
 
@@ -35,14 +43,23 @@ namespace UCM.IAV.Navegacion
             if (graphGO != null)
                 graph = graphGO.GetComponent<GraphGrid>();
 
-            for (int i = 0; i < numMinos; i++)
-                GenerateMino();
+            for (int i = 0; i < numMinosPatrulleros; i++)
+                GenerateMino(MinoType.PATRULLEROS);
+
+            for (int i = 0; i < numMinosEstaticos; i++)
+                GenerateMino(MinoType.ESTATICOS);
         }
 
-        void GenerateMino()
+        void GenerateMino(MinoType type)
         {
-
-            GameObject minoGO = Instantiate(minotaur, graph.GetRandomPos().transform.position + new Vector3(0, 0.3f, 0), Quaternion.identity);
+            if (type == MinoType.PATRULLEROS)
+            {
+                GameObject minoGO = Instantiate(minotaur, graph.GetRandomPos().transform.position + new Vector3(0, 0.3f, 0), Quaternion.identity);
+            }
+            else
+            {
+                GameObject minoGO = Instantiate(minotaur, graph.GetRandomPos().transform.position + new Vector3(0, 0.3f, 0), Quaternion.identity);
+            }
         }
     }
 }
