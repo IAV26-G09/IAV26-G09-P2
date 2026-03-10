@@ -23,6 +23,11 @@ namespace UCM.IAV.Movimiento
         [SerializeField]
         float minTime = 1.0f;
 
+        [SerializeField]
+        float minRan = -0.05f;
+        [SerializeField]
+        float maxRan = 0.05f;
+
         float t = 3.0f;
         float actualT = 2.0f;
 
@@ -35,18 +40,16 @@ namespace UCM.IAV.Movimiento
                 Direccion direccion = new Direccion();
 
                 Vector2 dir = Random.insideUnitCircle.normalized;
-                /*
 
+                /*
                 direccion.lineal = new Vector3(dir.x, 0, dir.y);
                 direccion.lineal.Normalize();
                 direccion.lineal *= agente.aceleracionMax;
                 */
 
-                //float wanderOrientation = Random.Range(.0f, 360f);
-
-                //agente.transform.LookAt(new Vector3(dir.x, 0, dir.y));
-
-                direccion.angular = dir.magnitude;
+                float wanderOrientation = Random.Range(minRan,maxRan);
+                
+                direccion.angular = wanderOrientation;
 
                 lastDir = direccion;
 

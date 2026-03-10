@@ -133,7 +133,7 @@ namespace UCM.IAV.Movimiento {
             // Limitamos la aceleraci�n al m�ximo que acepta este agente (aunque normalmente vendr� ya limitada)
             if (direccion.lineal.sqrMagnitude > aceleracionMax)
                 direccion.lineal = direccion.lineal.normalized * aceleracionMax;
-            Debug.Log(direccion.lineal);
+
             // La opci�n por defecto ser�a usar ForceMode.Force, pero eso implicar�a que el comportamiento de direcci�n tuviese en cuenta la masa a la hora de calcular la aceleraci�n que se pide
             cuerpoRigido.AddForce(direccion.lineal, ForceMode.Acceleration);
 
