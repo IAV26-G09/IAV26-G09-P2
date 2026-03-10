@@ -29,7 +29,8 @@ public class DropDown : MonoBehaviour
     void Start()
     {
        // Establece changeSize al OnValueChanged del Dropdown
-        if(type == DropdownType.SIZE)
+        
+       if(type == DropdownType.SIZE)
             gameObject.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { UCM.IAV.Movimiento.GameManager.instance.ChangeSize(); });
        else if(type == DropdownType.PATRULLEROS)
             gameObject.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { UCM.IAV.Movimiento.GameManager.instance.setNumMinosPatrulleros(); });

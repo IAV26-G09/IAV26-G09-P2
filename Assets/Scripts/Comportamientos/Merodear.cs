@@ -28,16 +28,25 @@ namespace UCM.IAV.Movimiento
 
         Direccion lastDir = new Direccion();
 
-        public override Direccion GetDireccion(){
+        public override Direccion GetDireccion()
+        {
             if (t >= actualT)
             {
                 Direccion direccion = new Direccion();
 
                 Vector2 dir = Random.insideUnitCircle.normalized;
+                /*
 
                 direccion.lineal = new Vector3(dir.x, 0, dir.y);
                 direccion.lineal.Normalize();
                 direccion.lineal *= agente.aceleracionMax;
+                */
+
+                //float wanderOrientation = Random.Range(.0f, 360f);
+
+                //agente.transform.LookAt(new Vector3(dir.x, 0, dir.y));
+
+                direccion.angular = dir.magnitude;
 
                 lastDir = direccion;
 
@@ -45,7 +54,8 @@ namespace UCM.IAV.Movimiento
 
                 t = 0.0f;
             }
-            else{
+            else
+            {
                 t += Time.deltaTime;
             }
 
@@ -56,10 +66,12 @@ namespace UCM.IAV.Movimiento
         {
             if(collision.gameObject.layer != 7)
             {
+                /*
                 t = 0;
                 lastDir.lineal = transform.position - collision.transform.position;
                 lastDir.lineal.Normalize();
                 lastDir.lineal *= agente.aceleracionMax;
+                */
             }
         }
     }

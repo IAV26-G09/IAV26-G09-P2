@@ -52,13 +52,17 @@ namespace UCM.IAV.Navegacion
 
         void GenerateMino(MinoType type)
         {
+            GameObject minoGO = Instantiate(minotaur, graph.GetRandomPos().transform.position + new Vector3(0, 0.3f, 0), Quaternion.identity);
             if (type == MinoType.PATRULLEROS)
             {
-                GameObject minoGO = Instantiate(minotaur, graph.GetRandomPos().transform.position + new Vector3(0, 0.3f, 0), Quaternion.identity);
+                // patrullero con llegada
+                minoGO.AddComponent<SeguirCamino>();
+                minoGO.AddComponent<MinoEvader>();
             }
             else
             {
-                GameObject minoGO = Instantiate(minotaur, graph.GetRandomPos().transform.position + new Vector3(0, 0.3f, 0), Quaternion.identity);
+                // estatico con merodeo
+                minoGO.AddComponent<Merodear>();
             }
         }
     }
