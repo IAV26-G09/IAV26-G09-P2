@@ -56,8 +56,8 @@ namespace UCM.IAV.Navegacion
             if (type == MinoType.PATRULLEROS)
             {
                 // patrullero con llegada
-                //minoGO.AddComponent<SeguirCamino>();
-                //minoGO.AddComponent<MinoEvader>();
+                SeguirCamino cam = minoGO.AddComponent<SeguirCamino>();
+                cam.enabled = false;
             }
             else
             {
