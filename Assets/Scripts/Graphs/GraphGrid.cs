@@ -43,7 +43,7 @@ namespace UCM.IAV.Navegacion
         public float maximumCost = Mathf.Infinity;
 
 
-        GameObject[] vertexObjs;
+        public GameObject[] vertexObjs;
 
         private void Awake()
         {

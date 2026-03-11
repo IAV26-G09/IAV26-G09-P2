@@ -59,7 +59,7 @@ namespace UCM.IAV.Navegacion
                 //SeguirCamino cam = minoGO.AddComponent<SeguirCamino>();
                 //cam.enabled = false;
                 Patrullar patrulla = minoGO.AddComponent<Patrullar>();
-                patrulla.graph = graph;
+                patrulla.graph = (GraphGrid)graph;
             }
             else
             {

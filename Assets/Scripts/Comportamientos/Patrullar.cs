@@ -7,17 +7,18 @@
    Contacto: email@federicopeinado.com
 */
 
+
 namespace UCM.IAV.Movimiento
 {
-    using System;
     using UCM.IAV.Navegacion;
     using UnityEngine;
 
     public class Patrullar : ComportamientoAgente
     {
-        Transform sigNodo;
+        Vertex sigNodo;
+        private Vector3 sigNodoPosicion;
 
-        public Graph graph;
+        public GraphGrid graph;
         public GameObject srcObj;
 
         [SerializeField]
@@ -27,6 +28,10 @@ namespace UCM.IAV.Movimiento
         private void Start()
         {
             srcObj = gameObject;
+            sigNodo = graph.GetNearestVertex(srcObj.transform.position);
+            sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
+            Debug.Log(sigNodoPosicion);
+
         }
 
         override public void Update()
@@ -35,14 +40,34 @@ namespace UCM.IAV.Movimiento
             //base.Update();
         }
 
+        void ChooseNextNode()
+        {
+            Vertex[] neighbours = graph.GetNeighbours(sigNodo);
+            int rnd = Random.Range(0, neighbours.Length-1);
+            sigNodo = neighbours[rnd];
+            sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
+        }
+
         public override Direccion GetDireccion()
         {
             Direccion direccion = new Direccion();
+            Debug.Log(direccion.lineal);
+
+            Vector3 dir = sigNodoPosicion - transform.position;
+
+            if (dir.magnitude <= 0.0f)
+            {
+                ChooseNextNode();
+            }
+
+            direccion.lineal = dir;
+            direccion.lineal.Normalize();
+            direccion.lineal *= agente.aceleracionMax;
+            Debug.Log(direccion.lineal);
 
             //if (sigNodo != null)
             //{
             //    //Direccion actual
-            //    direccion.lineal = sigNodo.position - transform.position;
             //}
             //else
             //{
