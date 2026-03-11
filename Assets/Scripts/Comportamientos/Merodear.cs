@@ -35,46 +35,12 @@ namespace UCM.IAV.Movimiento
 
         public override Direccion GetDireccion()
         {
-            if (t >= actualT)
-            {
-                Direccion direccion = new Direccion();
-
-                /*
-                Vector2 dir = Random.insideUnitCircle.normalized;
-                direccion.lineal = new Vector3(dir.x, 0, dir.y);
-                direccion.lineal.Normalize();
-                direccion.lineal *= agente.aceleracionMax;
-                */
-
-                float wanderOrientation = Random.Range(minRan,maxRan);
-                
-                direccion.angular = wanderOrientation;
-
-                lastDir = direccion;
-
-                actualT = Random.Range(minTime, maxTime);
-
-                t = 0.0f;
-            }
-            else
-            {
-                t += Time.deltaTime;
-            }
-
-            return lastDir;
+            return new Direccion();
         }
 
         private void OnCollisionEnter(Collision collision)
         {
-            if(collision.gameObject.layer != 7)
-            {
-                /*
-                t = 0;
-                lastDir.lineal = transform.position - collision.transform.position;
-                lastDir.lineal.Normalize();
-                lastDir.lineal *= agente.aceleracionMax;
-                */
-            }
+
         }
     }
 }

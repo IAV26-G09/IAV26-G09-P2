@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class CampoVision : MonoBehaviour
 {
-    private SeguirCamino camino;
     private Merodear merodear;
+    private Vigilar vigilar;
     private Llegada llegada;
     private SphereCollider sphereCollider;
 
@@ -23,8 +23,8 @@ public class CampoVision : MonoBehaviour
         }
 
         llegada = GetComponentInParent<Llegada>();
+        vigilar = GetComponentInParent<Vigilar>();
         merodear = GetComponentInParent<Merodear>();
-        camino = GetComponentInParent<SeguirCamino>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -55,7 +55,7 @@ public class CampoVision : MonoBehaviour
         if (other.GetComponent<Teseo>() == null) return;
 
         // teseo stay
-        Debug.Log("STAYSTAYSTAY");
+        //Debug.Log("STAYSTAYSTAY");
 
         // calculo del angulo desde delante
         Vector3 directionToPlayer = other.GetComponent<Transform>().position - transform.position;
@@ -71,7 +71,7 @@ public class CampoVision : MonoBehaviour
                 // si con lo que choca en primera instancia es teseo
                 if (hit.collider.GetComponent<Teseo>() != null)
                 {
-                    Debug.Log("PERSIGUIENDOOO");
+                    //Debug.Log("PERSIGUIENDOOO");
 
                     // activamos persecucion
                     if (llegada != null)
@@ -81,13 +81,13 @@ public class CampoVision : MonoBehaviour
                     }
 
                     // desactivamos cualquier otro tipo de comportamiento
+                    if (vigilar != null)
+                    {
+                        vigilar.enabled = false;
+                    }
                     if (merodear != null)
                     {
                         merodear.enabled = false;
-                    }
-                    if (camino != null)
-                    {
-                        camino.enabled = false;
                     }
                 }
             }
@@ -100,17 +100,17 @@ public class CampoVision : MonoBehaviour
 
         if (llegada != null)
         {
-            Debug.Log("DEJANDO DE PERSEGUIR");
+            //Debug.Log("DEJANDO DE PERSEGUIR");
             llegada.objetivo = null;
             llegada.enabled = false;
+        }
+        if (vigilar != null)
+        {
+            vigilar.enabled = true;
         }
         if (merodear != null)
         {
             merodear.enabled = true;
-        }
-        if (camino != null)
-        {
-            camino.enabled = true;
         }
     }
 
