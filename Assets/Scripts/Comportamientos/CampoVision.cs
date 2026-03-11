@@ -11,7 +11,7 @@ public class CampoVision : MonoBehaviour
     [SerializeField]
     float radioVision = 5.0f;
     [SerializeField]
-    float angleVision = 5.0f;
+    float angleVision = 30.0f;
 
 
     private void Start()
@@ -29,7 +29,7 @@ public class CampoVision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("ENTRANDOOOOOOOOO");
+        //Debug.Log("ENTRANDOOOOOOOOO");
 
         // ...
 
@@ -51,36 +51,56 @@ public class CampoVision : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        // si es colision con un obstaculo no hace nada
+        if (other.GetComponent<Teseo>() == null) return;
+
+        // teseo stay
+        Debug.Log("STAYSTAYSTAY");
+
+        // calculo del angulo desde delante
         Vector3 directionToPlayer = other.GetComponent<Transform>().position - transform.position;
         float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
+        // si estas dentro del campo de vision
         if (angleToPlayer <= angleVision)
         {
-            Debug.Log("TRUETRUETRUETREU");
+            // si no hay nada entre el minotauro y el avatar
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, directionToPlayer.normalized, out hit, radioVision))
+            {
+                // si con lo que choca en primera instancia es teseo
+                if (hit.collider.GetComponent<Teseo>() != null)
+                {
+                    Debug.Log("PERSIGUIENDOOO");
 
-            if (llegada != null)
-            {
-                llegada.objetivo = other.gameObject;
-                llegada.enabled = true;
-            }
+                    // activamos persecucion
+                    if (llegada != null)
+                    { 
+                        llegada.objetivo = other.gameObject;
+                        llegada.enabled = true;
+                    }
 
-            if (merodear != null)
-            {
-                merodear.enabled = false;
-            }
-            if (camino != null)
-            {
-                camino.enabled = false;
+                    // desactivamos cualquier otro tipo de comportamiento
+                    if (merodear != null)
+                    {
+                        merodear.enabled = false;
+                    }
+                    if (camino != null)
+                    {
+                        camino.enabled = false;
+                    }
+                }
             }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("SALIENDOOOO");
+        //Debug.Log("SALIENDOOOO");
 
         if (llegada != null)
         {
+            Debug.Log("DEJANDO DE PERSEGUIR");
             llegada.objetivo = null;
             llegada.enabled = false;
         }
@@ -96,7 +116,7 @@ public class CampoVision : MonoBehaviour
 
     private void Update()
     {
-        Vector3 ori = OriToVec(angleVision);
+        Vector3 ori = OriToVec(angleVision/2);
         Debug.DrawLine(transform.position, transform.forward);
         Debug.DrawLine(transform.position, transform.forward - ori, new Color(0, 0, 1), 0.2f);
         Debug.DrawLine(transform.position, transform.forward + ori, new Color(0, 0, 1), 0.2f);
