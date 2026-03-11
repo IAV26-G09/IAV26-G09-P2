@@ -9,7 +9,7 @@ public class CampoVision : MonoBehaviour
     private SphereCollider sphereCollider;
 
     [SerializeField]
-    float radioVision = 5.0f;
+    float radioVision = 10.0f;
     [SerializeField]
     float angleVision = 30.0f;
 
@@ -116,18 +116,15 @@ public class CampoVision : MonoBehaviour
 
     private void Update()
     {
-        Vector3 ori = OriToVec(angleVision/2);
-        Debug.DrawLine(transform.position, transform.forward);
-        Debug.DrawLine(transform.position, transform.forward - ori, new Color(0, 0, 1), 0.2f);
-        Debug.DrawLine(transform.position, transform.forward + ori, new Color(0, 0, 1), 0.2f);
-    }
+        Transform t = GetComponentInParent<Transform>();
+        float r = radioVision / 2;
+        float a = angleVision / 2;
 
-    public Vector3 OriToVec(float orientacion)
-    {
-        Vector3 vector = Vector3.zero;
-        vector.x = Mathf.Sin(orientacion * Mathf.Deg2Rad) * 1.0f; //  * 1.0f se a�ade para asegurar que el tipo es float
-        vector.z = Mathf.Cos(orientacion * Mathf.Deg2Rad) * 1.0f; //  * 1.0f se a�ade para asegurar que el tipo es float
-        return vector.normalized;
-    }
+        Vector3 v1 = Vector3.RotateTowards(t.forward, t.right * -1, a * Mathf.Deg2Rad, 0);
+        Vector3 v2 = Vector3.RotateTowards(t.forward, t.right, a * Mathf.Deg2Rad, 0);
 
+        Debug.DrawRay(t.position, t.forward * r, new Color(1,1,1), 0.2f);
+        Debug.DrawRay(t.position, v1 * r, new Color(1,1,0), 0.2f);
+        Debug.DrawRay(t.position, v2 * r, new Color(1,1,0), 0.2f);
+    }
 }

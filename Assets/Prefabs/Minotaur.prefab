@@ -217,6 +217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radioVision: 5
+  angleVision: 30
 --- !u!1 &3053440019318353145
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,7 +658,7 @@ MonoBehaviour:
   combinarPorPeso: 0
   combinarPorPrioridad: 0
   umbralPrioridad: 0.2
-  velocidadMax: 15
+  velocidadMax: 5
   rotacionMax: 5
   aceleracionMax: 8
   aceleracionAngularMax: 5
