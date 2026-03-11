@@ -12,7 +12,8 @@ namespace UCM.IAV.Navegacion
     using System;
 
     // Vértice, también llamado registro de nodo, o registro de punto representativo (común a la mayoría de esquemas de división)
-    // En el pseudocódigo de Millington esta clase se llama NodeRecord, en vez de Vertex y además de guardar el id del nodo y el coste f, se guarda el id del padre de donde venimos y también el coste g
+    // En el pseudocódigo de Millington esta clase se llama NodeRecord, en vez de Vertex y además de guardar el id del nodo y
+    // el coste f, se guarda el id del padre de donde venimos y también el coste g
     [System.Serializable]
     public class Vertex : MonoBehaviour, IComparable<Vertex>, IEquatable<Vertex>
     {

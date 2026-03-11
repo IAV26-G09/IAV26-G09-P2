@@ -58,7 +58,8 @@ namespace UCM.IAV.Navegacion
                 // patrullero con llegada
                 //SeguirCamino cam = minoGO.AddComponent<SeguirCamino>();
                 //cam.enabled = false;
-                minoGO.AddComponent<Merodear>();
+                Patrullar patrulla = minoGO.AddComponent<Patrullar>();
+                patrulla.graph = graph;
             }
             else
             {
