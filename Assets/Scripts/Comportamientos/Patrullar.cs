@@ -65,20 +65,13 @@ namespace UCM.IAV.Movimiento
             int rnd = Random.Range(0, neighbours.Length);
             Vertex newNode = neighbours[rnd];
 
-            // TODO: LOS NODOS NUNCA LLEGAN A SER IGUALES ?
-            Debug.Log(newNode.id + " " + antNodo.id);
-
             if (newNode.id != antNodo.id) // para no poder volver hacia atras
             {
-                //Debug.Log("DESIGUALES");
-
-                antNodo = newNode;
+                antNodo = sigNodo;
                 return newNode;
             }
             else
             {
-                Debug.Log("IGUALES");
-
                 return GetNewNode(ref neighbours);
             }
         }
