@@ -67,6 +67,7 @@ namespace UCM.IAV.Navegacion
                 minoGO.AddComponent<Vigilar>();
 
             }
+            GameManager.instance.AddCameraTarget(minoGO.transform);
         }
     }
 }

@@ -49,6 +49,8 @@ namespace UCM.IAV.Movimiento
         int numMinosPatrulleros = 1;
         int numMinosEstaticos = 1;
 
+        CameraFollow camFollow = null;
+
         private void Awake()
         {
             // Hacemos que el gestor del juego sea un Ejemplar Único
@@ -126,6 +128,8 @@ namespace UCM.IAV.Movimiento
                 ChangeFrameRate();
             if (Input.GetKeyDown(KeyCode.C))
                 heuristicText.text = theseusGraph.ChangeHeuristic();
+            if (Input.GetKeyDown(KeyCode.N))
+                ChangeCameraTarget();
         }
 
         private void FindGO()
@@ -137,6 +141,7 @@ namespace UCM.IAV.Movimiento
             }
             else if (SceneManager.GetActiveScene().name == "Labyrinth") // Nombre de escena que habría que llevar a una constante
             {
+                camFollow = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraFollow>();
                 fRText = GameObject.FindGameObjectWithTag("Framerate").GetComponent<Text>();
                 heuristicText = GameObject.FindGameObjectWithTag("Heuristic").GetComponent<Text>();
                 theseusGraph = GameObject.FindGameObjectWithTag("TesterGraph").GetComponent<TheseusGraph>();
@@ -221,6 +226,22 @@ namespace UCM.IAV.Movimiento
         public string getSize()
         {
             return mazeSize;
+        }
+
+        public void ChangeCameraTarget()
+        {
+            if (camFollow != null)
+            {
+                camFollow.CycleTarget();
+            }
+        }
+
+        public void AddCameraTarget(Transform t)
+        {
+            if (camFollow != null)
+            {
+                camFollow.AddTarget(t);
+            }
         }
     }
 }
