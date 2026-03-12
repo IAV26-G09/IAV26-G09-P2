@@ -18,6 +18,7 @@ namespace UCM.IAV.Movimiento
         Vertex sigNodo;
         Vertex antNodo;
         private Vector3 sigNodoPosicion;
+        private Vector3 antNodoPosicion;
 
         public GraphGrid graph;
         public GameObject srcObj;
@@ -52,7 +53,9 @@ namespace UCM.IAV.Movimiento
             {
                 antNodo = sigNodo; // antes de cambiarlo guardas el anterior
                 sigNodo = neighbours[0];
+
                 sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
+                antNodoPosicion = graph.vertexObjs[antNodo.id].transform.position;
             }
         }
 
@@ -104,13 +107,16 @@ namespace UCM.IAV.Movimiento
             Vertex v;
             if (!ReferenceEquals(srcObj, null))
             {
-                Gizmos.color = Color.magenta; // Verde es el nodo inicial
+                Gizmos.color = Color.magenta; // Magenta es el nodo actual
                 v = graph.GetNearestVertex(srcObj.transform.position);
                 Gizmos.DrawSphere(v.transform.position, pathNodeRadius);
             }
 
-            Gizmos.color = Color.cyan; // Verde es el nodo inicial
+            Gizmos.color = Color.cyan; // Cyan es el nodo siguiente
             Gizmos.DrawSphere(sigNodoPosicion, pathNodeRadius);
+
+            Gizmos.color = Color.black; // Negro es el nodo anterior
+            Gizmos.DrawSphere(antNodoPosicion, pathNodeRadius);
         }
 
         public void ResetPath()
