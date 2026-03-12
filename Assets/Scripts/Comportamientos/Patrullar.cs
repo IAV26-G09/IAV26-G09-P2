@@ -120,6 +120,7 @@ namespace UCM.IAV.Movimiento
 
         public void ResetPath()
         {
+            ChooseNextNode();
             //graph.ResetPath();
         }
     }
