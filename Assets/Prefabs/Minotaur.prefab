@@ -658,10 +658,10 @@ MonoBehaviour:
   combinarPorPeso: 0
   combinarPorPrioridad: 0
   umbralPrioridad: 0.2
-  velocidadMax: 5
+  velocidadMax: 3
   rotacionMax: 5
-  aceleracionMax: 8
-  aceleracionAngularMax: 5
+  aceleracionMax: 6
+  aceleracionAngularMax: 2
   velocidad: {x: 0, y: 0, z: 0}
   rotacion: 0
   orientacion: 0

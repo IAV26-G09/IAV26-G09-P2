@@ -39,22 +39,19 @@ namespace UCM.IAV.Movimiento
 
         private void Start()
         {
-            velocidadMaxNormal = agente.velocidadMax;
-            velocidadMaxRapida = velocidadMaxNormal * 2;
+            //velocidadMaxNormal = agente.velocidadMax;
+            //velocidadMaxRapida = velocidadMaxNormal * 2;
 
-            aceleracionNormal = agente.aceleracionMax;
-            aceleracionRapida = aceleracionNormal * 2;
+            //aceleracionNormal = agente.aceleracionMax;
+            //aceleracionRapida = aceleracionNormal * 2;
         }
 
         public override Direccion GetDireccion()
         {
             Direccion direccion = new Direccion();
 
-            //Debug.Log("0");
-
             if (!able)
             {
-                Debug.Log("1");
                 return direccion;
             }
                 
@@ -74,13 +71,11 @@ namespace UCM.IAV.Movimiento
 
                 direccion.lineal = hit.point - transform.position;
                 direccion.lineal.y = 0;
-                //Debug.Log(direccion.lineal);
             }
 
             // Si la colision, aunque valida esta en un radio cercano al jugador
             if (direccion.lineal.magnitude < minimuRadius)
             {
-                //Debug.Log("NO ME MUEVO");
                 return new Direccion();
             }
 
@@ -89,43 +84,20 @@ namespace UCM.IAV.Movimiento
 
             if (sprinting)
             {
-                agente.aceleracionMax = aceleracionRapida;
-                agente.velocidadMax = velocidadMaxRapida;
-                //Debug.Log("3");
+                //agente.aceleracionMax = aceleracionRapida;
+                //agente.velocidadMax = velocidadMaxRapida;
             }
             else
             {
-                agente.aceleracionMax = aceleracionNormal;
-                agente.velocidadMax = velocidadMaxNormal;
-                //Debug.Log("4");
+                //agente.aceleracionMax = aceleracionNormal;
+                //agente.velocidadMax = velocidadMaxNormal;
             }
 
             // Resto de calculo de movimiento
             direccion.lineal.Normalize();
             direccion.lineal *= agente.aceleracionMax;
 
-            //Debug.Log("5");
-
             return direccion;
         }
-
-        // MOVIMIENTO CON WASD
-        /*
-        public override Direccion GetDireccion()
-        {
-
-            Direccion direccion = new Direccion();
-            
-            //Direccion actual
-            direccion.lineal.x = Input.GetAxis("Horizontal");
-            direccion.lineal.z = Input.GetAxis("Vertical");
-
-            //Resto de calculo de movimiento
-            direccion.lineal.Normalize();
-            direccion.lineal *= agente.aceleracionMax;
-
-            return direccion;
-        }
-        */
     }
 }

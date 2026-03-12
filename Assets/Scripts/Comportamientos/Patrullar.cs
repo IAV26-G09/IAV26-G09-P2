@@ -23,6 +23,10 @@ namespace UCM.IAV.Movimiento
         public GameObject srcObj;
 
         [SerializeField]
+        [Range(0.001f, 1f)]
+        float magnitudeRange = 0.25f;
+
+        [SerializeField]
         [Range(0.1f, 1f)]
         private float pathNodeRadius = .3f;
 
@@ -31,7 +35,6 @@ namespace UCM.IAV.Movimiento
             srcObj = gameObject;
             sigNodo = graph.GetNearestVertex(srcObj.transform.position);
             sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
-            Debug.Log(sigNodoPosicion);
         }
 
         void ChooseNextNode()
@@ -47,12 +50,10 @@ namespace UCM.IAV.Movimiento
             // eliges el disponible
             else
             {
-                int rnd = Random.Range(0, neighbours.Length);
                 antNodo = sigNodo; // antes de cambiarlo guardas el anterior
                 sigNodo = neighbours[0];
+                sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
             }
-
-            sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
         }
 
         Vertex GetNewNode(ref Vertex[] neighbours)
@@ -75,12 +76,11 @@ namespace UCM.IAV.Movimiento
         public override Direccion GetDireccion()
         {
             Direccion direccion = new Direccion();
-            Debug.Log(direccion.lineal);
 
             Vector3 dir = sigNodoPosicion - transform.position;
             dir.y = 0;
 
-            if (dir.magnitude <= 0.01f)
+            if (dir.magnitude <= magnitudeRange)
             {
                 ChooseNextNode();
             }
@@ -88,24 +88,6 @@ namespace UCM.IAV.Movimiento
             direccion.lineal = dir;
             direccion.lineal.Normalize();
             direccion.lineal *= agente.aceleracionMax;
-            Debug.Log(direccion.lineal);
-
-            /*
-            //if (sigNodo != null)
-            //{
-            //    //Direccion actual
-            //}
-            //else
-            //{
-            //    direccion.lineal = new Vector3(0, 0, 0);
-            //}
-
-            ////Resto de calculo de movimiento
-            //direccion.lineal.Normalize();
-            //direccion.lineal *= agente.aceleracionMax;
-
-            //// Podriamos meter una rotacion automatica en la direccion del movimiento, si quisieramos
-            ///*/
 
             return direccion;
         }
@@ -126,6 +108,9 @@ namespace UCM.IAV.Movimiento
                 v = graph.GetNearestVertex(srcObj.transform.position);
                 Gizmos.DrawSphere(v.transform.position, pathNodeRadius);
             }
+
+            Gizmos.color = Color.cyan; // Verde es el nodo inicial
+            Gizmos.DrawSphere(sigNodoPosicion, pathNodeRadius);
         }
 
         public void ResetPath()
