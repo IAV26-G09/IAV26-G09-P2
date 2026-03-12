@@ -99,7 +99,27 @@ La escena genera un laberinto en base al mapa que es haya elegido en el menú, g
 
 ### Estados de los agentes
 
-Lo distintos algoritmos usados han sido para cada agente de IA:
+- **Teseo**:
+```mermaid
+graph TD;
+  OCIOSO;
+```
+
+- **Minotauros Patrulla**:
+```mermaid
+graph TD;
+  PATRULLANDO-- Detecta a Teseo -->SIGUIENDO_TESEO
+  SIGUIENDO_TESEO-- Pierde de vista a Teseo -->PATRULLANDO;
+```
+
+- **Minotauros Vigía**:
+```mermaid
+graph TD;
+  VIGILANDO<-- Detecta a Teseo -->SIGUIENDO_TESEO;
+  SIGUIENDO_TESEO-- Pierde de vista a Teseo -->VIGILANDO;
+```
+
+Los distintos algoritmos usados han sido para cada agente de IA:
 
 ## Implementación
 **Tareas:**
@@ -107,9 +127,11 @@ Las tareas y el esfuerzo ha sido repartido de manera equitativa entre las autora
 
 | Estado  |  Tarea  |  Fecha  |  
 |:-:|:--|:-:|
-| ✔ | Movimiento del avatar con input de ratón | X-X-2026 |
+| ✔ | Movimiento del avatar con input de ratón | 5-13-2026 |
+| ✔ | Interfaz de creación de minotauros | 10-3-2026 |
+| ✔ | Comportamientos de los minotauros | 12-3-2026 |
 |  | AMPLIACIONES |  |
-| ✖ |   |  |
+| ✖ | aún no hay ampliaciones | x |
 
 **Diagrama de clases:**
 Las clases principales que se han desarrollados son las siguientes (habría que renombrarlas para tenerlo todo en español o todo en inglés):
@@ -136,7 +158,9 @@ classDiagram
     class MinoManager {
       +minotaur : GameObject
       +graph: Graph
-      +numMinos : int
+      +numMinosPatrulleros : int
+      +numMinosEstaticos : int
+      +MinoType : enum
       +Start()
       +StartUp()
       +GenerateMino() 
@@ -155,6 +179,19 @@ classDiagram
       +Start()
       +Update()
       +UpdateAriadna()
+    }
+    CampoVision <|-- MonoBehaviour
+        class CampoVision {
+          +patrullar : Patrullar
+          +vigilar : Vigilar
+          +llegada : Llegada
+          +sphereCollider : SphereCollider
+          +radioVision : float
+          +angleVision : float
+          +Start()
+          +OnTriggerStay(Collider)
+          +OnTriggerExit(Collider)
+          +Update()
     }
     Graph <|-- MonoBehaviour
     TheseusGraph <|-- MonoBehaviour
@@ -177,16 +214,34 @@ classDiagram
         +RayCastCollision : Vector3
         +Avoidance : Vector3
     }
-      Merodear <|-- ComportamientoAgente
-      class Merodear {
-        +maxTime : float
-        +minTime : float
-        +t : float
-        +actualT : float
-        +lastDir : Direccion
-        +GetDireccion() : Direccion
-        +OnCollisionnEter()
+    Vigilar <|-- ComportamientoAgente
+          class Vigilar {
+            +maxTime : float
+            +minTime : float
+            +maxRan : float
+            +minRan : float
+            +t : float
+            +actualT : float
+            +lastDir : Direccion
+            +GetDireccion() : Direccion
+            +OnCollisionEnter()
     }
+    Patrullar <|-- ComportamientoAgente
+              class Patrullar {
+                +sigNodo : Vertex
+                +antNodo : Vertex
+                +sigNodoPosicion : Vector3
+                +antNodoPosicion : Vector3
+                +graph : GraphGrid
+                +srcObj : GameObject
+                +magnitudeRange : float
+                +pathNodeRadius : float
+                +ChooseNextNode()
+                +GetNewNode(ref Vertex[]) : Vertex
+                +GetDireccion() : Direccion
+                +OnDrawGizmos()
+                +ResetPath()
+     }
       SeguirCamino <|-- ComportamientoAgente
       class SeguirCamino {
         +sigNodo : Transform
@@ -223,18 +278,30 @@ Avisa a una instancia del script agente para que combine,bien por peso o por pri
 ### Direccion
 Guarda los valores de la velocidad lineal y angular.
 
-### Control Jugador
-Hereda de ComportamientoAgente y simplemente usa el método __GetDirección()__, que registra el input, lo traduce a un vector normalizado y lo devuelve al script Agente.cs que lo ha llamado. Originalmente, registra el input de las flechas y WASD, pero esto deberá ser cambiado
+### ControlJugador
+Hereda de ComportamientoAgente y simplemente usa el método __GetDirección()__, que registra el input de ratón de tal manera que si el puntero está más allá de cierta distancia del avatar, este camina en línea recta hacia su posición y mientras se mantiene pulsado el clic izquierdo, el avatar corre más rápido.
 
 ### Llegada
-Hereda de comportamientoAgente y es usado por los minotauros patrulleros cuando han de perseguir a Teseo.
+Hereda de comportamientoAgente y es usado por todos los minotauros cuando han de perseguir a Teseo.
 * __getDirección()__ se usa para calcular la velocidad y dirección en la que tiene que acercarse a su objetivo, teniendo en cuenta el radio de deceleración y el radio de llegada (momento en el que se considera que ha alcanzado a su objetivo).
 * __raycastCollision()__ detecta si hay algún obstáculo en la dirección en la que nos estamos moviendo. Si encuentra algún obstáculo, calcula la normal con la que ha impactado el rayo del raycast para desviar al agente en esa dirección y devolver ese vector de desviación. Este método es llamado desde el método __avoidance()__, llamado a su vez desde __getDirección()__.
 
-### Merodear
-Otro comportamientoAgente, usado por los minotauros estáticos, simplemente deambulando por el mismo espacio.
-* __getDirection()__ simplemente calcula una velocidad aleatoria para que se muevan en ella durante un tiempo aleatorio también.
+### Vigilar
+El comportamientoAgente, usado por los minotauros estáticos, los hace rotar aleatoriamente.
+* __getDirection()__ calcula el ángulo de giro aleatorio que rotarán durante un tiempo también aleatorio.
 * __onCollisionEnter()__, llamado automáticamente cuando colisionan con algo, les redirige en dirección opuesta del objeto con el que han colisionado.
+
+### Patrullar
+El comportamientoAgente, usado por los minotauros patrulla, los hace caminar en línea recta, cambiando de dirección aleatoriamente al llegar a un cruce de caminos. Los patrulleros nunca girarán en dirección contraria, a no ser que no les quede otra opción, con tal de simular una mayor inteligencia.
+* __ChooseNextNode()__, usando el atributo graph de la clase se selecciona hacia qué nodo, de entre todos los nodos vecinos del nodo más cercano a cada minotauro, seguir avanzando.
+* __GetNewNode()__ obtiene un nuevo nodo al que ir en caso de encrucijada, teniendo en cuenta que no puedes volver al nodo del que vienes (prohibiendo el giro de 180º).
+* __GetDireccion()__ se usa para calcular la velocidad y dirección en la que tiene que acercarse al siguiente nodo calculado.
+* __OnDrawGizmos()__ se usa para debuguear el nodo actual, el siguiente y el anterior, dibuja una esfera de color en cada uno de ellos.
+* __ResetPath()__, en caso de choque con otro minotauro se sigue otro camino.
+
+### CampoVision
+Implementa el cono de visión de todos los minotauros y gestiona el estado de estos si se detecta al avatar.
+* __OnTriggerStay()__, si el avatar entra en el trigger de detección, se encuentra en el ángulo de visión del minotauro, y no hay ningún objeto entre el minotauro y él entonces se confirma que ha sido detectado por lo que el minotauro pasará a seguirle hasta que pierda visión de él o le alcance.
 
 ### Seguir camino
 Hereda de ComportamientoAgente, usa su atributo graph para seguir el camino marcado por este, cogiendo el siguiente nodo en su update().
@@ -293,7 +360,7 @@ Es una clase que posee un atributo de tipo Grid, pensada para acompañar a Teseo
 
 También es importante mencionar los scripts animal animation controller y player animator, encargados de las animaciones de los minotauros y el jugador respectivamente, al igual que el script cameraFollow, que simplemente sigue al jugador con un cierto offset. Estos scripts no se mencionan en más detalle pues no son muy relevantes en cuanto a la implementación de la solución.
 
-Adicionalmente, el script dropdown es solo usado para recoger información sobre el laberinto desde el menú.
+Adicionalmente, el script dropdown es usado para recoger información sobre el laberinto desde el menú, específicamente, cuántos minotauros y de qué tipo crear en el mapa y el tamaño de este.
 
 
 ## Pruebas y métricas
@@ -321,10 +388,10 @@ line [0, 0]
 ```
 
 ### Vídeo
-- [Vídeo demostración](https://youtu.be/HxN5z2ei1y8)
+- [Vídeo demostración]()
 
 ## Ampliaciones
-
+Aún no se han realizado ningunas ampliaciones.
 
 ## Conclusiones
 
@@ -332,8 +399,37 @@ line [0, 0]
 Nieves Alonso Gilsanz y Cynthia Tristán Álvarez, con el permiso de Federico Peinado, autores de la documentación, código y recursos de este trabajo, concedemos permiso permanente para utilizar este material, con sus comentarios y evaluaciones, con fines educativos o de investigación; ya sea para obtener datos agregados de forma anónima como para utilizarlo total o parcialmente reconociendo expresamente nuestra autoría. 
 
 ## Referencias
-Los recursos de terceros utilizados son de uso público.
-* *AI for Games*, Ian Millington.
-* [Kaykit Medieval Builder Pack](https://kaylousberg.itch.io/kaykit-medieval-builder-pack)
-* [Kaykit Dungeon](https://kaylousberg.itch.io/kaykit-dungeon)
-* [Kaykit Animations](https://kaylousberg.itch.io/kaykit-animations)
+A continuación se detallan todas las referencias bibliográficas, lúdicas o de otro tipo utilizdas para realizar este prototipo. Los recursos de terceros que se han utilizados son de uso público[^1][^2][^3].
+
+El diseño e implementación de los algoritmos aquí desarrollados se ha apoyado principalmente en *Millington*[^4], referenciado ampliamente a lo largo del contenido del curso en Narratech[^5][^6][^7][^8].
+<!--
+, que ha proporcionado la base teórica para los comportamientos de *Llegada*, *Persecución*, *Huida*, *Merodeo* y *Separación*, además de los mecanismos de combinación por peso o prioridades.
+
+Los artículos de *Reynolds*[^9][^10] son la base histórica y clásica del comportamiento de agentes en grupo implementados en *Separación*. Las aportaciones de *Shiffman*[^11] y *Yannakakis y Togelius*[^12] sirven de referencia complementaria para entender los sistemas de agentes autónomos con visión más actualizada y contemporánea.
+-->
+
+[^1]: Lousberg, K. (s. f.). [*Kaykit animations*](https://kaylousberg.itch.io/kaykit-animations)
+
+[^2]: Lousberg, K. (s. f.). [*Kaykit dungeon*](https://kaylousberg.itch.io/kaykit-dungeon)
+
+[^3]: Lousberg, K. (s. f.). [*Kaykit medieval builder pack*](https://kaylousberg.itch.io/kaykit-medieval-builder-pack)
+
+[^4]: Millington, I. (2019). *AI for games* (3rd ed.). CRC Press.
+
+[^5]: Narratech [*El secreto del Laberinto*](https://narratech.com/es/inteligencia-artificial-para-videojuegos/navegacion/el-secreto-del-laberinto/)
+
+[^6]: Narratech [*Representación del entorno*](https://narratech.com/es/inteligencia-artificial-para-videojuegos/navegacion/representacion-del-entorno/)
+
+[^7]: Narratech [*Resolución de problemas en el espacio de estados*](https://narratech.com/es/inteligencia-artificial-para-videojuegos/navegacion/resolucion-de-problemas-en-el-espacio-de-estados/)
+
+[^8]: Narratech [*Búsqueda de caminos usando estrategias informadas*](https://narratech.com/es/inteligencia-artificial-para-videojuegos/navegacion/busqueda-de-caminos-usando-estrategias-informadas/)
+
+<!--
+[^9]: Reynolds, C. (1995). [*Boids*](https://www.red3d.com/cwr/boids/).
+
+[^10]: Reynolds, C. (1999). [*Steering Behaviors For Autonomous Characters*](https://www.red3d.com/cwr/steer/gdc99/)
+
+[^11]: Shiffman, D. (2024). *Autonomous Agents*. [Nature of Code](https://natureofcode.com/).
+ 
+[^12]: Yannakakis, G., Togelius, J. (2025). *Artificial Inteligence and Games*
+-->
