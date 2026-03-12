@@ -13,12 +13,20 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     public Transform target;
+    public List<Transform> targets = new List<Transform>();
+    int currentTarget = 0;
 
     public float smoothSpeed = 0.125f;
     float offset = 3.15f;
 
     private float zoom = 10f;
     private float zoomAmount = 40f;
+
+    private void Start()
+    {
+        //
+        AddTarget(target);
+    }
 
     void FixedUpdate()
     {
@@ -33,6 +41,18 @@ public class CameraFollow : MonoBehaviour
             //Alterna la distancia al target en función del input de la rueda del ratón
             HandleZoom();
         }
+    }
+
+    public void AddTarget(Transform t)
+    {
+        targets.Add(t);
+    }
+
+    public void CycleTarget()
+    {
+        currentTarget += 1;
+        currentTarget %= targets.Count;
+        target = targets[currentTarget];
     }
 
     private void HandleZoom()

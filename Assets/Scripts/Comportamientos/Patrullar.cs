@@ -24,7 +24,7 @@ namespace UCM.IAV.Movimiento
         public GameObject srcObj;
 
         [SerializeField]
-        [Range(0.001f, 1f)]
+        [Range(0f, 1f)]
         float magnitudeRange = 0.25f;
 
         [SerializeField]
