@@ -36,6 +36,7 @@ namespace UCM.IAV.Movimiento
             srcObj = gameObject;
             sigNodo = graph.GetNearestVertex(srcObj.transform.position);
             sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
+            antNodo = sigNodo;
         }
 
         void ChooseNextNode()
@@ -45,7 +46,6 @@ namespace UCM.IAV.Movimiento
             // si tienes mas de una opcion
             if (neighbours.Length > 1)
             {
-                antNodo = sigNodo;
                 sigNodo = GetNewNode(ref neighbours);
             }
             // si tienes un vecino o menos significa que estas en una encrucijada
@@ -66,10 +66,13 @@ namespace UCM.IAV.Movimiento
             Vertex newNode = neighbours[rnd];
 
             // TODO: LOS NODOS NUNCA LLEGAN A SER IGUALES ?
-            if (newNode != antNodo) // para no poder volver hacia atras
-            {
-                Debug.Log("DESIGUALES");
+            Debug.Log(newNode.id + " " + antNodo.id);
 
+            if (newNode.id != antNodo.id) // para no poder volver hacia atras
+            {
+                //Debug.Log("DESIGUALES");
+
+                antNodo = newNode;
                 return newNode;
             }
             else
