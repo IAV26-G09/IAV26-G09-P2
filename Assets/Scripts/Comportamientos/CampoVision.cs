@@ -3,59 +3,33 @@ using UnityEngine;
 
 public class CampoVision : MonoBehaviour
 {
-    private Merodear merodear;
+    private Patrullar patrullar;
     private Vigilar vigilar;
     private Llegada llegada;
     private SphereCollider sphereCollider;
 
     [SerializeField]
-    float radioVision = 10.0f;
+    private float radioVision = 10.0f;
     [SerializeField]
-    float angleVision = 30.0f;
-
+    [Range(0.0f, 180.0f)] // para evitar que los minotauros puedan ver mas alla de un angulo de vision de 180 grados
+    private float angleVision = 30.0f;
+    [SerializeField] 
+    private bool debug = true;
 
     private void Start()
     {
         sphereCollider = GetComponent<SphereCollider>();
-        if (sphereCollider != null)
-        {
-            sphereCollider.radius = radioVision;
-        }
+        if (sphereCollider != null) sphereCollider.radius = radioVision;
 
         llegada = GetComponentInParent<Llegada>();
         vigilar = GetComponentInParent<Vigilar>();
-        merodear = GetComponentInParent<Merodear>();
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        //Debug.Log("ENTRANDOOOOOOOOO");
-
-        // ...
-
-        //if (llegada != null)
-        //{
-        //    llegada.objetivo = other.gameObject;
-        //    llegada.enabled = true;
-        //}
-
-        //if (merodear != null)
-        //{
-        //    merodear.enabled = false;
-        //}
-        //if (camino != null)
-        //{
-        //    camino.enabled = false;
-        //}
+        patrullar = GetComponentInParent<Patrullar>();
     }
 
     private void OnTriggerStay(Collider other)
     {
         // si es colision con un obstaculo no hace nada
         if (other.GetComponent<Teseo>() == null) return;
-
-        // teseo stay
-        //Debug.Log("STAYSTAYSTAY");
 
         // calculo del angulo desde delante
         Vector3 directionToPlayer = other.GetComponent<Transform>().position - transform.position;
@@ -71,9 +45,7 @@ public class CampoVision : MonoBehaviour
                 // si con lo que choca en primera instancia es teseo
                 if (hit.collider.GetComponent<Teseo>() != null)
                 {
-                    //Debug.Log("PERSIGUIENDOOO");
-
-                    // activamos persecucion
+                    // activamos seguimiento
                     if (llegada != null)
                     { 
                         llegada.objetivo = other.gameObject;
@@ -85,9 +57,9 @@ public class CampoVision : MonoBehaviour
                     {
                         vigilar.enabled = false;
                     }
-                    if (merodear != null)
+                    if (patrullar != null)
                     {
-                        merodear.enabled = false;
+                        patrullar.enabled = false;
                     }
                 }
             }
@@ -96,35 +68,40 @@ public class CampoVision : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        //Debug.Log("SALIENDOOOO");
-
+        // activamos seguimiento
         if (llegada != null)
         {
-            //Debug.Log("DEJANDO DE PERSEGUIR");
             llegada.objetivo = null;
             llegada.enabled = false;
         }
+        // activamos cualquier otro tipo de comportamiento
         if (vigilar != null)
         {
             vigilar.enabled = true;
         }
-        if (merodear != null)
+        if (patrullar != null)
         {
-            merodear.enabled = true;
+            patrullar.enabled = true;
         }
     }
 
     private void Update()
     {
-        Transform t = GetComponentInParent<Transform>();
-        float r = radioVision / 2;
-        float a = angleVision / 2;
+#if UNITY_EDITOR
+        // Debug
+        if (debug)
+        {
+            Transform t = GetComponentInParent<Transform>();
+            float r = radioVision / 2;
+            float a = angleVision / 2;
 
-        Vector3 v1 = Vector3.RotateTowards(t.forward, t.right * -1, a * Mathf.Deg2Rad, 0);
-        Vector3 v2 = Vector3.RotateTowards(t.forward, t.right, a * Mathf.Deg2Rad, 0);
+            Vector3 v1 = Vector3.RotateTowards(t.forward, t.right * -1, a * Mathf.Deg2Rad, 0);
+            Vector3 v2 = Vector3.RotateTowards(t.forward, t.right, a * Mathf.Deg2Rad, 0);
 
-        Debug.DrawRay(t.position, t.forward * r, new Color(1,1,1), 0.2f);
-        Debug.DrawRay(t.position, v1 * r, new Color(1,1,0), 0.2f);
-        Debug.DrawRay(t.position, v2 * r, new Color(1,1,0), 0.2f);
+            Debug.DrawRay(t.position, t.forward * r, new Color(1, 1, 1), 0.2f);
+            Debug.DrawRay(t.position, v1 * r, new Color(1, 1, 0), 0.2f);
+            Debug.DrawRay(t.position, v2 * r, new Color(1, 1, 0), 0.2f);
+        }
+#endif
     }
 }
