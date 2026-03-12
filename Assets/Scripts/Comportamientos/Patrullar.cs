@@ -45,6 +45,7 @@ namespace UCM.IAV.Movimiento
             // si tienes mas de una opcion
             if (neighbours.Length > 1)
             {
+                antNodo = sigNodo;
                 sigNodo = GetNewNode(ref neighbours);
             }
             // si tienes un vecino o menos significa que estas en una encrucijada
@@ -58,22 +59,26 @@ namespace UCM.IAV.Movimiento
             antNodoPosicion = graph.vertexObjs[antNodo.id].transform.position;
         }
 
+        // metodo recursivo para obtener un nodo nuevo al que ir
         Vertex GetNewNode(ref Vertex[] neighbours)
         {
             int rnd = Random.Range(0, neighbours.Length);
             Vertex newNode = neighbours[rnd];
 
+            // TODO: LOS NODOS NUNCA LLEGAN A SER IGUALES ?
             if (newNode != antNodo) // para no poder volver hacia atras
             {
-                antNodo = newNode;
+                Debug.Log("DESIGUALES");
+
                 return newNode;
             }
             else
             {
+                Debug.Log("IGUALES");
+
                 return GetNewNode(ref neighbours);
             }
         }
-
 
         public override Direccion GetDireccion()
         {
@@ -93,7 +98,6 @@ namespace UCM.IAV.Movimiento
 
             return direccion;
         }
-
 
         private void OnDrawGizmos()
         {
