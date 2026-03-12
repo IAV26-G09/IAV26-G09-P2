@@ -34,16 +34,10 @@ namespace UCM.IAV.Movimiento
 
         }
 
-        override public void Update()
-        {
-            //sigNodo = graph.GetNextNode();
-            //base.Update();
-        }
-
         void ChooseNextNode()
         {
             Vertex[] neighbours = graph.GetNeighbours(sigNodo);
-            int rnd = Random.Range(0, neighbours.Length-1);
+            int rnd = Random.Range(0, neighbours.Length);
             sigNodo = neighbours[rnd];
             sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
         }
@@ -54,8 +48,9 @@ namespace UCM.IAV.Movimiento
             Debug.Log(direccion.lineal);
 
             Vector3 dir = sigNodoPosicion - transform.position;
+            dir.y = 0;
 
-            if (dir.magnitude <= 0.0f)
+            if (dir.magnitude <= 0.01f)
             {
                 ChooseNextNode();
             }
