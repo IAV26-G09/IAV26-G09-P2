@@ -2,7 +2,7 @@
    Copyright (C) 2020-2023 Federico Peinado
    http://www.federicopeinado.com
    Este fichero forma parte del material de la asignatura Inteligencia Artificial para Videojuegos.
-   Esta asignatura se imparte en la Facultad de Informática de la Universidad Complutense de Madrid (España).
+   Esta asignatura se imparte en la Facultad de Informï¿½tica de la Universidad Complutense de Madrid (Espaï¿½a).
    Autor: Federico Peinado
    Contacto: email@federicopeinado.com
 */
@@ -16,6 +16,7 @@ namespace UCM.IAV.Movimiento
     public class Patrullar : ComportamientoAgente
     {
         Vertex sigNodo;
+        Vertex antNodo;
         private Vector3 sigNodoPosicion;
 
         public GraphGrid graph;
@@ -31,16 +32,45 @@ namespace UCM.IAV.Movimiento
             sigNodo = graph.GetNearestVertex(srcObj.transform.position);
             sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
             Debug.Log(sigNodoPosicion);
-
         }
 
         void ChooseNextNode()
         {
             Vertex[] neighbours = graph.GetNeighbours(sigNodo);
-            int rnd = Random.Range(0, neighbours.Length);
-            sigNodo = neighbours[rnd];
+
+            // si tienes mas de una opcion
+            if (neighbours.Length > 1)
+            {
+                sigNodo = GetNewNode(ref neighbours);
+            }
+            // si tienes un vecino o menos significa que estas en una encrucijada
+            // eliges el disponible
+            else
+            {
+                int rnd = Random.Range(0, neighbours.Length);
+                antNodo = sigNodo; // antes de cambiarlo guardas el anterior
+                sigNodo = neighbours[0];
+            }
+
             sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
         }
+
+        Vertex GetNewNode(ref Vertex[] neighbours)
+        {
+            int rnd = Random.Range(0, neighbours.Length);
+            Vertex newNode = neighbours[rnd];
+
+            if (newNode != antNodo) // para no poder volver hacia atras
+            {
+                antNodo = newNode;
+                return newNode;
+            }
+            else
+            {
+                return GetNewNode(ref neighbours);
+            }
+        }
+
 
         public override Direccion GetDireccion()
         {
@@ -60,6 +90,7 @@ namespace UCM.IAV.Movimiento
             direccion.lineal *= agente.aceleracionMax;
             Debug.Log(direccion.lineal);
 
+            /*
             //if (sigNodo != null)
             //{
             //    //Direccion actual
@@ -69,14 +100,16 @@ namespace UCM.IAV.Movimiento
             //    direccion.lineal = new Vector3(0, 0, 0);
             //}
 
-            ////Resto de cálculo de movimiento
+            ////Resto de calculo de movimiento
             //direccion.lineal.Normalize();
             //direccion.lineal *= agente.aceleracionMax;
 
-            //// Podríamos meter una rotación automática en la dirección del movimiento, si quisiéramos
+            //// Podriamos meter una rotacion automatica en la direccion del movimiento, si quisieramos
+            ///*/
 
             return direccion;
         }
+
 
         private void OnDrawGizmos()
         {
