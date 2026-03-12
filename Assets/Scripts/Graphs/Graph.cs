@@ -29,7 +29,7 @@ namespace UCM.IAV.Navegacion
         protected bool[,] mapVertices;
         protected float[,] costsVertices; // Costes reales (g)... aunque también se podría crear una clase
                                           // para las conexiones y poner los costes ahí,
-                                          // como en el pseudocódigo de Millington.
+                                          // como en el pseudocódigo de Millington (NodeRecord).
                                           // Esto está 'optimizado' porque sabemos que trabajamos con una rejilla...
         protected int numCols, numRows;
 
@@ -115,7 +115,13 @@ namespace UCM.IAV.Navegacion
 
             // IMPLEMENTAR ALGORITMO A*
             // Teniendo .NET 6 activo, puedes usar la cola de prioridad que viene por defecto en C# y no necesitas usar BinaryHeap
-            // PriorityQueue <Vertex> open = new PriorityQueue<Vertex>();
+            //PriorityQueue<Vertex> open = new PriorityQueue<Vertex>();
+
+            BinaryHeap<Vertex> open = new BinaryHeap<Vertex>();
+            BinaryHeap<Vertex> closed = new BinaryHeap<Vertex>();
+
+           
+
             return new List<Vertex>();
         }
 

@@ -76,8 +76,8 @@ namespace UCM.IAV.Navegacion
         // Update is called once per frame
         public virtual void Update()
         {
-            // clic derecho desactiva e
-            if (Input.GetKey(KeyCode.Mouse1))
+            // clic derecho desactiva el hilo
+            if (Input.GetKeyDown(KeyCode.Mouse1))
             {
                 Debug.Log("TOGGLE HILO");
                 updateAriadna(!ariadna);
