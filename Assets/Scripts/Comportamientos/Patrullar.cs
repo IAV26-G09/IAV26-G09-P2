@@ -53,10 +53,9 @@ namespace UCM.IAV.Movimiento
             {
                 antNodo = sigNodo; // antes de cambiarlo guardas el anterior
                 sigNodo = neighbours[0];
-
-                sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
-                antNodoPosicion = graph.vertexObjs[antNodo.id].transform.position;
             }
+            sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
+            antNodoPosicion = graph.vertexObjs[antNodo.id].transform.position;
         }
 
         Vertex GetNewNode(ref Vertex[] neighbours)
@@ -115,7 +114,7 @@ namespace UCM.IAV.Movimiento
             Gizmos.color = Color.cyan; // Cyan es el nodo siguiente
             Gizmos.DrawSphere(sigNodoPosicion, pathNodeRadius);
 
-            Gizmos.color = Color.black; // Negro es el nodo anterior
+            Gizmos.color = Color.yellow; // Negro es el nodo anterior
             Gizmos.DrawSphere(antNodoPosicion, pathNodeRadius);
         }
 
