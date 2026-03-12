@@ -76,22 +76,17 @@ namespace UCM.IAV.Navegacion
         // Update is called once per frame
         public virtual void Update()
         {
-            if (Input.GetKey(KeyCode.Space))
+            // clic derecho desactiva e
+            if (Input.GetKey(KeyCode.Mouse1))
             {
-                if (!ariadna)
-                    updateAriadna(true);
+                Debug.Log("TOGGLE HILO");
+                updateAriadna(!ariadna);
             }
-            else
-            {
-                if (ariadna)
-                    updateAriadna(false);
-            }
-
-
+            
             if (Input.GetKeyDown(KeyCode.S))
                 smoothPath = !smoothPath;
 
-            if (ariadna)
+            if (ariadna) // si tenemos el hilo activado lo calculamos
             {
                 //Source jugador y destino el nodo final
                 if (srcObj == null) srcObj = GameManager.instance.GetPlayer();
