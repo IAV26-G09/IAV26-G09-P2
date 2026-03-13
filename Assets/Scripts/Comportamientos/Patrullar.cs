@@ -35,8 +35,9 @@ namespace UCM.IAV.Movimiento
         {
             srcObj = gameObject;
             sigNodo = graph.GetNearestVertex(srcObj.transform.position);
-            sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
             antNodo = sigNodo;
+            //sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
+            SetPositions();
         }
 
         void ChooseNextNode()
@@ -55,8 +56,7 @@ namespace UCM.IAV.Movimiento
                 antNodo = sigNodo; // antes de cambiarlo guardas el anterior
                 sigNodo = neighbours[0];
             }
-            sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
-            antNodoPosicion = graph.vertexObjs[antNodo.id].transform.position;
+            SetPositions();
         }
 
         // metodo recursivo para obtener un nodo nuevo al que ir
@@ -118,10 +118,18 @@ namespace UCM.IAV.Movimiento
             Gizmos.DrawSphere(antNodoPosicion, pathNodeRadius);
         }
 
+        public void SetPositions()
+        {
+            sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
+            antNodoPosicion = graph.vertexObjs[antNodo.id].transform.position;
+        }
+
         public void ResetPath()
         {
-            ChooseNextNode();
-            //graph.ResetPath();
+            Vertex temp = sigNodo;
+            sigNodo = antNodo;
+            antNodo = sigNodo;
+            SetPositions();
         }
     }
 }
