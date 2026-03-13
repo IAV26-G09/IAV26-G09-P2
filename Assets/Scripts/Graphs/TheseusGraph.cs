@@ -97,8 +97,8 @@ namespace UCM.IAV.Navegacion
                 switch (algorithm)
                 {
                     case TesterGraphAlgorithm.ASTAR:
-                        if (firstHeuristic) path = graph.GetPathAstar(srcObj, dstObj, null); // COMO SEGUNDO ARGUMENTO SE DEBERÍA PASAR LA HEURÍSTICA
-                        else path = graph.GetPathAstar(srcObj, dstObj, null); // COMO SEGUNDO ARGUMENTO SE DEBERÍA PASAR LA HEURÍSTICA
+                        if (firstHeuristic) path = graph.GetPathAstar(srcObj, dstObj, Manhattan); // COMO SEGUNDO ARGUMENTO SE DEBERÍA PASAR LA HEURÍSTICA
+                        else path = graph.GetPathAstar(srcObj, dstObj, Euclidean); // COMO SEGUNDO ARGUMENTO SE DEBERÍA PASAR LA HEURÍSTICA
                         break;
                     default:
                     case TesterGraphAlgorithm.BFS:
@@ -219,6 +219,16 @@ namespace UCM.IAV.Navegacion
             // Está preparado para tener 2 heurísticas diferentes
             firstHeuristic = !firstHeuristic;
             return firstHeuristic ? "Primera" : "Segunda";
+        }
+
+        float Manhattan(Vertex a, Vertex b)
+        {
+            return Mathf.Abs(a.transform.position.x - b.transform.position.x) +
+                   Mathf.Abs(a.transform.position.z - b.transform.position.z);
+        }
+        float Euclidean(Vertex a, Vertex b)
+        {
+            return Vector3.Distance(a.transform.position, b.transform.position);
         }
 
         public virtual void ResetPath()
