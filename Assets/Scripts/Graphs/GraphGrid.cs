@@ -251,6 +251,11 @@ namespace UCM.IAV.Navegacion
             return pos;
         }
 
+        public override Vector3 GetVertexPos(Vertex v)
+        {
+            return vertexObjs[v.id].transform.position;
+        }
+
         public override void UpdateVertexCost(Vector3 position, float costMultiplier)
         {
             Vertex v = GetNearestVertex(position);

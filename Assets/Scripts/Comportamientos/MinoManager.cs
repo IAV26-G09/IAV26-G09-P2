@@ -18,7 +18,7 @@ namespace UCM.IAV.Navegacion
     {
         public GameObject minotaur;
 
-        private GraphGrid graph;
+        private Graph graph;
 
         public int numMinosPatrulleros = 1;
         public int numMinosEstaticos = 1;

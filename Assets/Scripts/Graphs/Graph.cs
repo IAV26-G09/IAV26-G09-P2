@@ -70,6 +70,11 @@ namespace UCM.IAV.Navegacion
             return null;
         }
 
+        public virtual Vector3 GetVertexPos(Vertex v)
+        {
+            return new Vector3();
+        }
+
         public virtual Vertex[] GetNeighbours(Vertex v)
         {
             if (ReferenceEquals(neighbourVertex, null) || neighbourVertex.Count == 0 ||

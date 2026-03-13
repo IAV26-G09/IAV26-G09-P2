@@ -20,7 +20,7 @@ namespace UCM.IAV.Movimiento
         private Vector3 sigNodoPosicion;
         private Vector3 antNodoPosicion;
 
-        public GraphGrid graph;
+        public Graph graph;
         public GameObject srcObj;
 
         [SerializeField]
@@ -120,8 +120,8 @@ namespace UCM.IAV.Movimiento
 
         public void SetPositions()
         {
-            sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
-            antNodoPosicion = graph.vertexObjs[antNodo.id].transform.position;
+            sigNodoPosicion = graph.GetVertexPos(sigNodo);
+            antNodoPosicion = graph.GetVertexPos(antNodo);
         }
 
         public void ResetPath()
