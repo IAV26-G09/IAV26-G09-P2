@@ -18,7 +18,7 @@ namespace UCM.IAV.Navegacion
     {
         public GameObject minotaur;
 
-        private Graph graph;
+        private GraphGrid graph;
 
         public int numMinosPatrulleros = 1;
         public int numMinosEstaticos = 1;
@@ -59,7 +59,7 @@ namespace UCM.IAV.Navegacion
                 //SeguirCamino cam = minoGO.AddComponent<SeguirCamino>();
                 //cam.enabled = false;
                 Patrullar patrulla = minoGO.AddComponent<Patrullar>();
-                patrulla.graph = (GraphGrid)graph;
+                patrulla.graph = graph;
             }
             else
             {
