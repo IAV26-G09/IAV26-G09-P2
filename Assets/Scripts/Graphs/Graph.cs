@@ -130,20 +130,20 @@ namespace UCM.IAV.Navegacion
             Vertex src = GetNearestVertex(srcO.transform.position);
             Vertex dst = GetNearestVertex(dstO.transform.position);
 
-            // array de costes por vertices
-            float[] gCost = new float[vertices.Count];
-            // array del nodo anterior al visitado
+            // array de costes reales acumulados por vertices
+            float[] accCosts = new float[vertices.Count];
+            // array del nodo anterior a cada uno, usado para reconstruir el camino
             int[] prev = new int[vertices.Count];
 
             // inicializacion de listas a valores predeterminados infinitos
             for (int i = 0; i < vertices.Count; i++)
             {
-                gCost[i] = Mathf.Infinity;
+                accCosts[i] = Mathf.Infinity;
                 prev[i] = -1;
             }
 
             // el coste del inicial segun la heuristica
-            gCost[src.id] = (h != null) ? h(src, dst) : 0;
+            accCosts[src.id] = (h != null) ? h(src, dst) : 0;
 
             // anyadimos el vertice origen a visitar
             open.Add(src);
