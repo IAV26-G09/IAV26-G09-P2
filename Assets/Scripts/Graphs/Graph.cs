@@ -122,11 +122,47 @@ namespace UCM.IAV.Navegacion
             // Teniendo .NET 6 activo, puedes usar la cola de prioridad que viene por defecto en C# y no necesitas usar BinaryHeap
             //PriorityQueue<Vertex> open = new PriorityQueue<Vertex>();
 
+            // creamos las listas de nodos abiertos y cerrados
             BinaryHeap<Vertex> open = new BinaryHeap<Vertex>();
             BinaryHeap<Vertex> closed = new BinaryHeap<Vertex>();
 
-           
+            // cogemos los vertices reales asociados a los objetos
+            Vertex src = GetNearestVertex(srcO.transform.position);
+            Vertex dst = GetNearestVertex(dstO.transform.position);
 
+            // array de costes por vertices
+            float[] gCost = new float[vertices.Count];
+            // array del nodo anterior al visitado
+            int[] prev = new int[vertices.Count];
+
+            // inicializacion de listas a valores predeterminados infinitos
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                gCost[i] = Mathf.Infinity;
+                prev[i] = -1;
+            }
+
+            // el coste del inicial segun la heuristica
+            gCost[src.id] = (h != null) ? h(src, dst) : 0;
+
+            // anyadimos el vertice origen a visitar
+            open.Add(src);
+
+            // iteramos por los vertices
+            while (open.Count > 0)
+            {
+                // miramos el primero en la lista: el elemento de menor coste (pq ya se ordenan por si solos por coste e id en principio)
+                var ver = open.Remove();
+
+                // si hemos llegado
+                if (ver = dst)
+                    break;
+
+                // si no hemos llegado
+                // vemos sus conexiones
+            }
+
+            // devolvemos una lista por defecto
             return new List<Vertex>();
         }
 
