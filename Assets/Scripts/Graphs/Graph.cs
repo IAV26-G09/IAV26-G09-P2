@@ -119,50 +119,67 @@ namespace UCM.IAV.Navegacion
             Debug.Log("A*");
 
             // IMPLEMENTAR ALGORITMO A*
-            // Teniendo .NET 6 activo, puedes usar la cola de prioridad que viene por defecto en C# y no necesitas usar BinaryHeap
-            //PriorityQueue<Vertex> open = new PriorityQueue<Vertex>();
 
             // creamos las listas de nodos abiertos y cerrados
-            BinaryHeap<Vertex> open = new BinaryHeap<Vertex>();
-            BinaryHeap<Vertex> closed = new BinaryHeap<Vertex>();
+            BinaryHeap<Vertex> open = new BinaryHeap<Vertex>(); // nodos que vamos conociendo y que seran expandidos (si no son el nodo dst)
+            BinaryHeap<Vertex> closed = new BinaryHeap<Vertex>(); // vamos guardando los que vamos visitando
 
             // cogemos los vertices reales asociados a los objetos
-            Vertex src = GetNearestVertex(srcO.transform.position);
-            Vertex dst = GetNearestVertex(dstO.transform.position);
+            Vertex start = GetNearestVertex(srcO.transform.position); // vertice del que partimos
+            Vertex goal = GetNearestVertex(dstO.transform.position); // vertice al que vamos
 
-            // array de costes reales acumulados por vertices
-            float[] accCosts = new float[vertices.Count];
-            // array del nodo anterior a cada uno, usado para reconstruir el camino
+            float[] gCost = new float[vertices.Count]; // coste mas barato que conocemos desde el start hasta un nodo n
+            float[] fCost = new float[vertices.Count]; // gCost + heuristica
+            // array del nodo anterior a cada uno por el camino mas barato, usado para reconstruir el camino
             int[] prev = new int[vertices.Count];
 
             // inicializacion de listas a valores predeterminados infinitos
             for (int i = 0; i < vertices.Count; i++)
             {
-                accCosts[i] = Mathf.Infinity;
-                prev[i] = -1;
+                gCost[i] = Mathf.Infinity;
+                fCost[i] = Mathf.Infinity;
+                prev[i] = -1; // vacio
             }
 
-            // el coste del inicial segun la heuristica
-            accCosts[src.id] = (h != null) ? h(src, dst) : 0;
+            gCost[start.id] = 0;
+            fCost[start.id] = h(start, goal);
 
-            // anyadimos el vertice origen a visitar
-            open.Add(src);
+            // aniadimos el vertice origen a visitar
+            open.Add(start);
 
             // iteramos por los vertices
-            while (open.Count > 0)
+            while (open.Count > 0) // mientras queden nodos abiertos
             {
                 // miramos el primero en la lista: el elemento de menor coste (pq ya se ordenan por si solos por coste e id en principio)
-                var ver = open.Remove();
+                // y lo quitamos (ya lo hemos "expandido"
+                Vertex act = open.Remove();
 
                 // si hemos llegado
-                if (ver = dst)
-                    break;
+                if (act == goal) 
+                    return BuildPath(start.id, goal.id, ref prev); // devuelve el camino reconstruido
 
-                // si no hemos llegado
-                // vemos sus conexiones
+                // recorremos todos los vecinos del actual
+                foreach (Vertex neighbor in GetNeighbours(act))
+                {
+                    // coste g de start al vecino PASANDO por act
+                    float gProbado = gCost[act.id] + GetNeighboursCosts(act)[neighbor.id];
+
+                    if (gProbado < gCost[neighbor.id]) // si la tentativa de coste es menor que [infinito] (en un principio) -> lo actualizas
+                    {
+                        // este camino a neighbor es mejor que el anterior asi que lo guardamos ->
+                        prev[neighbor.id] = act.id; // el anterior al neighbor es el actual
+                        gCost[neighbor.id] = gProbado; // actualizamos coste
+                        fCost[neighbor.id] = gProbado + h(neighbor, goal);
+
+                        if (!open.Contains(neighbor)) // si neighbor no esta en open lo metemos
+                        {
+                            open.Add(neighbor);
+                        }
+                    }
+                }
             }
 
-            // devolvemos una lista por defecto
+            // devolvemos una lista por defecto vacia, no se ha alcanzado el objetivo
             return new List<Vertex>();
         }
 
