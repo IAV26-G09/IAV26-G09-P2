@@ -9,9 +9,10 @@
 namespace UCM.IAV.Navegacion
 {
 
-    using UnityEngine;
     using System.Collections;
     using System.Collections.Generic;
+    using UCM.IAV.Movimiento;
+    using UnityEngine;
 
     /// <summary>
     /// Abstract class for graphs
@@ -116,10 +117,6 @@ namespace UCM.IAV.Navegacion
 
         public List<Vertex> GetPathAstar(GameObject srcO, GameObject dstO, Heuristic h = null)
         {
-            Debug.Log("A*");
-
-            // IMPLEMENTAR ALGORITMO A*
-
             // creamos las listas de nodos abiertos y cerrados
             BinaryHeap<Vertex> open = new BinaryHeap<Vertex>(); // nodos que vamos conociendo y que seran expandidos (si no son el nodo dst)
             BinaryHeap<Vertex> closed = new BinaryHeap<Vertex>(); // vamos guardando los que vamos visitando
@@ -196,7 +193,37 @@ namespace UCM.IAV.Navegacion
 
             List<Vertex> outputPath = new List<Vertex>();
 
+            if (inputPath.Count <= 2) // si hay 2 o menos nodos no se puede suavizar
+            {
+                return inputPath;
+            }
+
+            // se asume que los dos primeros van a pasar el test del raycast
+            outputPath.Add(inputPath[0]);
+            outputPath.Add(inputPath[1]);
+
+            for (int i = 2; i < inputPath.Count; i++) // se empieza el for en el indice 2
+            {
+                Vertex a = outputPath[outputPath.Count - 1];
+                Vertex b = inputPath[i];
+
+                if (!RayClear(a,b))
+                {
+                    // si falla el raycast metes el ultimo nodo que pasase el test a la lista output
+                    outputPath.Add(inputPath[i-1]);
+                }
+            }
+
+            outputPath.Add(inputPath[inputPath.Count-1]);
+
             return outputPath; 
+        }
+
+        // true si no se ha chocado con nada, el raycast sale "limpio"
+        private bool RayClear(Vertex a, Vertex b)
+        {
+            Vector3 dirVertex = GetVertexPos(b) - GetVertexPos(a);
+            return !(Physics.Raycast(GetVertexPos(a), dirVertex.normalized, dirVertex.magnitude));
         }
 
         // Reconstruir el camino, dando la vuelta a la lista de nodos 'padres' /previos que hemos ido anotando
@@ -215,6 +242,5 @@ namespace UCM.IAV.Navegacion
             } while (prev != srcId);
             return path;
         }
-
     }
 }

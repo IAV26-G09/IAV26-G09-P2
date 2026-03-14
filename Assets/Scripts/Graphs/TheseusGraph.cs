@@ -109,7 +109,9 @@ namespace UCM.IAV.Navegacion
                         break;
                 }
                 if (smoothPath)
+                {
                     path = graph.Smooth(path); // Suavizar el camino, una vez calculado
+                }
 
                 if (path.Count > 0)
                 {
@@ -166,16 +168,21 @@ namespace UCM.IAV.Navegacion
         }
 
         // Mostrar el camino calculado
-        public void ShowPathVertices(List<Vertex> path, Color color)
+        public void ShowPathVertices(List<Vertex> path)
         {
             int i;
             for (i = 0; i < path.Count; i++)
             {
                 Vertex v = path[i];
-                Renderer r = v.GetComponent<Renderer>();
-                if (ReferenceEquals(r, null))
-                    continue;
-                r.material.color = color;
+                GameObject r = v.gameObject;
+
+                foreach (Transform target in v.transform)
+                {
+                    if (target.gameObject.CompareTag("Ovillo"))
+                    {
+                        target.gameObject.SetActive(true);
+                    }
+                }
             }
         }
 
@@ -206,6 +213,8 @@ namespace UCM.IAV.Navegacion
                 Vector3 vertexPos = new Vector3(path[i].transform.position.x, path[i].transform.position.y + hiloOffset, path[i].transform.position.z);
                 hilo.SetPosition(path.Count - i, vertexPos);
             }
+
+            ShowPathVertices(path);
         }
 
         void updateAriadna(bool ar)

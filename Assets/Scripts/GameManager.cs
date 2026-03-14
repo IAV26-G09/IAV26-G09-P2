@@ -46,8 +46,8 @@ namespace UCM.IAV.Movimiento
 
         GameObject exit = null;
 
-        int numMinosPatrulleros = 1;
-        int numMinosEstaticos = 1;
+        int numMinosPatrulleros = 0;
+        int numMinosEstaticos = 0;
 
         CameraFollow camFollow = null;
 

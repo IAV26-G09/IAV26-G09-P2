@@ -20,8 +20,8 @@ namespace UCM.IAV.Navegacion
 
         private Graph graph;
 
-        public int numMinosPatrulleros = 1;
-        public int numMinosEstaticos = 1;
+        public int numMinosPatrulleros = 0;
+        public int numMinosEstaticos = 0;
 
         enum MinoType
         {
