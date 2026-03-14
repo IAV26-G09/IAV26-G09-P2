@@ -170,19 +170,20 @@ namespace UCM.IAV.Navegacion
         // Mostrar el camino calculado
         public void ShowPathVertices(List<Vertex> path)
         {
-            int i;
-            for (i = 0; i < path.Count; i++)
+            for (int i = 0; i < path.Count; i++)
             {
                 Vertex v = path[i];
-                GameObject r = v.gameObject;
+                Ovillo o = v.gameObject.GetComponentInChildren<Ovillo>();
+                o.Show(true);
 
-                foreach (Transform target in v.transform)
-                {
-                    if (target.gameObject.CompareTag("Ovillo"))
-                    {
-                        target.gameObject.SetActive(true);
-                    }
-                }
+                //GameObject r = v.gameObject;
+                //foreach (Transform target in v.transform)
+                //{
+                //    if (target.gameObject.CompareTag("Ovillo"))
+                //    {
+                //        target.gameObject.SetActive(true);
+                //    }
+                //}
             }
         }
 
