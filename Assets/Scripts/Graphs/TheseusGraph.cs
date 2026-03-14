@@ -58,6 +58,9 @@ namespace UCM.IAV.Navegacion
         protected LineRenderer hilo;
         protected float hiloOffset = 0.2f;
 
+        protected ControlJugador control;
+        protected SeguirCamino seguir;
+
         // Despertar inicializando esto
         public virtual void Awake()
         {
@@ -71,6 +74,12 @@ namespace UCM.IAV.Navegacion
             hilo.startWidth = 0.15f;
             hilo.endWidth = 0.15f;
             hilo.positionCount = 0;
+
+            if (srcObj != null)
+            {
+                control = srcObj.GetComponent<ControlJugador>();
+                seguir = srcObj.GetComponent<SeguirCamino>();
+            }
         }
 
         // Update is called once per frame
@@ -221,6 +230,9 @@ namespace UCM.IAV.Navegacion
         {
             ariadna = ar;
             hilo.enabled = ariadna;
+            control.enabled = !ariadna;
+            seguir.enabled = ariadna;
+            seguir.graph = this;
         }
 
         public string ChangeHeuristic()
