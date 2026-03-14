@@ -200,7 +200,6 @@ namespace UCM.IAV.Navegacion
 
             // se asume que los dos primeros van a pasar el test del raycast
             outputPath.Add(inputPath[0]);
-            outputPath.Add(inputPath[1]);
 
             for (int i = 2; i < inputPath.Count; i++) // se empieza el for en el indice 2
             {
