@@ -143,6 +143,7 @@ namespace UCM.IAV.Navegacion
 
             gCost[start.id] = 0;
             fCost[start.id] = h(start, goal);
+            start.cost = fCost[start.id];
 
             // aniadimos el vertice origen a visitar
             open.Add(start);
@@ -158,11 +159,16 @@ namespace UCM.IAV.Navegacion
                 if (act == goal) 
                     return BuildPath(start.id, goal.id, ref prev); // devuelve el camino reconstruido
 
+                Vertex[] neighbours = GetNeighbours(act);
+                int[] neighboursCosts = GetNeighboursCosts(act);
+
                 // recorremos todos los vecinos del actual
-                foreach (Vertex neighbor in GetNeighbours(act))
+                for (int i = 0; i < neighbours.Length; i++)
                 {
+                    Vertex neighbor = neighbours[i];
+
                     // coste g de start al vecino PASANDO por act
-                    float gProbado = gCost[act.id] + GetNeighboursCosts(act)[neighbor.id];
+                    float gProbado = gCost[act.id] + neighboursCosts[i];
 
                     if (gProbado < gCost[neighbor.id]) // si la tentativa de coste es menor que [infinito] (en un principio) -> lo actualizas
                     {
@@ -170,6 +176,7 @@ namespace UCM.IAV.Navegacion
                         prev[neighbor.id] = act.id; // el anterior al neighbor es el actual
                         gCost[neighbor.id] = gProbado; // actualizamos coste
                         fCost[neighbor.id] = gProbado + h(neighbor, goal);
+                        neighbor.cost = fCost[neighbor.id];
 
                         if (!open.Contains(neighbor)) // si neighbor no esta en open lo metemos
                         {
