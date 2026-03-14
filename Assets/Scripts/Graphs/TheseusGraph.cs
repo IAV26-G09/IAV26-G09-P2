@@ -79,7 +79,6 @@ namespace UCM.IAV.Navegacion
             // clic derecho desactiva el hilo
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                Debug.Log("TOGGLE HILO");
                 updateAriadna(!ariadna);
             }
             
@@ -246,5 +245,14 @@ namespace UCM.IAV.Navegacion
             path = null;
         }
 
+        public bool GetAriadna()
+        {
+            return ariadna;
+        }
+
+        public bool GetSmooth()
+        {
+            return smoothPath;
+        }
     }
 }

@@ -24,6 +24,8 @@ namespace UCM.IAV.Movimiento
         // Textos UI
         Text fRText;
         Text heuristicText;
+        Text hiloText;
+        Text suavizadoText;
         Text label;
         Text label2;
         string mazeSize = "10x10";
@@ -75,10 +77,6 @@ namespace UCM.IAV.Movimiento
         // Lo primero que se llama al activarse (tras el Awake)
         void OnEnable()
         {
-
-            // No necesito este delegado
-            //SceneManager.activeSceneChanged += OnSceneWasSwitched;
-
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
@@ -87,7 +85,6 @@ namespace UCM.IAV.Movimiento
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             FindGO();
-
         }
 
 
@@ -96,7 +93,6 @@ namespace UCM.IAV.Movimiento
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
-
 
         // Update is called once per frame
         void Update()
@@ -128,6 +124,13 @@ namespace UCM.IAV.Movimiento
                 ChangeFrameRate();
             if (Input.GetKeyDown(KeyCode.C))
                 heuristicText.text = theseusGraph.ChangeHeuristic();
+
+            if (Input.GetKeyDown(KeyCode.S))
+                suavizadoText.text = theseusGraph.GetSmooth() ? "No" : "Si";
+
+            if (Input.GetKeyDown(KeyCode.Mouse1))
+                hiloText.text = theseusGraph.GetAriadna() ? "No" : "Si";
+
             if (Input.GetKeyDown(KeyCode.N))
                 ChangeCameraTarget();
         }
@@ -142,11 +145,17 @@ namespace UCM.IAV.Movimiento
             else if (SceneManager.GetActiveScene().name == "Labyrinth") // Nombre de escena que habría que llevar a una constante
             {
                 camFollow = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraFollow>();
+
                 fRText = GameObject.FindGameObjectWithTag("Framerate").GetComponent<Text>();
                 heuristicText = GameObject.FindGameObjectWithTag("Heuristic").GetComponent<Text>();
+                hiloText = GameObject.FindGameObjectWithTag("HiloTag").GetComponent<Text>();
+                suavizadoText = GameObject.FindGameObjectWithTag("SuavizadoTag").GetComponent<Text>();
+
                 theseusGraph = GameObject.FindGameObjectWithTag("TesterGraph").GetComponent<TheseusGraph>();
+
                 exitSlab = GameObject.FindGameObjectWithTag("Exit");
                 startSlab = GameObject.FindGameObjectWithTag("Start");
+
                 player = GameObject.Find("Avatar");
             }
         }
