@@ -160,7 +160,7 @@ namespace UCM.IAV.Navegacion
                     return BuildPath(start.id, goal.id, ref prev); // devuelve el camino reconstruido
 
                 Vertex[] neighbours = GetNeighbours(act);
-                int[] neighboursCosts = GetNeighboursCosts(act);
+                float[] neighboursCosts = GetNeighboursCosts(act);
 
                 // recorremos todos los vecinos del actual
                 for (int i = 0; i < neighbours.Length; i++)
