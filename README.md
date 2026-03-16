@@ -396,6 +396,7 @@ Se encarga de unir vértices y registrar sus costes.
 * __Smooth()__ devuelve el camimo calculado por A* suavizado.
 * __RayClear()__ devuelve true si el raycast desde el vértice a hasta el vértice b no ha chocado con nada.
 * __BuildPath()__ devuelve el camino entre el vértice origen y destino reconstruyendo, dándole la vuelta, a la lista de ids de vértices calculada por A*.
+
 getNearestVertex, getRandomPos y updateVertexCost__ son métodos virtuales que se implementan en GraphGrid
 
 ### GraphGrid
