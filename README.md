@@ -36,20 +36,7 @@ Según el pseudocódigo que plantea Millington en su libro, la estructura de reg
 La cola de prioridad se puede implementar con PriorityQueue<TElement, TPriority>, estructura que se encuentra en el espacio de nombres System.Collections.Generic y fue introducida en .NET 6, siempre que el proyecto de Visual Studio esté configurado para ello. Si se usa un lenguaje C# antiguo, se podría usar una implementación de BinaryHeap como esta: https://github.com/NikolajLeischner/csharp-binary-heap.
 
 ## Punto de partida
-Hemos partido de un proyecto base proporcionado por el profesor y disponible en este repositorio: [Minotaur - Base](https://github.com/narratech/minotaur-base)
-
-<!--
-La base consiste en el entorno del pueblo ya preparado para desarrollar la IA, con cada prefab de los tres tipos de agentes ya instanciados y componentes de agentes y de animaciones configurados pero sin el código de cada tipo de movimiento implementado. Cuenta con una interfaz básica meramente informativa con: 
-- FPS
-- Contador de ratas
-- Controles:
-    - Crear o destruir ratas (O / P).
-    - Activar o desactivar obstáculos (T).
-    - Cambiar cámara (N).
-    - Cambiar ratio de FPS entre 30 y 60 (F).
-    - Reiniciar juego (R).
-También cuenta con movimiento del avatar del jugador con WASD y dos modos de cámara que siguen al jugador, aérea y en tercera persona.
--->
+Hemos partido de un proyecto base proporcionado por el profesor y disponible en este repositorio: [Minotaur - Base](https://github.com/narratech/minotaur-base).
 
 ### Estructura del proyecto
 
@@ -119,7 +106,73 @@ graph TD;
   SIGUIENDO_TESEO-- Pierde de vista a Teseo -->VIGILANDO;
 ```
 
-Los distintos algoritmos usados han sido para cada agente de IA:
+Los scripts usados para cada agente de IA han sido:
+* **Teseo**: 
+    * SeguirCamino
+* **Minotauro vigía**:
+    * Llegada
+    * CampoVision
+    * Vigilar
+* **Minotauro patrulla**: 
+    * Llegada
+    * CampoVision
+    * Patrullar
+
+Para calcular el camino más corto hasta la salida se ha implementado el algoritmo A* cuyo pseudocódigo se adjunta a continuación:
+### A* 
+```
+function reconstruct_path(cameFrom, current)
+    total_path := {current}
+    while current in cameFrom.Keys:
+        current := cameFrom[current]
+        total_path.prepend(current)
+    return total_path
+
+// A* finds a path from start to goal.
+// h is the heuristic function. h(n) estimates the cost to reach goal from node n.
+function A_Star(start, goal, h)
+    // The set of discovered nodes that may need to be (re-)expanded.
+    // Initially, only the start node is known.
+    // This is usually implemented as a min-heap or priority queue rather than a hash-set.
+    openSet := {start}
+
+    // For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from the start
+    // to n currently known.
+    cameFrom := an empty map
+
+    // For node n, gScore[n] is the currently known cost of the cheapest path from start to n.
+    gScore := map with default value of Infinity
+    gScore[start] := 0
+
+    // For node n, fScore[n] := gScore[n] + h(n). fScore[n] represents our current best guess as to
+    // how cheap a path could be from start to finish if it goes through n.
+    fScore := map with default value of Infinity
+    fScore[start] := h(start)
+
+    while openSet is not empty
+        // This operation can occur in O(Log(N)) time if openSet is a min-heap or a priority queue
+        current := the node in openSet having the lowest fScore[] value
+        if current = goal
+            return reconstruct_path(cameFrom, current)
+
+        openSet.Remove(current)
+        for each neighbor of current
+            // d(current,neighbor) is the weight of the edge from current to neighbor
+            // tentative_gScore is the distance from start to the neighbor through current
+            tentative_gScore := gScore[current] + d(current, neighbor)
+            if tentative_gScore < gScore[neighbor]
+                // This path to neighbor is better than any previous one. Record it!
+                cameFrom[neighbor] := current
+                gScore[neighbor] := tentative_gScore
+                fScore[neighbor] := tentative_gScore + h(neighbor)
+                if neighbor not in openSet
+                    openSet.add(neighbor)
+
+    // Open set is empty but goal was never reached
+    return failure
+```
+#### Explicación sobre su [*implementación*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs) en el proyecto:
+.
 
 ## Implementación
 **Tareas:**
@@ -130,11 +183,15 @@ Las tareas y el esfuerzo ha sido repartido de manera equitativa entre las autora
 | ✔ | Movimiento del avatar con input de ratón | 5-13-2026 |
 | ✔ | Interfaz de creación de minotauros | 10-3-2026 |
 | ✔ | Comportamientos de los minotauros | 12-3-2026 |
+| ✔ | A* | 14-3-2026 |
+| ✔ | Mostrar ovillos | 14-3-2026 |
+| ✔ | Feedback de A* en la interfaz | 14-3-2026 |
+| ✔ | Avatar sigue el hilo | 14-3-2026 |
 |  | AMPLIACIONES |  |
 | ✖ | aún no hay ampliaciones | x |
 
 **Diagrama de clases:**
-Las clases principales que se han desarrollados son las siguientes (habría que renombrarlas para tenerlo todo en español o todo en inglés):
+Las clases principales que se han desarrollados son las siguientes:
 
 ```mermaid
 classDiagram
@@ -362,10 +419,10 @@ También es importante mencionar los scripts animal animation controller y playe
 
 Adicionalmente, el script dropdown es usado para recoger información sobre el laberinto desde el menú, específicamente, cuántos minotauros y de qué tipo crear en el mapa y el tamaño de este.
 
-
 ## Pruebas y métricas
-
+<!--
 ### Plan de pruebas
+
 Serie corta y rápida posible de pruebas que pueden realizarse para verificar que se cumplen las características requeridas:
 
 * **1. (A).** Prueba 1.
@@ -378,22 +435,15 @@ En un PC de estas características:
 - **SO:** Windows 11
 - **Versión de Unity:** 6000.0.66f2
 
-```mermaid
-xychart-beta
-title "Título"
-x-axis "X" [0, 1]
-y-axis "Y" 0 --> 1
-line [0, 0]
-line [0, 0]
-```
-
 ### Vídeo
 - [Vídeo demostración]()
+-->
 
 ## Ampliaciones
 Aún no se han realizado ningunas ampliaciones.
 
 ## Conclusiones
+
 
 ## Licencia
 Nieves Alonso Gilsanz y Cynthia Tristán Álvarez, con el permiso de Federico Peinado, autores de la documentación, código y recursos de este trabajo, concedemos permiso permanente para utilizar este material, con sus comentarios y evaluaciones, con fines educativos o de investigación; ya sea para obtener datos agregados de forma anónima como para utilizarlo total o parcialmente reconociendo expresamente nuestra autoría. 
@@ -407,6 +457,8 @@ El diseño e implementación de los algoritmos aquí desarrollados se ha apoyado
 
 Los artículos de *Reynolds*[^9][^10] son la base histórica y clásica del comportamiento de agentes en grupo implementados en *Separación*. Las aportaciones de *Shiffman*[^11] y *Yannakakis y Togelius*[^12] sirven de referencia complementaria para entender los sistemas de agentes autónomos con visión más actualizada y contemporánea.
 -->
+
+El artículo de *Wikipedia*[^9] para A* TODO.
 
 [^1]: Lousberg, K. (s. f.). [*Kaykit animations*](https://kaylousberg.itch.io/kaykit-animations)
 
@@ -424,9 +476,9 @@ Los artículos de *Reynolds*[^9][^10] son la base histórica y clásica del comp
 
 [^8]: Narratech [*Búsqueda de caminos usando estrategias informadas*](https://narratech.com/es/inteligencia-artificial-para-videojuegos/navegacion/busqueda-de-caminos-usando-estrategias-informadas/)
 
-<!--
-[^9]: Reynolds, C. (1995). [*Boids*](https://www.red3d.com/cwr/boids/).
+[^9]: Wikipedia. [*A**](https://en.wikipedia.org/wiki/A*_search_algorithm).
 
+<!--
 [^10]: Reynolds, C. (1999). [*Steering Behaviors For Autonomous Characters*](https://www.red3d.com/cwr/steer/gdc99/)
 
 [^11]: Shiffman, D. (2024). *Autonomous Agents*. [Nature of Code](https://natureofcode.com/).
