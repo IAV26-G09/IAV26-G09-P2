@@ -64,10 +64,10 @@ Los recursos que conforman el proyecto están organizados de esta forma:
 Hay sólamente dos escenas en el juego.
 
 ### Menú
-Se muestra el título del juego y una lista de mapas de laberintos disponibles para elegir.
+Se muestra el título del juego, una lista de mapas de laberintos disponibles para elegir, y dos campos para seleccionar el número de minotauros patrulla y el número de minotauros estáticos/vigías.
 
 ### Principal
-La escena genera un laberinto en base al mapa que es haya elegido en el menú, generando el suelo y los muros casilla por casilla. Además, se guardan la casilla de entrada y la de salida. Otros game objects son el avatar del jugador y el minotaur manager, que instancia y controla los minotauros, con su correspondiente esfera de deceleración.
+La escena genera un laberinto en base al mapa que es haya elegido en el menú, generando el suelo y los muros casilla por casilla. Además, se guardan la casilla de entrada y la de salida. Otros game objects son el avatar del jugador y el minotaur manager, que instancia y controla los minotauros, con su correspondiente esfera de deceleración y comportamientos según su tipo.
 
 ## Planteamiento del problema
 
@@ -389,10 +389,13 @@ Representa los vértices o nodos de un grafo, asi que todos los métodos son par
 
 ### Graph
 Se encarga de unir vértices y registrar sus costes. 
-* __GetSize()__ devuelve el tamaño de los vértices
-* __GetNeightbor()__ devuelve los vecinos del vértice (sólo los lados, no las diagonales)
-* __BuildPath()__ crea un camino entre dos vértices
-* Quedan por implementar los métodos  __getbfs, getdfs, getpathastar, smooth, 
+* __GetSize()__ devuelve el tamaño de los vértices.
+* __GetNeightbours()__ devuelve los vecinos del vértice (sólo los lados, no las diagonales).
+* __GetNeightboursCosts()__ devuelve los costes de los vecinos del vértice (sólo los lados, no las diagonales).
+* __GetPathAstar()__ devuelve una lista de vértices correspondiente al camino hacia la salida calculado por A*.
+* __Smooth()__ devuelve el camimo calculado por A* suavizado.
+* __RayClear()__ devuelve true si el raycast desde el vértice a hasta el vértice b no ha chocado con nada.
+* __BuildPath()__ devuelve el camino entre el vértice origen y destino reconstruyendo, dándole la vuelta, a la lista de ids de vértices calculada por A*.
 getNearestVertex, getRandomPos y updateVertexCost__ son métodos virtuales que se implementan en GraphGrid
 
 ### GraphGrid
