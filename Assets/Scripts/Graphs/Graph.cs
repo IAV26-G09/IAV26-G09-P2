@@ -193,7 +193,7 @@ namespace UCM.IAV.Navegacion
 
             List<Vertex> outputPath = new List<Vertex>();
 
-            if (inputPath.Count <= 2) // si hay 2 o menos nodos no se puede suavizar
+            if (inputPath.Count <= 1) // si hay 2 o menos nodos no se puede suavizar
             {
                 return inputPath;
             }
@@ -238,7 +238,7 @@ namespace UCM.IAV.Navegacion
                 }
             }
 
-            outputPath.Add(inputPath[inputPath.Count - 1]);
+            //outputPath.Add(inputPath[inputPath.Count - 1]);
 
             return outputPath; 
         }
