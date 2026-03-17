@@ -44,7 +44,6 @@ namespace UCM.IAV.Navegacion
         // Used for getting path in frames
         public List<Vertex> path;
 
-
         public virtual void Start()
         {
             Load();
@@ -119,7 +118,6 @@ namespace UCM.IAV.Navegacion
         {
             // creamos las listas de nodos abiertos y cerrados
             BinaryHeap<Vertex> open = new BinaryHeap<Vertex>(); // nodos que vamos conociendo y que seran expandidos (si no son el nodo dst)
-            BinaryHeap<Vertex> closed = new BinaryHeap<Vertex>(); // vamos guardando los que vamos visitando
 
             // cogemos los vertices reales asociados a los objetos
             Vertex start = GetNearestVertex(srcO.transform.position); // vertice del que partimos
@@ -191,87 +189,59 @@ namespace UCM.IAV.Navegacion
         {
             List<Vertex> outputPath = new List<Vertex>();
 
-            if (inputPath.Count <= 1) // si hay 2 o menos nodos no se puede suavizar
+            if (inputPath.Count <= 1) // si el camino solo tiene un nodo (deberia ser el nodo final) se devuelve tal cual
             {
                 return inputPath;
             }
 
-            // se asume que los dos primeros van a pasar el test del raycast
+            // se anyade el nodo final
             outputPath.Add(inputPath[0]);
 
-            int i = 0;
-            int j = 1;
-            
+            int i = 0; // en el ouput patch partimos desde el nodo final
+            int j = 1; // en el input partimos desde el penultimo nodo
+
+            // hasta que el indice de output llegue al penultimo del input
+            // o el indice del input llegue al ultimo del input
             while (i < inputPath.Count - 1 && j < inputPath.Count)
             {
+                // vamos a comprobar cuantos vertices desde el inicial (ultimo real) podemos saltarnos hasta que tengamos que anyadir uno
+                // es decir
+                // vamos a ver cual es el siguiente vertice antes de chocar con una pared
                 Vertex a = inputPath[i];
                 Vertex b = inputPath[j];
-                if (RayClear(a, b, 0.42f))
+                if (RayClear(a, b)) // si hay via libre ente ambos vertices
                 {
-                    j++;
-                    if (j == inputPath.Count - 1)
-                    {
-                        i = inputPath.Count - 1;
-                    }
+                    j++; // se pasara al siguiente vertice del input path
                 }
-                else
+                else // si no, se anyade en el vertice j - 1 
                 {
-                    i = j - 1;
+                    i = j - 1; // si no, se anyade en el vertice j - 1 
                     outputPath.Add(inputPath[i]);
-                    j++;
+                    j++; // pasa a comprobar el siguiente
                 }
             }
 
-            Vector3 playerPos = GameManager.instance.GetPlayer().transform.position;
-            Vector3 lastPos = GetVertexPos(outputPath[outputPath.Count - 1]);
+            // vemos en que vertice esta el jugador y el ultimo anyadido al output
+            Vertex player = GetNearestVertex(GameManager.instance.GetPlayer().transform.position); 
+            Vertex last = outputPath[^1];
 
-            int layerMask = 1 << 6;
-            Vector3 dir = lastPos - playerPos;
-           
-            //if (Physics.Raycast(playerPos, dir.normalized, dir.magnitude, layerMask))
-            //{
-            //    outputPath.Add(inputPath[inputPath.Count - 1]);
-            //}
-
-            if (Physics.SphereCast(
-                playerPos, 
-                0.42f,
-                dir.normalized, 
-                out RaycastHit hitInfo,
-                dir.magnitude, 
-                layerMask
-            ))
+            if (!RayClear(player, last)) // si no se puede saltar el primer nodo hasta el jugador se acaba anyadiendo 
             {
-                outputPath.Add(inputPath[inputPath.Count - 1]);
+                outputPath.Add(inputPath[^1]);
             }
 
-            return outputPath; 
+            return outputPath;
         }
 
         // true si no se ha chocado con nada, el raycast sale "limpio"
-        //private bool RayClear(Vertex a, Vertex b)
-        //{
-        //    Vector3 posA = GetVertexPos(a) + gameObject.transform.up;
-        //    Vector3 posB = GetVertexPos(b) + gameObject.transform.up;
-        //    Vector3 dirVertex = posB - posA;
-
-        //    int layerMask = 1 << 6;
-        //    bool hit1 = (Physics.Raycast(posA, dirVertex.normalized, dirVertex.magnitude, layerMask));
-
-        //    Color c1 = Color.green;
-        //    if (hit1) c1 = Color.red;
-        //    Debug.DrawLine(posA, posB, c1);
-
-        //    return !(hit1);
-        //}
-
-        private bool RayClear(Vertex a, Vertex b, float radius)
+        private bool RayClear(Vertex a, Vertex b, float radius = 0.5f)
         {
-            Vector3 posA = GetVertexPos(a) + Vector3.up;
+            // los subimos un poco porque si no choca
+            Vector3 posA = GetVertexPos(a) + Vector3.up; 
             Vector3 posB = GetVertexPos(b) + Vector3.up;
 
             Vector3 dir = posB - posA;
-            int layerMask = 1 << 6;
+            int layerMask = 1 << 6; // solo choca con los obstaculos
 
             bool hit = Physics.SphereCast(
                 posA,
@@ -282,6 +252,7 @@ namespace UCM.IAV.Navegacion
                 layerMask
             );
 
+            // debug: verde si raycast libre y rojo si choca
             Color c1 = Color.green;
             if (hit) c1 = Color.red;
             Debug.DrawLine(posA, posB, c1);
