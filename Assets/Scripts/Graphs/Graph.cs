@@ -201,19 +201,44 @@ namespace UCM.IAV.Navegacion
             // se asume que los dos primeros van a pasar el test del raycast
             outputPath.Add(inputPath[0]);
 
-            for (int i = 2; i < inputPath.Count; i++) // se empieza el for en el indice 2
-            {
-                Vertex a = outputPath[outputPath.Count - 1];
-                Vertex b = inputPath[i];
+            //for (int i = 2; i < inputPath.Count; i++) // se empieza el for en el indice 2
+            //{
+            //    Vertex a = outputPath[outputPath.Count - 1];
+            //    Vertex b = inputPath[i];
 
-                if (!RayClear(a,b))
+            //    if (!RayClear(a,b))
+            //    {
+            //        // si falla el raycast metes el ultimo nodo que pasase el test a la lista output
+            //        outputPath.Add(inputPath[i-1]);
+            //    }
+            //}
+
+            int i = 0;
+            int j = 1;
+            
+            while (i < inputPath.Count - 1 && j < inputPath.Count)
+            {
+                Vertex a = inputPath[i];
+                Vertex b = inputPath[j];
+                Debug.Log(gameObject.layer);
+                if (RayClear(a, b))
                 {
-                    // si falla el raycast metes el ultimo nodo que pasase el test a la lista output
-                    outputPath.Add(inputPath[i-1]);
+                    Debug.Log("ACORTAMOS");
+                    j++;
+                    if (j == inputPath.Count - 1)
+                    {
+                        i = inputPath.Count - 1;
+                    }
+                }
+                else
+                {
+                    i = j - 1;
+                    outputPath.Add(inputPath[i]);
+                    j++;
                 }
             }
 
-            outputPath.Add(inputPath[inputPath.Count-1]);
+            outputPath.Add(inputPath[inputPath.Count - 1]);
 
             return outputPath; 
         }
@@ -221,8 +246,15 @@ namespace UCM.IAV.Navegacion
         // true si no se ha chocado con nada, el raycast sale "limpio"
         private bool RayClear(Vertex a, Vertex b)
         {
-            Vector3 dirVertex = GetVertexPos(b) - GetVertexPos(a);
-            return !(Physics.Raycast(GetVertexPos(a), dirVertex.normalized, dirVertex.magnitude));
+            Vector3 posA = GetVertexPos(a) + gameObject.transform.up;
+            Vector3 posB = GetVertexPos(b) + gameObject.transform.up;
+            Vector3 dirVertex = posB - posA;
+            RaycastHit col;
+            int layerMask = 1 << 6;
+            bool hit = (Physics.Raycast(GetVertexPos(a), dirVertex.normalized, out col, dirVertex.magnitude, layerMask));
+            //Debug.Log(col.collider.gameObject.name);
+            Debug.DrawLine(posA, posB, Color.red);
+            return !hit;
         }
 
         // Reconstruir el camino, dando la vuelta a la lista de nodos 'padres' /previos que hemos ido anotando
