@@ -220,10 +220,8 @@ namespace UCM.IAV.Navegacion
             {
                 Vertex a = inputPath[i];
                 Vertex b = inputPath[j];
-                Debug.Log(gameObject.layer);
                 if (RayClear(a, b))
                 {
-                    Debug.Log("ACORTAMOS");
                     j++;
                     if (j == inputPath.Count - 1)
                     {
@@ -238,6 +236,12 @@ namespace UCM.IAV.Navegacion
                 }
             }
 
+            if (!RayClear(outputPath[outputPath .Count- 1], 
+                inputPath[inputPath.Count - 1]))
+            {
+                outputPath.Add(inputPath[inputPath.Count - 1]);
+            }
+
             //outputPath.Add(inputPath[inputPath.Count - 1]);
 
             return outputPath; 
@@ -248,13 +252,25 @@ namespace UCM.IAV.Navegacion
         {
             Vector3 posA = GetVertexPos(a) + gameObject.transform.up;
             Vector3 posB = GetVertexPos(b) + gameObject.transform.up;
+
+            Vector3 posAa = GetVertexPos(a) + gameObject.transform.right * 0.42f * -1 ;
+            Vector3 posBa = GetVertexPos(b) + gameObject.transform.right * 0.42f * -1;
+
+            Vector3 posAb = GetVertexPos(a) + gameObject.transform.right * 0.42f;
+            Vector3 posBb = GetVertexPos(b) + gameObject.transform.right * 0.42f;
+
             Vector3 dirVertex = posB - posA;
+
             RaycastHit col;
             int layerMask = 1 << 6;
-            bool hit = (Physics.Raycast(GetVertexPos(a), dirVertex.normalized, out col, dirVertex.magnitude, layerMask));
-            //Debug.Log(col.collider.gameObject.name);
+            bool hit1 = (Physics.Raycast(GetVertexPos(a), dirVertex.normalized, out col, dirVertex.magnitude, layerMask));
+            bool hit2 = (Physics.Raycast(GetVertexPos(a), dirVertex.normalized, out col, dirVertex.magnitude, layerMask));
+            bool hit3 = (Physics.Raycast(GetVertexPos(a), dirVertex.normalized, out col, dirVertex.magnitude, layerMask));
+
+            Debug.DrawLine(posAa, posBa, Color.red);
             Debug.DrawLine(posA, posB, Color.red);
-            return !hit;
+            Debug.DrawLine(posAb, posBb, Color.red);
+            return !(hit1 || hit2 || hit3);
         }
 
         // Reconstruir el camino, dando la vuelta a la lista de nodos 'padres' /previos que hemos ido anotando

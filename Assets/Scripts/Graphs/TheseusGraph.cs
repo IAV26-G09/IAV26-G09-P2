@@ -166,7 +166,7 @@ namespace UCM.IAV.Navegacion
             for (i = 0; i < path.Count; i++)
             {
                 v = path[i];
-                Gizmos.DrawSphere(v.transform.position, pathNodeRadius);
+                //Gizmos.DrawSphere(v.transform.position, pathNodeRadius);
                 if (smoothPath && i != 0)
                 {
                     Vertex prev = path[i - 1];
