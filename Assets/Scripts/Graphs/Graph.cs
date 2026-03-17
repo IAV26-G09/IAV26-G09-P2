@@ -189,8 +189,6 @@ namespace UCM.IAV.Navegacion
 
         public List<Vertex> Smooth(List<Vertex> inputPath)
         {
-            // IMPLEMENTAR SUAVIZADO DE CAMINOS
-
             List<Vertex> outputPath = new List<Vertex>();
 
             if (inputPath.Count <= 1) // si hay 2 o menos nodos no se puede suavizar
@@ -201,18 +199,6 @@ namespace UCM.IAV.Navegacion
             // se asume que los dos primeros van a pasar el test del raycast
             outputPath.Add(inputPath[0]);
 
-            //for (int i = 2; i < inputPath.Count; i++) // se empieza el for en el indice 2
-            //{
-            //    Vertex a = outputPath[outputPath.Count - 1];
-            //    Vertex b = inputPath[i];
-
-            //    if (!RayClear(a,b))
-            //    {
-            //        // si falla el raycast metes el ultimo nodo que pasase el test a la lista output
-            //        outputPath.Add(inputPath[i-1]);
-            //    }
-            //}
-
             int i = 0;
             int j = 1;
             
@@ -220,7 +206,7 @@ namespace UCM.IAV.Navegacion
             {
                 Vertex a = inputPath[i];
                 Vertex b = inputPath[j];
-                if (RayClear(a, b))
+                if (RayClear(a, b, 0.42f))
                 {
                     j++;
                     if (j == inputPath.Count - 1)
@@ -236,41 +222,71 @@ namespace UCM.IAV.Navegacion
                 }
             }
 
-            if (!RayClear(outputPath[outputPath .Count- 1], 
-                inputPath[inputPath.Count - 1]))
+            Vector3 playerPos = GameManager.instance.GetPlayer().transform.position;
+            Vector3 lastPos = GetVertexPos(outputPath[outputPath.Count - 1]);
+
+            int layerMask = 1 << 6;
+            Vector3 dir = lastPos - playerPos;
+           
+            //if (Physics.Raycast(playerPos, dir.normalized, dir.magnitude, layerMask))
+            //{
+            //    outputPath.Add(inputPath[inputPath.Count - 1]);
+            //}
+
+            if (Physics.SphereCast(
+                playerPos, 
+                0.42f,
+                dir.normalized, 
+                out RaycastHit hitInfo,
+                dir.magnitude, 
+                layerMask
+            ))
             {
                 outputPath.Add(inputPath[inputPath.Count - 1]);
             }
-
-            //outputPath.Add(inputPath[inputPath.Count - 1]);
 
             return outputPath; 
         }
 
         // true si no se ha chocado con nada, el raycast sale "limpio"
-        private bool RayClear(Vertex a, Vertex b)
+        //private bool RayClear(Vertex a, Vertex b)
+        //{
+        //    Vector3 posA = GetVertexPos(a) + gameObject.transform.up;
+        //    Vector3 posB = GetVertexPos(b) + gameObject.transform.up;
+        //    Vector3 dirVertex = posB - posA;
+
+        //    int layerMask = 1 << 6;
+        //    bool hit1 = (Physics.Raycast(posA, dirVertex.normalized, dirVertex.magnitude, layerMask));
+
+        //    Color c1 = Color.green;
+        //    if (hit1) c1 = Color.red;
+        //    Debug.DrawLine(posA, posB, c1);
+
+        //    return !(hit1);
+        //}
+
+        private bool RayClear(Vertex a, Vertex b, float radius)
         {
-            Vector3 posA = GetVertexPos(a) + gameObject.transform.up;
-            Vector3 posB = GetVertexPos(b) + gameObject.transform.up;
+            Vector3 posA = GetVertexPos(a) + Vector3.up;
+            Vector3 posB = GetVertexPos(b) + Vector3.up;
 
-            Vector3 posAa = GetVertexPos(a) + gameObject.transform.right * 0.42f * -1 ;
-            Vector3 posBa = GetVertexPos(b) + gameObject.transform.right * 0.42f * -1;
-
-            Vector3 posAb = GetVertexPos(a) + gameObject.transform.right * 0.42f;
-            Vector3 posBb = GetVertexPos(b) + gameObject.transform.right * 0.42f;
-
-            Vector3 dirVertex = posB - posA;
-
-            RaycastHit col;
+            Vector3 dir = posB - posA;
             int layerMask = 1 << 6;
-            bool hit1 = (Physics.Raycast(GetVertexPos(a), dirVertex.normalized, out col, dirVertex.magnitude, layerMask));
-            bool hit2 = (Physics.Raycast(GetVertexPos(a), dirVertex.normalized, out col, dirVertex.magnitude, layerMask));
-            bool hit3 = (Physics.Raycast(GetVertexPos(a), dirVertex.normalized, out col, dirVertex.magnitude, layerMask));
 
-            Debug.DrawLine(posAa, posBa, Color.red);
-            Debug.DrawLine(posA, posB, Color.red);
-            Debug.DrawLine(posAb, posBb, Color.red);
-            return !(hit1 || hit2 || hit3);
+            bool hit = Physics.SphereCast(
+                posA,
+                radius,
+                dir.normalized,
+                out RaycastHit hitInfo,
+                dir.magnitude,
+                layerMask
+            );
+
+            Color c1 = Color.green;
+            if (hit) c1 = Color.red;
+            Debug.DrawLine(posA, posB, c1);
+
+            return !hit;
         }
 
         // Reconstruir el camino, dando la vuelta a la lista de nodos 'padres' /previos que hemos ido anotando
