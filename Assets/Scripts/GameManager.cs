@@ -28,6 +28,7 @@ namespace UCM.IAV.Movimiento
         Text suavizadoText;
         Text label;
         Text label2;
+        Text labelHeuristic;
         string mazeSize = "10x10";
 
         private int frameRate = 60;
@@ -123,7 +124,7 @@ namespace UCM.IAV.Movimiento
             if (Input.GetKeyDown(KeyCode.F))
                 ChangeFrameRate();
             if (Input.GetKeyDown(KeyCode.C))
-                heuristicText.text = theseusGraph.ChangeHeuristic();
+                theseusGraph.ChangeHeuristic(heuristicText.text);
 
             if (Input.GetKeyDown(KeyCode.S))
                 suavizadoText.text = theseusGraph.GetSmooth() ? "No" : "Si";
@@ -141,12 +142,21 @@ namespace UCM.IAV.Movimiento
             }
         }
 
+        public void ManageHeuristic()
+        {
+            Debug.Log(labelHeuristic.text.ToString());
+
+            heuristicText.text = labelHeuristic.text;
+            theseusGraph.ChangeHeuristic(heuristicText.text);
+        }
+
         private void FindGO()
         {
             if (SceneManager.GetActiveScene().name == "Menu") // Nombre de escena que habría que llevar a una constante
             {
                 label = GameObject.FindGameObjectWithTag("DDLabel").GetComponent<Text>();
                 label2 = GameObject.FindGameObjectWithTag("MinoLabel").GetComponent<Text>();
+                labelHeuristic = GameObject.FindGameObjectWithTag("HeuristicTag").GetComponent<Text>();
             }
             else if (SceneManager.GetActiveScene().name == "Labyrinth") // Nombre de escena que habría que llevar a una constante
             {

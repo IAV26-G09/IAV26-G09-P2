@@ -14,13 +14,12 @@ using UnityEngine;
 
 public class DropDown : MonoBehaviour
 {
-    public bool mino = false;
-
     enum DropdownType
     {
         SIZE,
         PATRULLEROS,
-        ESTATICOS
+        ESTATICOS,
+        HEURISTICA
     };
 
     [SerializeField]
@@ -34,7 +33,9 @@ public class DropDown : MonoBehaviour
             gameObject.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { UCM.IAV.Movimiento.GameManager.instance.ChangeSize(); });
        else if(type == DropdownType.PATRULLEROS)
             gameObject.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { UCM.IAV.Movimiento.GameManager.instance.setNumMinosPatrulleros(); });
-       else
+       else if(type == DropdownType.ESTATICOS)
             gameObject.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { UCM.IAV.Movimiento.GameManager.instance.setNumMinosEstaticos(); });
+       else if (type == DropdownType.HEURISTICA)
+           gameObject.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { UCM.IAV.Movimiento.GameManager.instance.ManageHeuristic(); });
     }
 }
