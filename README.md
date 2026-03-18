@@ -29,14 +29,27 @@ El proyecto consiste en un entorno virtual 3D que representa el legendario Laber
 Todo el contenido del proyecto está disponible en este repositorio, con **Unity 6000.0.66f2** o posterior siendo capaces de bajar todos los paquetes necesarios y editar el proyecto.
 
 ## Introducción
-Este proyecto está pensado para implementar el A* con una estructura de registro de nodo MUY SIMPLE (el identificador del nodo y el coste f) y ligada a los propios GameObjects que son baldosas del escenario. Sólo se plantea usar una lista de apertura (sin tener lista de cierre) y se asume que es posible tener la información completa del grafo (costes incluidos) en forma de una matriz en memoria.
+Este proyecto es una práctica de la asignatura de Inteligencia Artificial para Videojuegos del Grado en Desarrollo de Videojuegos de la UCM, cuyo enunciado original es este: [El Secreto del Laberinto](https://narratech.com/es/inteligencia-artificial-para-videojuegos/navegacion/el-secreto-del-laberinto/).
 
-Según el pseudocódigo que plantea Millington en su libro, la estructura de registro de nodo es más rica (identificador del nodo, conexión con el nodo padre, coste g y coste f), por supuesto se usa una lista de apertura y una lista de cierre, y en absoluto se asume que toda la información del grafo esté disponible desde el principio.
+El conocido mito griego del hilo de Ariadna sirve de trasfondo narrativo para el problema de la navegación de entornos virtuales, tan habitual en el mundo de los videojuegos. En la historia hay un protagonista, Teseo -en principio heroico- y un villano, el temido Minotauro. Ambos personajes se enfrentan en un laberinto embrujado donde el hilo mágico que Ariadna entregó a Teseo será la clave para ayudarle a escapar. Aunque en el mito se habla de la victoria de Teseo sobre el Minotauro, aquí vamos a aplicar la “maldición” que le lanza Ariadna de forma anticipada, para que sea imposible acabar con el monstruo. Mientras el héroe esté cerca del enemigo, habrá un combate que lo único que supone es ralentizar su movimiento. 
 
-La cola de prioridad se puede implementar con PriorityQueue<TElement, TPriority>, estructura que se encuentra en el espacio de nombres System.Collections.Generic y fue introducida en .NET 6, siempre que el proyecto de Visual Studio esté configurado para ello. Si se usa un lenguaje C# antiguo, se podría usar una implementación de BinaryHeap como esta: https://github.com/NikolajLeischner/csharp-binary-heap.
+El proyecto está pensado para implementar el algoritmo de búsqueda A* con una estructura de registro de nodo simple: identificador del nodo y su coste f, y ligada a los propios GameObjects que son las baldosas del laberinto. Sólo se plantea usar una lista de apertura (sin tener lista de cierre) y se asume que es posible tener la información completa del grafo (costes incluidos) en forma de una matriz en memoria.
 
 ## Punto de partida
 Hemos partido de un proyecto base proporcionado por el profesor y disponible en este repositorio: [Minotaur - Base](https://github.com/narratech/minotaur-base).
+
+La base consiste en un menú inicial en el que se puede configurar:
+- Tamaño del mapa (10x10, 20x20, 30x30, 60x60, 100x100)
+- Nº de minotauros en el mapa
+Y un botón con el que iniciar el juego, que lleva al nivel del laberinto, con suelos, paredes, minotauro/s, el avatar en la casilla de entrada, la casilla de entrada y la de salida, que cuenta con una interfaz básica meramente informativa con: 
+- FPS
+- Heuristica (Primera/Segunda)
+- Controles:
+    - Cambiar ratio de FPS entre 30 y 60 (F).
+    - zoom (Rueda del ratón).
+    - Reiniciar (R).
+    - Cambiar heurística (C).
+También cuenta con movimiento del avatar del jugador con WASD.
 
 ### Estructura del proyecto
 
@@ -89,7 +102,9 @@ La escena genera un laberinto en base al mapa que es haya elegido en el menú, g
 - **Teseo**:
 ```mermaid
 graph TD;
-  OCIOSO;
+  OCIOSO<-- Movimiento ratón -->MOVIMIENTO_MANUAL;
+  MOVIMIENTO_MANUAL<-- Clic derecho -->MOVIMIENTO_AUTOMATICO;
+  OCIOSO<-- Clic derecho -->MOVIMIENTO_AUTOMATICO;
 ```
 
 - **Minotauros Patrulla**:
@@ -181,14 +196,17 @@ Las tareas y el esfuerzo ha sido repartido de manera equitativa entre las autora
 | Estado  |  Tarea  |  Fecha  |  
 |:-:|:--|:-:|
 | ✔ | Movimiento del avatar con input de ratón | 5-13-2026 |
-| ✔ | Interfaz de creación de minotauros | 10-3-2026 |
-| ✔ | Comportamientos de los minotauros | 12-3-2026 |
+| ✔ | Comportamientos de Vigía los minotauros | 11-3-2026 |
+| ✔ | Comportamientos de Patrulla los minotauros | 12-3-2026 |
 | ✔ | A* | 14-3-2026 |
 | ✔ | Mostrar ovillos | 14-3-2026 |
 | ✔ | Feedback de A* en la interfaz | 14-3-2026 |
 | ✔ | Avatar sigue el hilo | 14-3-2026 |
+| ✔ | Suavizado de A* | 17-3-2026 |
 |  | AMPLIACIONES |  |
-| ✖ | aún no hay ampliaciones | x |
+| ✔ | Interfaz de creación de minotauros | 10-3-2026 |
+| ✔ | Cámara puede cambiar de agente objetivo | 12-3-2026 |
+| ✔ | Ciclo de juego | 17-3-2026 |
 
 **Diagrama de clases:**
 Las clases principales que se han desarrollados son las siguientes:
@@ -424,30 +442,71 @@ También es importante mencionar los scripts animal animation controller y playe
 Adicionalmente, el script dropdown es usado para recoger información sobre el laberinto desde el menú, específicamente, cuántos minotauros y de qué tipo crear en el mapa y el tamaño de este.
 
 ## Pruebas y métricas
-<!--
 ### Plan de pruebas
 
 Serie corta y rápida posible de pruebas que pueden realizarse para verificar que se cumplen las características requeridas:
 
-* **1. (A).** Prueba 1.
-* 
+* **1 (A).** Iniciar el juego y presionar el botón jugar sin modificar la configuración inicial.
+* **2 (A).** Observar el mapa 10x10, el avatar y las distintas rutas hasta la salida, haciendo zoom con el ratón si fuese necesario.
+* **3 (A).** Mover al avatar moviendo el cursor alrededor suyo, con y sin mantener el clic izquierdo pulsado para esprintar.
+* **4 (A).** Presionar el botón Escape para volver al menú inicial y repetir desde el paso 2 con distintas configuraciones de tamaño de mapa y de número de minotauros.
+
+* **6 (B).** Tras haber configurado para que haya por lo menos un minotauro de cada tipo e iniciado la escena de laberinto, observar los distinto tipos de minotauros y sus dos tipos de comportamientos (vigía estático y patrullero dinámico).
+* **7 (B).** Observar las áreas de influencia de los minotauros.
+* **8 (B).** Dirigir al avatar delante de algún minotauro y comprobar el cono de visión con el que comienzan a seguir al jugador.
+* **9 (B).** Una vez dentro del campo de visión del minotauro, comprobar la ralentización del avatar dentro del área de influencia.
+* **10 (B).** Dirigir al avatar delante de algún minotauro de tipo contrario al anterior y comprobar el mismo comportamiento.
+* **11 (B).** Una vez esté el minotauro alertado, perder al minotauro de vista haciéndo al avatar esprintar en dirección contraria y usando los obstáculos a favor para tapar el cono de visión.
+
+* **12 (C).** Partiendo de cualquier configuración del laberinto pero con al menos un minotauro patrullero, posicionar al avatar de tal manera en que un patrullero se quede entre el avatar y la casilla de salida.
+* **13 (C).** Pulsar clic derecho para crear el camino más óptimo según A* hasta la baldosa final y observar el hilo de Ariadna y los ovillos que se crean, así como la influencia que tiene el minotauro sobre el camino.
+* **14 (C).** Pulsar clic derecho de nuevo para deshacer el hilo de Ariadna.
+* **15 (C).** Repetir los últimos dos pasos pulsando C o el botón de la interfaz para cambiar la heurística que usará A*, entre euclídea y Manhattan.
+
+* **16 (D).** Partiendo desde cualquier configuración de laberinto pero más cómodamente sin minotauros, pulsar clic derecho para crear un hilo de Ariadna y a continuación pulsar la tecla 'S' para suavizar el camino y comprobar la disminución de nodos y por tanto ovillos en el camino.
+* **17 (D).** Repetir el paso anterior con distintas configuraciones de tamaño de laberinto y minotauros.
+
+* **18 (E).** Probablemente ya se habrá comprobado con las pruebas de las características C y D, pero tras pulsar clic derecho, observar el seguimiento autónomo del avatar por el camino.
+* **19 (E).** Después de activar el hilo y por tanto la navegación automática, pulsar clic derecho de nuevo para desactivar el hilo y comprobar de nuevo el control.
+* **20 (E).** Repetir los pasos indefinidamente.
+
 ### Métricas tomadas
-En un PC de estas características:
+Hardware utilizado en las medidas:
 - **CPU:** Intel Core i5-12600KF a 3.70 GHz
 - **GPU:** NVIDIA GeForce RTX 5070 Ti con 16 GB
 - **RAM:** 32 GB (16x2) de 4800 MT/s
 - **SO:** Windows 11
 - **Versión de Unity:** 6000.0.66f2
 
+<!--
 ### Vídeo
 - [Vídeo demostración]()
 -->
 
 ## Ampliaciones
-Aún no se han realizado ningunas ampliaciones.
+
+### Ampliaciones realizadas
+Se han realizado las siguientes ampliaciones:
+1. Se puede configurar en el menú inicial la cantidad de minotauros por tipo.
+1. Con el botón N se puede cambiar de objetivo de la cámara, que cicla por los posibles objetivos (avatar y todos los minotauros que se hayan instanciado).
+1. Establecido ciclo de juego: al llegar al final del nivel o al pulsar la tecla Escape vuelve al menú principal.
+1. Se muestra feedback extra por pantalla:
+    - Si el modo de hilo de Ariadna está activado.
+    - Si el suavizado del hilo está activado.
+    - Información de los controles:
+        - Suavizar camino (S)
+        - Toggle hilo (Clic derecho)
+        - Cambiar cámara (N)
+
+### Posibles ampliaciones
+Se han pensado las siguientes posibles ampliaciones:
+1. Generacion procedimental de los laberintos en vez de por fichero de texto.
+1. Cuando un minotauro patrullero va a tomar un cambio de dirección, darle un tiempo de estado "ocioso" para que parezca un comportamiento menos frenético y más natural.
 
 ## Conclusiones
+Esta práctica ha servido para aprender en profundidad uno de los algoritmos más importantes y más usados en la industria del videojuego en un entorno de problema clásico y entendible, aplicándolo sobre un sistema de navegación orientado a grafos.
 
+A* ha probado su viabilidad para tareas de navegación y búsqueda a través de la importancia de sus heurísticas, demostrando un comportamiento inteligente, especialmente combinando el algoritmo con técnicas de suavizado, y eficiente en su coste, aún sabiendo que la navegación en videojuegos no es solo un problema de búsqueda de caminos, sino que vive en entorno a capas de costes cambiantes para el que los comportamientos han de estar preparados para gestionar.
 
 ## Licencia
 Nieves Alonso Gilsanz y Cynthia Tristán Álvarez, con el permiso de Federico Peinado, autores de la documentación, código y recursos de este trabajo, concedemos permiso permanente para utilizar este material, con sus comentarios y evaluaciones, con fines educativos o de investigación; ya sea para obtener datos agregados de forma anónima como para utilizarlo total o parcialmente reconociendo expresamente nuestra autoría. 
@@ -455,14 +514,11 @@ Nieves Alonso Gilsanz y Cynthia Tristán Álvarez, con el permiso de Federico Pe
 ## Referencias
 A continuación se detallan todas las referencias bibliográficas, lúdicas o de otro tipo utilizdas para realizar este prototipo. Los recursos de terceros que se han utilizados son de uso público[^1][^2][^3].
 
-El diseño e implementación de los algoritmos aquí desarrollados se ha apoyado principalmente en *Millington*[^4], referenciado ampliamente a lo largo del contenido del curso en Narratech[^5][^6][^7][^8].
-<!--
-, que ha proporcionado la base teórica para los comportamientos de *Llegada*, *Persecución*, *Huida*, *Merodeo* y *Separación*, además de los mecanismos de combinación por peso o prioridades.
+Como primer contacto con A* para entender y profundizar en el algoritmo y el suavizado del camino se ha apoyado principalmente en *Millington*[^4], referenciado ampliamente a lo largo del contenido del curso en Narratech[^5][^6][^7][^8].
 
-Los artículos de *Reynolds*[^9][^10] son la base histórica y clásica del comportamiento de agentes en grupo implementados en *Separación*. Las aportaciones de *Shiffman*[^11] y *Yannakakis y Togelius*[^12] sirven de referencia complementaria para entender los sistemas de agentes autónomos con visión más actualizada y contemporánea.
--->
+Para el objetivo principal de esta práctica hemos partido de la parte de pseudocódigo del artículo de *Wikipedia*[^9] sobre A* para implementar el algoritmo en forma *'graph-search'*. A diferencia del propuesto por Narratech de Millington, no usa una lista de nodos cerrados, que es como está pensada la práctica para ser realizada.
 
-El artículo de *Wikipedia*[^9] para A* TODO.
+...
 
 [^1]: Lousberg, K. (s. f.). [*Kaykit animations*](https://kaylousberg.itch.io/kaykit-animations)
 
@@ -480,12 +536,4 @@ El artículo de *Wikipedia*[^9] para A* TODO.
 
 [^8]: Narratech [*Búsqueda de caminos usando estrategias informadas*](https://narratech.com/es/inteligencia-artificial-para-videojuegos/navegacion/busqueda-de-caminos-usando-estrategias-informadas/)
 
-[^9]: Wikipedia. [*A**](https://en.wikipedia.org/wiki/A*_search_algorithm).
-
-<!--
-[^10]: Reynolds, C. (1999). [*Steering Behaviors For Autonomous Characters*](https://www.red3d.com/cwr/steer/gdc99/)
-
-[^11]: Shiffman, D. (2024). *Autonomous Agents*. [Nature of Code](https://natureofcode.com/).
- 
-[^12]: Yannakakis, G., Togelius, J. (2025). *Artificial Inteligence and Games*
--->
+[^9]: Wikipedia. [*A Search Algorithm*](https://en.wikipedia.org/wiki/A*_search_algorithm#Pseudocode).
