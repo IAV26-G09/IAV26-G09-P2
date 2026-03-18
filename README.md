@@ -1,7 +1,7 @@
 # Inteligencia Artificial para Videojuegos - Práctica 2: El secreto del laberinto
 
 > [!NOTE]
-> Versión: 0
+> Versión: 1
 
 ## Índice
 1. [Autores](#autores)
@@ -41,6 +41,7 @@ Hemos partido de un proyecto base proporcionado por el profesor y disponible en 
 La base consiste en un menú inicial en el que se puede configurar:
 - Tamaño del mapa (10x10, 20x20, 30x30, 60x60, 100x100)
 - Nº de minotauros en el mapa
+
 Y un botón con el que iniciar el juego, que lleva al nivel del laberinto, con suelos, paredes, minotauro/s, el avatar en la casilla de entrada, la casilla de entrada y la de salida, que cuenta con una interfaz básica meramente informativa con: 
 - FPS
 - Heuristica (Primera/Segunda)
@@ -49,6 +50,7 @@ Y un botón con el que iniciar el juego, que lleva al nivel del laberinto, con s
     - zoom (Rueda del ratón).
     - Reiniciar (R).
     - Cambiar heurística (C).
+  
 También cuenta con movimiento del avatar del jugador con WASD.
 
 ### Estructura del proyecto
@@ -123,6 +125,7 @@ graph TD;
 
 Los scripts usados para cada agente de IA han sido:
 * **Teseo**: 
+    * ControlJugador 
     * SeguirCamino
 * **Minotauro vigía**:
     * Llegada
@@ -186,7 +189,7 @@ function A_Star(start, goal, h)
     // Open set is empty but goal was never reached
     return failure
 ```
-#### Explicación sobre su [*implementación*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs) en el proyecto:
+#### Explicación sobre su [*implementación*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs#L117) en el proyecto:
 El método *GetPathAstar()* de la clase *Graph* será el encargado de calcular la lista de vértices solución que conformarán el camino más corto que deberá seguir Teseo desde cualquier vértice del mapa hasta el vértice final, o *goal*. 
 
 Este método hace uso de una lista abierta de vértices, se llama lista abierta a la lista que guarda todas las referencias a los nodos/vértices visitados sobre los que no se ha iterado aún, esta se implementa mediante un BinaryHeap de vértices que llamamos *open* y que se llena en primera instancia únicamente con el vértice origen *start*. Con esto se puede empezar a iterar sobre open. 
@@ -196,6 +199,59 @@ En cada iteración se extrae de la lista el vértice de menor coste total f al q
 Para cada vecino se calcula su coste g hasta el momento desde *start* pasando por *act* y si esa tentativa de coste es menor que el coste más barato que conocemos hasta ese momento (desde *start* hasta el vértice vecino, que es inicialmente infinito) lo guardamos como parte del camino solución registrando primero sus datos en arrays auxiliares útiles para realizar los cálculos: su id en el array auxiliar *prev*, su coste g en el array auxiliar *gCost* y su coste f (suma del coste g y de la heurística calculada desde ese vértice hasta *goal*) en el array auxiliar *fCost*, además se actualiza el atributo *cost* de ese vértice con el coste f calculado, y, finalmente, lo insertamos en *open*, si no estaba aún, para poder iterar sobre él en caso de que se necesite en la siguiente iteración del algoritmo. 
 
 A la hora de reconstruir el camino se hace uso del método *BuildPath()* en el que simplemente se le da vuelta al array de ids de vértices *prev* que se ha ido anotando y se guardan sus nodos asociados en la lista de vértices *path*, con la que se trabajará desde la clase *TheseusGraph*.
+
+Si se contase con .NET 6, la cola de prioridad se puede implementar con PriorityQueue<TElement, TPriority>, estructura que se encuentra en el espacio de nombres System.Collections.Generic. Sin embargo, en este caso se ha utilizado el [*Montículo binario*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Extra/BinaryHeap.cs) proporcionado en la base del proyecto, que ha sido capaz de organizar los vértices en función de su coste al estar implementada la clase Vertex como IComparable y IEquatable. 
+
+### Suavizado
+
+#### Explicación sobre su [*implementación*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs#L188) en el proyecto:
+
+El suavizado del camino pretende eliminar la mayor cantidad posible de vértices intermedios del camino, siempre que haya línea de visión directa entre ellos. Esta línea de visión actúa a través del método [*RayClear()*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs#L237), que devuelve verdadero si dos vértices no tienen un obstáculo entre ellos, con un 'radio' para el rayo predeterminado, y falso si el rayo choca contra un obstáculo. 
+
+Antes de empezar, se crea el camino de salida que estará suavizado, y se controla el caso base de un camino de un sólo vértice, que es devuelto tal como entró. A continuación se añade siempre el primer vértice del camino de entrada, que es el último del camino real pues está ordenado "al revés".
+
+A continuación se inicializan los índices con los que se recorrerán el camino de entrada:
+- `i` será el índice del vértice base, desde el que realizar el 'salto' y que coincide con el último añadido al camino de salida.
+- `j` será el índice del vértice candidato, hasta el que se intenta realizar el 'salto'.
+
+Con estos índices se itera por un bucle hasta que `i` llegue al penúltimo o `j` al último vértice de entrada, y dentro del bucle es donde se comprueba la línea de visión entre los vértice a los que apuntan ambos índices.
+
+Si **sí** hay línea de visión: no se añade nada todavía al camino de salida y en el siguiente ciclo se intentará saltar hasta el siguiente, incrementando `j`.
+Si **no** hay línea de visión: se añade el vértice `j - 1` al camino de salida y se actualiza `i = j - 1` para que en la siguiente iteración se reinicie el proceso desde el nuevo vértice base.
+
+Una vez se acaba el bucle queda por preguntar si el último vértice del camino de entrada, es decir, el primer vértice del camino real, es necesario en el camino suavizado. Si se añadiese en todos los casos, el camino que tomaría el agente acabaría no siendo suavizado en realidad, sino que seguiría tomando eventualmente el mismo camino que sin suavizar. Lo que se hace en este caso es comprobar si desde el último vértice añadido al camino de salida hay línea de visión hasta, en el caso de este proyecto pues es el objetivo del camino, el jugador. Si sí, no hace falta el último vértice. Si no, se añade para que el camino sea posible de tomar.
+
+#### Visualización:
+```mermaid
+graph LR
+A[Inicio i=0; j=1;] --> B[Rayo entre i y j]
+B -->|RayClear = true| C[Incrementar j]
+C --> B
+B -->|RayClear = false| D[Añadir j-1 al output]
+D --> E[Actualizar i = j-1]
+E --> B
+B -->|Fin| F[Gestión final]
+```
+
+### Heurísticas
+
+Una heurística es una función que estima cuánto falta para llegar al objetivo desde un nodo dado. Es de lo que hace uso A* para poder orientar su búsqueda hasta el nodo final: no solo mira lo que ya ha costado llegar a un nodo, sino también una predicción del coste que falta todavía. A la hora de hacer el cálculo del coste de un vértice (`f(n) = g(n) + h(n)`), `h(n)` es el valor que devuelve la heurística y lo que se predice que falta desde ese vértice. La ventaja y gracia de A* es que es una búsqueda informada: de no usar una heurística, el algoritmo exploraría a ciegas como en Dijkstra.
+
+Se han tomado dos heurísticas clásicas para A* en cuenta. Se pueden seleccionar y cambiar desde la interfaz:
+
+- [*Distancia Manhattan*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/TheseusGraph.cs#L253):
+    - Cuenta cuántos pasos horizontales y verticales faltan.
+    - Movimiento restringido a las cuatro direcciones.
+- [*Distancia Euclídea*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/TheseusGraph.cs#L258)
+    - Distancia real en línea recta.
+    - Movimiento continuo sin restricciones.
+
+| Heurística | Fórmula      |
+| ---------- | ------------ |
+| Manhattan  | abs(dx) + abs(dz)  |
+| Euclídea   | √(dx² + dz²)* |
+
+
 
 ## Implementación
 **Tareas:**
@@ -211,10 +267,15 @@ Las tareas y el esfuerzo ha sido repartido de manera equitativa entre las autora
 | ✔ | Feedback de A* en la interfaz | 14-3-2026 |
 | ✔ | Avatar sigue el hilo | 14-3-2026 |
 | ✔ | Suavizado de A* | 17-3-2026 |
+| ✔ | README | 18-3-2026 |
+| ✔ | A* teniendo en cuenta a los minotauros | XX-X-XXXX |
+| ✔ | Organizar y limpiar proyecto | XX-X-XXXX |
 |  | AMPLIACIONES |  |
 | ✔ | Interfaz de creación de minotauros | 10-3-2026 |
 | ✔ | Cámara puede cambiar de agente objetivo | 12-3-2026 |
 | ✔ | Ciclo de juego | 17-3-2026 |
+| ✔ | Heurística por interfaz | 18-3-2026 |
+| ✔ | Sistema de gizmos de debug | XX-X-XXXX |
 
 **Diagrama de clases:**
 Las clases principales que se han desarrollados son las siguientes:
@@ -347,7 +408,7 @@ El gestor del juego se encarga de actualizar la interfaz de usuario con la infor
 * __setStart()__ y __setExit()__ ambas asignan la referencia a la baldosa de inicio y la de salida respectivamente.
 
 ### Agente
-Se encarga de cohesionar el movimiento, combinando, en el caso del perro por ejemplo, su seguimiento del flautista y su huida de las ratas. 
+Se encarga de cohesionar el movimiento. 
 * En su método fixedUpdate() regula la velocidad, rotación y aceleración.
 * En su Update() también regula la velocidad y ajusta la rotación, pero no regula aceleración ni comprueba la rotación. 
 * En su lateUpdate() nos aseguramos de que la velocidad y la aceleración estén reguladas, y calculamos nuestra próxima rotación y velocidad. 
@@ -514,7 +575,7 @@ Se han pensado las siguientes posibles ampliaciones:
 ## Conclusiones
 Esta práctica ha servido para aprender en profundidad uno de los algoritmos más importantes y más usados en la industria del videojuego en un entorno de problema clásico y entendible, aplicándolo sobre un sistema de navegación orientado a grafos.
 
-A* ha probado su viabilidad para tareas de navegación y búsqueda a través de la importancia de sus heurísticas, demostrando un comportamiento inteligente, especialmente combinando el algoritmo con técnicas de suavizado, y eficiente en su coste, aún sabiendo que la navegación en videojuegos no es solo un problema de búsqueda de caminos, sino que vive en entorno a capas de costes cambiantes para el que los comportamientos han de estar preparados para gestionar.
+A* ha probado su viabilidad para tareas de navegación y búsqueda a través de la importancia de sus heurísticas, demostrando un comportamiento inteligente, especialmente combinado con técnicas de suavizado, y eficiente en su coste, aún sabiendo que la navegación en videojuegos no es solo un problema de búsqueda de caminos, sino un entorno por capas de costes cambiantes para los que los comportamientos han de estar preparados para gestionar.
 
 ## Licencia
 Nieves Alonso Gilsanz y Cynthia Tristán Álvarez, con el permiso de Federico Peinado, autores de la documentación, código y recursos de este trabajo, concedemos permiso permanente para utilizar este material, con sus comentarios y evaluaciones, con fines educativos o de investigación; ya sea para obtener datos agregados de forma anónima como para utilizarlo total o parcialmente reconociendo expresamente nuestra autoría. 
@@ -522,11 +583,11 @@ Nieves Alonso Gilsanz y Cynthia Tristán Álvarez, con el permiso de Federico Pe
 ## Referencias
 A continuación se detallan todas las referencias bibliográficas, lúdicas o de otro tipo utilizdas para realizar este prototipo. Los recursos de terceros que se han utilizados son de uso público[^1][^2][^3].
 
-Como primer contacto con A* para entender y profundizar en el algoritmo y el suavizado del camino se ha apoyado principalmente en *Millington*[^4], referenciado ampliamente a lo largo del contenido del curso en Narratech[^5][^6][^7][^8].
+Como primer contacto con A* y el suavizado del camino se ha consultado el pseudocódigo de *Millington*[^4], referenciado ampliamente a lo largo del contenido del curso en Narratech[^5][^6][^7][^8]. No ha sido referencia suficiente y la implementación en este proyecto de su suavizado no ha dado resultado alguno.
 
-Para el objetivo principal de esta práctica hemos partido de la parte de pseudocódigo del artículo de *Wikipedia*[^9] sobre A* para implementar el algoritmo en forma *'graph-search'*. A diferencia del propuesto por Narratech de Millington, no usa una lista de nodos cerrados, que es como está pensada la práctica para ser realizada.
+Para el objetivo principal de esta práctica se ha partido de la parte de pseudocódigo del artículo de *Wikipedia*[^9] sobre A* para implementar el algoritmo en forma *'graph-search'*. A diferencia del propuesto por Narratech de Millington, no usa una lista de nodos cerrados, que es como está pensada la práctica para ser realizada.
 
-...
+Utilizada como apoyo conceptual para comprender, profundizar y contrastar nuestra implementación del algoritmo, *Red Blob Games*[^10] ha permitido interactuar y juguetear con el comportamiento de manera visual, afianzando especialmente el conocimiento en lo relativo a la intuición del algoritmo y el impacto de la heurística en la exploración del grafo.
 
 [^1]: Lousberg, K. (s. f.). [*Kaykit animations*](https://kaylousberg.itch.io/kaykit-animations)
 
@@ -544,4 +605,6 @@ Para el objetivo principal de esta práctica hemos partido de la parte de pseudo
 
 [^8]: Narratech [*Búsqueda de caminos usando estrategias informadas*](https://narratech.com/es/inteligencia-artificial-para-videojuegos/navegacion/busqueda-de-caminos-usando-estrategias-informadas/)
 
-[^9]: Wikipedia. [*A Search Algorithm*](https://en.wikipedia.org/wiki/A*_search_algorithm#Pseudocode).
+[^9]: Wikipedia. [*A Search Algorithm**](https://en.wikipedia.org/wiki/A*_search_algorithm#Pseudocode).
+
+[^10]: Red Blob Games. [*Introduction to A**](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
