@@ -268,14 +268,14 @@ Las tareas y el esfuerzo ha sido repartido de manera equitativa entre las autora
 | ✔ | Avatar sigue el hilo | 14-3-2026 |
 | ✔ | Suavizado de A* | 17-3-2026 |
 | ✔ | README | 18-3-2026 |
-| ✔ | A* teniendo en cuenta a los minotauros | XX-X-XXXX |
-| ✔ | Organizar y limpiar proyecto | XX-X-XXXX |
+| ✖ | A* teniendo en cuenta a los minotauros | XX-X-XXXX |
+| ✖ | Organizar y limpiar proyecto | XX-X-XXXX |
 |  | AMPLIACIONES |  |
 | ✔ | Interfaz de creación de minotauros | 10-3-2026 |
 | ✔ | Cámara puede cambiar de agente objetivo | 12-3-2026 |
 | ✔ | Ciclo de juego | 17-3-2026 |
 | ✔ | Heurística por interfaz | 18-3-2026 |
-| ✔ | Sistema de gizmos de debug | XX-X-XXXX |
+| ✖ | Sistema de gizmos de debug | XX-X-XXXX |
 
 **Diagrama de clases:**
 Las clases principales que se han desarrollados son las siguientes:
@@ -337,6 +337,9 @@ classDiagram
           +OnTriggerExit(Collider)
           +Update()
     }
+
+    Ovillo <|-- MonoBehaviour
+
     Graph <|-- MonoBehaviour
     TheseusGraph <|-- MonoBehaviour
     Vertex <|-- MonoBehaviour
@@ -396,9 +399,30 @@ classDiagram
     }
 ```
 
+Implementación: Se adjuntan los scripts con el código fuente que implementan las principales características. Los scripts están documentados para mayor claridad y detalle sobre su implementación.
+
+| Característica del prototipo | Descripción de la característica | Script |
+|:-:|:-:|:-:|
+| A | Control del jugador | [ControlJugador](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Comportamientos/ControlJugador.cs) |
+| B | Configuración creación minotauros | [MinoManager](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Comportamientos/MinoManager.cs) |
+| B | Comportamiento vigías | [Vigilar](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Comportamientos/Vigilar.cs) |
+| B | Campo de visión minotauros | [CampoVision](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Comportamientos/CampoVision.cs) |
+| B | Seguimiento hacia el avatar | [Llegada](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Comportamientos/Llegada.cs) |
+| B | Área de influencia | [Slow](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Comportamientos/Slow.cs) |
+| C | A* | [Graph](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs) |
+| C | Mostrar hilo | [TheseusGraph](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/TheseusGraph.cs) |
+| C | Mostrar ovillos | [Ovillo](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Extra/Ovillo.cs) |
+| C | Heurísticas | [TheseusGraph](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/TheseusGraph.cs) |
+| D | Suavizado | [Graph](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs) |
+| E | Navegación automática | [SeguirCamino](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Comportamientos/SeguirCamino.cs) |
+
 Detallamos a continuación la información sobre cada clase:
 
-### Game Manager
+| Clases nuevas respecto a la plantilla | Clases de la plantilla modificadas |  
+|:-:|:-:|
+| 🟢​ | 🟡​ |
+
+### Game Manager 🟡
 El gestor del juego se encarga de actualizar la interfaz de usuario con la información relevante y comprobar si el jugador ha escapado del laberinto. Su método más relevante es Update, que actualiza el framerate, registra la entrada y actúa en consecuencia, cambiando la heurística o reiniciando la escena, cada acción con su propio método. 
 * __RestartScene()__ vuelve a cargar la escena. 
 * __FindGO()__ se ejecuta al cargar la escena. Encuentra los elementos importantes (dependiendo de si es el menú o el laberinto) y guarda las referencias.
@@ -422,20 +446,20 @@ Avisa a una instancia del script agente para que combine,bien por peso o por pri
 ### Direccion
 Guarda los valores de la velocidad lineal y angular.
 
-### ControlJugador
+### ControlJugador 🟡
 Hereda de ComportamientoAgente y simplemente usa el método __GetDirección()__, que registra el input de ratón de tal manera que si el puntero está más allá de cierta distancia del avatar, este camina en línea recta hacia su posición y mientras se mantiene pulsado el clic izquierdo, el avatar corre más rápido.
 
-### Llegada
+### Llegada 🟡
 Hereda de comportamientoAgente y es usado por todos los minotauros cuando han de perseguir a Teseo.
 * __getDirección()__ se usa para calcular la velocidad y dirección en la que tiene que acercarse a su objetivo, teniendo en cuenta el radio de deceleración y el radio de llegada (momento en el que se considera que ha alcanzado a su objetivo).
 * __raycastCollision()__ detecta si hay algún obstáculo en la dirección en la que nos estamos moviendo. Si encuentra algún obstáculo, calcula la normal con la que ha impactado el rayo del raycast para desviar al agente en esa dirección y devolver ese vector de desviación. Este método es llamado desde el método __avoidance()__, llamado a su vez desde __getDirección()__.
 
-### Vigilar
+### Vigilar 🟢
 El comportamientoAgente, usado por los minotauros estáticos, los hace rotar aleatoriamente.
 * __getDirection()__ calcula el ángulo de giro aleatorio que rotarán durante un tiempo también aleatorio.
 * __onCollisionEnter()__, llamado automáticamente cuando colisionan con algo, les redirige en dirección opuesta del objeto con el que han colisionado.
 
-### Patrullar
+### Patrullar 🟢
 El comportamientoAgente, usado por los minotauros patrulla, los hace caminar en línea recta, cambiando de dirección aleatoriamente al llegar a un cruce de caminos. Los patrulleros nunca girarán en dirección contraria, a no ser que no les quede otra opción, con tal de simular una mayor inteligencia.
 * __ChooseNextNode()__, usando el atributo graph de la clase se selecciona hacia qué nodo, de entre todos los nodos vecinos del nodo más cercano a cada minotauro, seguir avanzando.
 * __GetNewNode()__ obtiene un nuevo nodo al que ir en caso de encrucijada, teniendo en cuenta que no puedes volver al nodo del que vienes (prohibiendo el giro de 180º).
@@ -443,15 +467,15 @@ El comportamientoAgente, usado por los minotauros patrulla, los hace caminar en 
 * __OnDrawGizmos()__ se usa para debuguear el nodo actual, el siguiente y el anterior, dibuja una esfera de color en cada uno de ellos.
 * __ResetPath()__, en caso de choque con otro minotauro se sigue otro camino.
 
-### CampoVision
+### CampoVision 🟢
 Implementa el cono de visión de todos los minotauros y gestiona el estado de estos si se detecta al avatar.
 * __OnTriggerStay()__, si el avatar entra en el trigger de detección, se encuentra en el ángulo de visión del minotauro, y no hay ningún objeto entre el minotauro y él entonces se confirma que ha sido detectado por lo que el minotauro pasará a seguirle hasta que pierda visión de él o le alcance.
 
-### Seguir camino
+### Seguir camino 🟡
 Hereda de ComportamientoAgente, usa su atributo graph para seguir el camino marcado por este, cogiendo el siguiente nodo en su update().
 * __getDirección()__, como siempre, calcula la dirección en la que se tiene que mover, calculando en qué dirección está el siguiente nodo.
 
-### Teseo
+### Teseo 🟡
 Se encarga de controlar al jugador, manejando si sigue el camino marcado o es controlado por el jugador, activando y desactivando comportamientos agentes, y registrando el input para cambiar entre ellos.
 
 ### Slow
@@ -459,13 +483,13 @@ Equipado por los minotauros, se encarga de relentizar a Teseo cada vez que entra
 * __OnTriggerEnter()__, si es Teseo, reduce su velocidad máxima a 1.
 * __OnTriggerExit()__, si es Teseo, vuelve a asignar su velocidad a la velocidad que guardó cuando redujo su velocidad a 1.
 
-### Mino Evader
+### Mino Evader 🟡
 Usado por los minotauros patrulleros. Cuando colisionan dos minotauros, todo minotauro que tenga el componente seguirCamino (usado por los patrulleros), se resetea su camino para que sigan un camino diferente.
 
-### Mino Manager
+### Mino Manager 🟡
 Nodo padre de todos los minotauros, se encarga de instanciar minotauros, asignándoles una referencia al mapa del laberinto para que puedan recorrerlo.
 
-### MinoCollision
+### MinoCollision 
 Se encarga de detectar las colisiones con Teseo y, en caso de que colisione, re-comenzar el laberinto.
 
 ### Vertex
@@ -474,7 +498,7 @@ Representa los vértices o nodos de un grafo, asi que todos los métodos son par
 * __Equals(vertex)__ devuelve si los nodos son iguales
 * __GetHashCodes()__ devuelve el hash del vertex
 
-### Graph
+### Graph 🟡
 Se encarga de unir vértices y registrar sus costes. 
 * __GetSize()__ devuelve el tamaño de los vértices.
 * __GetNeightbours()__ devuelve los vecinos del vértice (sólo los lados, no las diagonales).
@@ -494,7 +518,7 @@ Hereda de graph y mientras mantiene el sistema de vértices y aristas, también 
 * __UpdateVertexCost()__ cambia el coste de un vértice a otro coste.
 * __WallInstantiate()__ instancia un muro.
 
-### TheseusGraph
+### TheseusGraph 🟡
 Es una clase que posee un atributo de tipo Grid, pensada para acompañar a Teseo o cualquier otro recorredor del laberinto y guiarles en su camino. 
 * __Update()__ registra el input para activar o desactivar el modo de ariadna.
 * __GetNextNode()__ calcula el próximo nodo al que va a moverse en su camino predefinido.
@@ -508,7 +532,7 @@ Es una clase que posee un atributo de tipo Grid, pensada para acompañar a Teseo
 
 También es importante mencionar los scripts animal animation controller y player animator, encargados de las animaciones de los minotauros y el jugador respectivamente, al igual que el script cameraFollow, que simplemente sigue al jugador con un cierto offset. Estos scripts no se mencionan en más detalle pues no son muy relevantes en cuanto a la implementación de la solución.
 
-Adicionalmente, el script dropdown es usado para recoger información sobre el laberinto desde el menú, específicamente, cuántos minotauros y de qué tipo crear en el mapa y el tamaño de este.
+Adicionalmente, el script DropDown (🟡) es usado para recoger información sobre el laberinto desde el menú, específicamente, cuántos minotauros y de qué tipo crear en el mapa y el tamaño de este.
 
 ## Pruebas y métricas
 ### Plan de pruebas
