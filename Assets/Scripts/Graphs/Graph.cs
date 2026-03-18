@@ -116,7 +116,7 @@ namespace UCM.IAV.Navegacion
 
         public List<Vertex> GetPathAstar(GameObject srcO, GameObject dstO, Heuristic h = null)
         {
-            // creamos las listas de nodos abiertos y cerrados
+            // creamos las listas de nodos abiertos
             BinaryHeap<Vertex> open = new BinaryHeap<Vertex>(); // nodos que vamos conociendo y que seran expandidos (si no son el nodo dst)
 
             // cogemos los vertices reales asociados a los objetos
@@ -146,8 +146,8 @@ namespace UCM.IAV.Navegacion
             // iteramos por los vertices
             while (open.Count > 0) // mientras queden nodos abiertos
             {
-                // miramos el primero en la lista: el elemento de menor coste (pq ya se ordenan por si solos por coste e id en principio)
-                // y lo quitamos (ya lo hemos "expandido"
+                // miramos el primero en la lista: el elemento de menor coste (pq ya se ordenan por si solos por coste e id)
+                // y lo quitamos (ya lo hemos "expandido")
                 Vertex act = open.Remove();
 
                 // si hemos llegado

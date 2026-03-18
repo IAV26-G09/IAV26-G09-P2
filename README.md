@@ -187,7 +187,11 @@ function A_Star(start, goal, h)
     return failure
 ```
 #### Explicación sobre su [*implementación*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs) en el proyecto:
-.
+El método *GetPathAstar()* de la clase *Graph* será el encargado de calcular la lista de vértices solución que conformarán el camino más corto que deberá seguir Teseo desde cualquier vértice del mapa hasta el vértice final, o *goal*. 
+Este método hace uso de una lista abierta de vértices, se llama lista abierta a la lista que guarda todas las referencias a los nodos/vértices visitados sobre los que no se ha iterado aún, esta se implementa mediante un BinaryHeap de vértices que llamamos *open* y que se llena en primera instancia únicamente con el vértice origen *start*. Con esto se puede empezar a iterar sobre open. 
+En cada iteración se extrae de la lista el vértice de menor coste total f al que llamamos *act* y se comprueba si ese es ya el vértice objetivo *goal*, si así es se puede proceder a reconstruir el camino solución, y si no lo es se sigue buscando el siguiente posible vértice. Para ello se recorren todos lo vértices vecinos/adyacentes a ese *act*. 
+Para cada vecino se calcula su coste g hasta el momento desde *start* pasando por *act* y si esa tentativa de coste es menor que el coste más barato que conocemos hasta ese momento (desde *start* hasta el vértice vecino, que es inicialmente infinito) lo guardamos como parte del camino solución registrando primero sus datos en arrays auxiliares útiles para realizar los cálculos: su id en el array auxiliar *prev*, su coste g en el array auxiliar *gCost* y su coste f (suma del coste g y de la heurística calculada desde ese vértice hasta *goal*) en el array auxiliar *fCost*, además se actualiza el atributo *cost* de ese vértice con el coste f calculado, y, finalmente, lo insertamos en *open*, si no estaba aún, para poder iterar sobre él en caso de que se necesite en la siguiente iteración del algoritmo. 
+A la hora de reconstruir el camino se hace uso del método *BuildPath()* en el que simplemente se le da vuelta al array de ids de vértices *prev* que se ha ido anotando y se guardan sus nodos asociados en la lista de vértices *path*, con la que se trabajará desde la clase *TheseusGraph*.
 
 ## Implementación
 **Tareas:**
