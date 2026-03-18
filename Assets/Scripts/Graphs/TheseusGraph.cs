@@ -13,13 +13,16 @@ using System;
 
 namespace UCM.IAV.Navegacion
 {
-
-
     // Posibles algoritmos para buscar caminos en grafos
     // REALMENTE PARA ESTA PRÁCTICA SÓLO SE NECESITA ASTAR, los otros no los usaremos...
     public enum TesterGraphAlgorithm
     {
         BFS, DFS, ASTAR
+    }
+    public enum Heuristic
+    {
+        Manhattan,
+        Euclidea
     }
 
     public class TheseusGraph : MonoBehaviour
@@ -48,7 +51,6 @@ namespace UCM.IAV.Navegacion
 
         private bool ariadna;
 
-
         bool firstHeuristic = true;
         Camera mainCamera;
         protected GameObject srcObj;
@@ -60,6 +62,8 @@ namespace UCM.IAV.Navegacion
 
         protected ControlJugador control;
         protected SeguirCamino seguir;
+
+        Heuristic _currHeuristic = 0;
 
         // Despertar inicializando esto
         public virtual void Awake()
@@ -105,8 +109,8 @@ namespace UCM.IAV.Navegacion
                 switch (algorithm)
                 {
                     case TesterGraphAlgorithm.ASTAR:
-                        if (firstHeuristic) path = graph.GetPathAstar(srcObj, dstObj, Manhattan); 
-                        else path = graph.GetPathAstar(srcObj, dstObj, Euclidean);
+                        if (_currHeuristic == Heuristic.Manhattan) path = graph.GetPathAstar(srcObj, dstObj, Manhattan); 
+                        else if (_currHeuristic == Heuristic.Euclidea) path = graph.GetPathAstar(srcObj, dstObj, Euclidean);
                         break;
                     default:
                     case TesterGraphAlgorithm.BFS:
@@ -235,11 +239,18 @@ namespace UCM.IAV.Navegacion
             seguir.graph = this;
         }
 
-        public string ChangeHeuristic()
+        public void ChangeHeuristic(string heuristica)
         {
-            // Está preparado para tener 2 heurísticas diferentes
-            firstHeuristic = !firstHeuristic;
-            return firstHeuristic ? "Primera" : "Segunda";
+            Heuristic newHeuristic;
+
+            if (heuristica == Heuristic.Manhattan.ToString())
+            {
+                _currHeuristic = Heuristic.Manhattan;
+            }
+            else if (heuristica == Heuristic.Euclidea.ToString())
+            {
+                _currHeuristic = Heuristic.Euclidea;
+            }
         }
 
         float Manhattan(Vertex a, Vertex b)
