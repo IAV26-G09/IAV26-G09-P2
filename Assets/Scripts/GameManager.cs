@@ -124,8 +124,9 @@ namespace UCM.IAV.Movimiento
                 RestartScene();
             if (Input.GetKeyDown(KeyCode.F))
                 ChangeFrameRate();
-            if (Input.GetKeyDown(KeyCode.C))
-                theseusGraph.ChangeHeuristic(heuristicText.text);
+
+            //if (Input.GetKeyDown(KeyCode.C))
+            //    theseusGraph.ChangeHeuristic(heuristicText.text);
 
             if (Input.GetKeyDown(KeyCode.S))
                 suavizadoText.text = theseusGraph.GetSmooth() ? "No" : "Si";
@@ -145,8 +146,6 @@ namespace UCM.IAV.Movimiento
 
         public void ManageHeuristic()
         {
-            Debug.Log(labelHeuristic.text.ToString());
-
             heuristicText.text = labelHeuristic.text;
             theseusGraph.ChangeHeuristic(heuristicText.text);
         }

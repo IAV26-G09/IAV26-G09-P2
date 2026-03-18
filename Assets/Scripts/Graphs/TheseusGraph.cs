@@ -62,7 +62,7 @@ namespace UCM.IAV.Navegacion
         protected ControlJugador control;
         protected SeguirCamino seguir;
 
-        Heuristic _currHeuristic = 0;
+        Heuristic _currHeuristic = Heuristic.Manhattan;
 
         // Despertar inicializando esto
         public virtual void Awake()
