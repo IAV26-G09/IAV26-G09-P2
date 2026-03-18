@@ -449,7 +449,7 @@ Guarda los valores de la velocidad lineal y angular.
 ### ControlJugador 🟡
 Hereda de ComportamientoAgente y simplemente usa el método __GetDirección()__, que registra el input de ratón de tal manera que si el puntero está más allá de cierta distancia del avatar, este camina en línea recta hacia su posición y mientras se mantiene pulsado el clic izquierdo, el avatar corre más rápido.
 
-### Llegada 🟡
+### Llegada
 Hereda de comportamientoAgente y es usado por todos los minotauros cuando han de perseguir a Teseo.
 * __getDirección()__ se usa para calcular la velocidad y dirección en la que tiene que acercarse a su objetivo, teniendo en cuenta el radio de deceleración y el radio de llegada (momento en el que se considera que ha alcanzado a su objetivo).
 * __raycastCollision()__ detecta si hay algún obstáculo en la dirección en la que nos estamos moviendo. Si encuentra algún obstáculo, calcula la normal con la que ha impactado el rayo del raycast para desviar al agente en esa dirección y devolver ese vector de desviación. Este método es llamado desde el método __avoidance()__, llamado a su vez desde __getDirección()__.
