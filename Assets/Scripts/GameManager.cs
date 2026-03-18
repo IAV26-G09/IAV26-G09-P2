@@ -133,6 +133,12 @@ namespace UCM.IAV.Movimiento
 
             if (Input.GetKeyDown(KeyCode.N))
                 ChangeCameraTarget();
+
+            if (Input.GetKeyDown(KeyCode.Escape) &&
+                SceneManager.GetActiveScene().name != "Menu")
+            {
+                goToScene("Menu");
+            }
         }
 
         private void FindGO()
@@ -203,7 +209,9 @@ namespace UCM.IAV.Movimiento
 
         public void SetExit(int i, int j, float size)
         {
-            exit = new GameObject(); exit.name = "Exit";
+            exit = new GameObject(); 
+            exit.name = "Exit";
+            BoxCollider col = exit.AddComponent<BoxCollider>();
             exit.transform.position = new Vector3(i * size, 0, j * size);
             exitSlab.transform.position = new Vector3(i * size, 0.3f, j * size);
         }

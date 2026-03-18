@@ -269,11 +269,14 @@ namespace UCM.IAV.Navegacion
                 return path;
 
             int prev = dstId;
+
             do
             {
                 path.Add(vertices[prev]);
+
                 prev = prevList[prev];
-            } while (prev != srcId);
+
+            } while (prev != srcId && prev != -1);
             return path;
         }
     }
