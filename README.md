@@ -571,10 +571,13 @@ Hardware utilizado en las medidas:
 - **SO:** Windows 11
 - **Versión de Unity:** 6000.0.66f2
 
-<!--
+Cuando A* tenga en cuenta los costes de los minotauros se tomarán las siguientes métricas:
+- Tiemplo empleado en el cálculo por A* para cada tamaño del laberinto.
+- Número de nodos explorados totales al llegar a la solución para cada tamaño del laberinto.
+
 ### Vídeo
-- [Vídeo demostración]()
--->
+- Próximamente
+<!-- - [Vídeo demostración]() -->
 
 ## Ampliaciones
 
