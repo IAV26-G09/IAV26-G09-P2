@@ -27,7 +27,8 @@ namespace UCM.IAV.Movimiento
         Text hiloText;
         Text suavizadoText;
         Text label;
-        Text label2;
+        Text labelMinoStatic;
+        Text labelMinoPatrol;
         Text labelHeuristic;
         string mazeSize = "10x10";
 
@@ -155,13 +156,14 @@ namespace UCM.IAV.Movimiento
             if (SceneManager.GetActiveScene().name == "Menu") // Nombre de escena que habría que llevar a una constante
             {
                 label = GameObject.FindGameObjectWithTag("DDLabel").GetComponent<Text>();
-                label2 = GameObject.FindGameObjectWithTag("MinoLabel").GetComponent<Text>();
-                labelHeuristic = GameObject.FindGameObjectWithTag("HeuristicTag").GetComponent<Text>();
+                labelMinoStatic = GameObject.FindGameObjectWithTag("MinoLabelStatic").GetComponent<Text>();
+                labelMinoPatrol = GameObject.FindGameObjectWithTag("MinoLabelPatrol").GetComponent<Text>();
             }
             else if (SceneManager.GetActiveScene().name == "Labyrinth") // Nombre de escena que habría que llevar a una constante
             {
                 camFollow = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraFollow>();
 
+                labelHeuristic = GameObject.FindGameObjectWithTag("HeuristicTag").GetComponent<Text>();
                 fRText = GameObject.FindGameObjectWithTag("Framerate").GetComponent<Text>();
                 heuristicText = GameObject.FindGameObjectWithTag("Heuristic").GetComponent<Text>();
                 hiloText = GameObject.FindGameObjectWithTag("HiloTag").GetComponent<Text>();
@@ -189,7 +191,7 @@ namespace UCM.IAV.Movimiento
        
         public void setNumMinosPatrulleros()
         {
-            numMinosPatrulleros = int.Parse(label2.text);
+            numMinosPatrulleros = int.Parse(labelMinoPatrol.text);
         }
 
         public int getNumMinosPatrulleros()
@@ -199,7 +201,7 @@ namespace UCM.IAV.Movimiento
 
         public void setNumMinosEstaticos()
         {
-            numMinosEstaticos = int.Parse(label2.text);
+            numMinosEstaticos = int.Parse(labelMinoStatic.text);
         }
 
         public int getNumMinosEstaticos()

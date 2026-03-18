@@ -1132,7 +1132,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1afff1905c8d87144884ab53b37cb078, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mino: 0
   type: 0
 --- !u!1 &479052394
 GameObject:
@@ -2172,7 +2171,7 @@ GameObject:
   - component: {fileID: 971285583}
   m_Layer: 5
   m_Name: Label
-  m_TagString: MinoLabel
+  m_TagString: MinoLabelStatic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2229,7 +2228,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 1
+  m_Text: 0
 --- !u!222 &971285584
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3018,7 +3017,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1afff1905c8d87144884ab53b37cb078, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mino: 1
   type: 2
 --- !u!114 &1181573001
 MonoBehaviour:
@@ -3069,6 +3067,8 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
+    - m_Text: 0
+      m_Image: {fileID: 0}
     - m_Text: 1
       m_Image: {fileID: 0}
     - m_Text: 2
@@ -3078,8 +3078,6 @@ MonoBehaviour:
     - m_Text: 6
       m_Image: {fileID: 0}
     - m_Text: 10
-      m_Image: {fileID: 0}
-    - m_Text: 0
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3175,6 +3173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+  targets: []
   smoothSpeed: 0.125
 --- !u!20 &1215951692
 Camera:
@@ -3372,7 +3371,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1afff1905c8d87144884ab53b37cb078, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mino: 1
   type: 1
 --- !u!114 &1386412192
 MonoBehaviour:
@@ -3423,6 +3421,8 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
+    - m_Text: 0
+      m_Image: {fileID: 0}
     - m_Text: 1
       m_Image: {fileID: 0}
     - m_Text: 2
@@ -3432,8 +3432,6 @@ MonoBehaviour:
     - m_Text: 6
       m_Image: {fileID: 0}
     - m_Text: 10
-      m_Image: {fileID: 0}
-    - m_Text: 0
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3988,7 +3986,7 @@ GameObject:
   - component: {fileID: 1721775621}
   m_Layer: 5
   m_Name: Label
-  m_TagString: MinoLabel
+  m_TagString: MinoLabelPatrol
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4045,7 +4043,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 1
+  m_Text: 0
 --- !u!222 &1721775622
 CanvasRenderer:
   m_ObjectHideFlags: 0

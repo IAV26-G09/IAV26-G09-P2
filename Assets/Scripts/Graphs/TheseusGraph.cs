@@ -51,7 +51,6 @@ namespace UCM.IAV.Navegacion
 
         private bool ariadna;
 
-        bool firstHeuristic = true;
         Camera mainCamera;
         protected GameObject srcObj;
         protected GameObject dstObj;
@@ -241,8 +240,6 @@ namespace UCM.IAV.Navegacion
 
         public void ChangeHeuristic(string heuristica)
         {
-            Heuristic newHeuristic;
-
             if (heuristica == Heuristic.Manhattan.ToString())
             {
                 _currHeuristic = Heuristic.Manhattan;

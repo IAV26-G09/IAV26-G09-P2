@@ -13,11 +13,12 @@ TagManager:
   - Exit
   - Start
   - DDLabel
-  - MinoLabel
   - Ovillo
   - HiloTag
   - SuavizadoTag
   - HeuristicTag
+  - MinoLabelPatrol
+  - MinoLabelStatic
   layers:
   - Default
   - TransparentFX
