@@ -64,13 +64,17 @@ namespace UCM.IAV.Movimiento
             // Control por raton
             RaycastHit hit;
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            int layerMask = 1 << 8;
+            int layerMask = 1 << 10;
 
             // Si apuntamos a un sitio valido
             if (Physics.Raycast(ray, out hit, 100, layerMask))
             { // Cogemos la direccion y nos congelamos en altura
+                Vector3 projectedPos1 = hit.point;
+                Vector3 projectedPos2 = transform.position;
 
-                direccion.lineal = hit.point - transform.position;
+                projectedPos1.y = projectedPos2.y;
+
+                direccion.lineal = projectedPos1 - projectedPos2;
                 direccion.lineal.y = 0;
             }
 

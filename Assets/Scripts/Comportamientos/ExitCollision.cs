@@ -7,7 +7,6 @@ public class ExitCollision : MonoBehaviour
     {
         if (other.gameObject.layer.Equals(3))
         {
-            Debug.Log("ACABAR EL JUEGO");
             GameManager.instance.goToScene("Menu");
         }
     }

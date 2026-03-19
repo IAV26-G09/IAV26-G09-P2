@@ -17,9 +17,9 @@ namespace UCM.IAV.Movimiento
         private void OnCollisionEnter(Collision collision)
         {
             var vertex = collision.gameObject.GetComponent<Vertex>();
+            Debug.Log(collision.gameObject.name);
             if (vertex != null)
             {
-            Debug.Log(collision.gameObject.name);
                 lastVertexCost = vertex.gCost;
                 vertex.gCost = costOnCollision;
             }

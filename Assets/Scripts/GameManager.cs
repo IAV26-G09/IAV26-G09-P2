@@ -220,9 +220,8 @@ namespace UCM.IAV.Movimiento
 
         public void SetExit(int i, int j, float size)
         {
-            exit = new GameObject(); 
-            exit.name = "Exit";
-            BoxCollider col = exit.AddComponent<BoxCollider>();
+            if (exit == null)
+                exit = GameObject.FindWithTag("Exit");
             exit.transform.position = new Vector3(i * size, 0, j * size);
             exitSlab.transform.position = new Vector3(i * size, 0.3f, j * size);
         }
