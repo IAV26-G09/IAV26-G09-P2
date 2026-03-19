@@ -218,6 +218,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radioVision: 5
   angleVision: 30
+  debug: 1
 --- !u!1 &3053440019318353145
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,6 +549,7 @@ GameObject:
   - component: {fileID: 8357271194336293764}
   - component: {fileID: 1055587080962254686}
   - component: {fileID: 6267089033843014546}
+  - component: {fileID: 350526636344989936}
   m_Layer: 7
   m_Name: Minotaur
   m_TagString: Untagged
@@ -709,6 +711,19 @@ MonoBehaviour:
   fuerzaRalentizado: 0
   avoidQuantity: 5
   distance: 7
+--- !u!114 &350526636344989936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5856985828648263931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f59da60a863d88f4a8205de34bd1db22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  costOnCollision: Infinity
 --- !u!1 &6227627562668922387
 GameObject:
   m_ObjectHideFlags: 0
@@ -898,6 +913,7 @@ GameObject:
   - component: {fileID: 6714168204369594045}
   - component: {fileID: 4847393998361609635}
   - component: {fileID: 2088125191281208512}
+  - component: {fileID: 492015015631342182}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -1018,6 +1034,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13684ffe492191840b7059313990e5a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &492015015631342182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7872998543525572461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f59da60a863d88f4a8205de34bd1db22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  costOnCollision: 5
 --- !u!1 &7873725490849595519
 GameObject:
   m_ObjectHideFlags: 0

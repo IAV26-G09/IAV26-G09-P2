@@ -19,12 +19,12 @@ namespace UCM.IAV.Movimiento
         {
             if (collision.gameObject.GetComponent<Teseo>() != null)
                 GameManager.instance.RestartScene();
-            var vertex = collision.gameObject.GetComponent<Vertex>();
-            if (vertex != null)
-            {
-                //GameManager.instance.graph;
-                return;
-            }
+        }
+
+        private void OnCollisionExit(Collision collision)
+        {
+            if (collision.gameObject.GetComponent<Teseo>() != null)
+                GameManager.instance.RestartScene();
         }
     }
 }
