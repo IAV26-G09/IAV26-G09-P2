@@ -275,7 +275,6 @@ Las tareas y el esfuerzo ha sido repartido de manera equitativa entre las autora
 | ✔ | Cámara puede cambiar de agente objetivo | 12-3-2026 |
 | ✔ | Ciclo de juego | 17-3-2026 |
 | ✔ | Heurística por interfaz | 18-3-2026 |
-| ✖ | Sistema de gizmos de debug | XX-X-XXXX |
 
 **Diagrama de clases:**
 Las clases principales que se han desarrollados son las siguientes:

@@ -28,10 +28,11 @@ namespace UCM.IAV.Movimiento
         [SerializeField]
         float minimuRadius = 3.0f; // radio alrededor del jugador en el que no moverse
 
-        private float velocidadMaxNormal;
-        private float aceleracionNormal;
-        private float velocidadMaxRapida;
-        private float aceleracionRapida;
+        private float velAnd;
+        private float velSpr;
+
+        private float accAnd;
+        private float accSpr;
 
         private bool able = true;
         private bool sprinting = false;
@@ -39,11 +40,11 @@ namespace UCM.IAV.Movimiento
 
         private void Start()
         {
-            //velocidadMaxNormal = agente.velocidadMax;
-            //velocidadMaxRapida = velocidadMaxNormal * 2;
+            velAnd = agente.velocidadMax / 2;
+            velSpr = agente.velocidadMax;
 
-            //aceleracionNormal = agente.aceleracionMax;
-            //aceleracionRapida = aceleracionNormal * 2;
+            accAnd = agente.aceleracionMax / 2;
+            accSpr = agente.aceleracionMax;
         }
 
         public override Direccion GetDireccion()
@@ -84,13 +85,13 @@ namespace UCM.IAV.Movimiento
 
             if (sprinting)
             {
-                //agente.aceleracionMax = aceleracionRapida;
-                //agente.velocidadMax = velocidadMaxRapida;
+                agente.aceleracionMax = accSpr;
+                agente.velocidadMax = velSpr;
             }
             else
             {
-                //agente.aceleracionMax = aceleracionNormal;
-                //agente.velocidadMax = velocidadMaxNormal;
+                agente.aceleracionMax = accAnd;
+                agente.velocidadMax = velAnd;
             }
 
             // Resto de calculo de movimiento
