@@ -31,6 +31,11 @@ namespace UCM.IAV.Movimiento
         [Range(0.1f, 1f)]
         private float pathNodeRadius = .3f;
 
+        bool idling = false;
+        float counter = 0.0f;
+        [SerializeField]
+        float idleTime = 3.0f;
+
         private void Start()
         {
             srcObj = gameObject;
@@ -55,6 +60,7 @@ namespace UCM.IAV.Movimiento
             {
                 antNodo = sigNodo; // antes de cambiarlo guardas el anterior
                 sigNodo = neighbours[0];
+                idling = true;
             }
             SetPositions();
         }
@@ -80,17 +86,30 @@ namespace UCM.IAV.Movimiento
         {
             Direccion direccion = new Direccion();
 
-            Vector3 dir = sigNodoPosicion - transform.position;
-            dir.y = 0;
-
-            if (dir.magnitude <= magnitudeRange)
+            if (idling)
             {
-                ChooseNextNode();
+                counter += Time.deltaTime;
+                if (counter >= idleTime)
+                {
+                    counter = 0.0f;
+                    idling = false;
+                    ChooseNextNode();
+                }
             }
+            else
+            {
+                Vector3 dir = sigNodoPosicion - transform.position;
+                dir.y = 0;
 
-            direccion.lineal = dir;
-            direccion.lineal.Normalize();
-            direccion.lineal *= agente.aceleracionMax;
+                if (dir.magnitude <= magnitudeRange)
+                {
+                    ChooseNextNode();
+                }
+
+                direccion.lineal = dir;
+                direccion.lineal.Normalize();
+                direccion.lineal *= agente.aceleracionMax;
+            }
 
             return direccion;
         }
