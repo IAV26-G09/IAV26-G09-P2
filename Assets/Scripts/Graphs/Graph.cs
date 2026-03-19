@@ -28,7 +28,7 @@ namespace UCM.IAV.Navegacion
         protected List<List<Vertex>> neighbourVertex;
         protected List<List<float>> costs;
         protected bool[,] mapVertices;
-        protected float[,] costsVertices; // Costes reales (g)... aunque también se podría crear una clase
+        protected float[,] gCosts; // Costes reales (g)... aunque también se podría crear una clase
                                           // para las conexiones y poner los costes ahí,
                                           // como en el pseudocódigo de Millington (NodeRecord).
                                           // Esto está 'optimizado' porque sabemos que trabajamos con una rejilla...
@@ -94,7 +94,7 @@ namespace UCM.IAV.Navegacion
             for (int neighbour = 0; neighbour < neighs.Length; neighbour++) {
                 int j = (int)Mathf.Floor(neighs[neighbour].id / numCols);
                 int i = (int)Mathf.Floor(neighs[neighbour].id % numCols);
-                costsV[neighbour] = costsVertices[j, i];
+                costsV[neighbour] = gCosts[j, i];
             }
 
             return costsV;
@@ -123,22 +123,21 @@ namespace UCM.IAV.Navegacion
             Vertex start = GetNearestVertex(srcO.transform.position); // vertice del que partimos
             Vertex goal = GetNearestVertex(dstO.transform.position); // vertice al que vamos
 
-            float[] gCost = new float[vertices.Count]; // coste mas barato que conocemos desde el start hasta un nodo n
-            float[] fCost = new float[vertices.Count]; // gCost + heuristica
+            //float[] gCost = new float[vertices.Count]; // coste mas barato que conocemos desde el start hasta un nodo n
+            //float[] fCost = new float[vertices.Count]; // gCost + heuristica
             // array del nodo anterior a cada uno por el camino mas barato, usado para reconstruir el camino
             int[] prev = new int[vertices.Count];
 
             // inicializacion de listas a valores predeterminados infinitos
             for (int i = 0; i < vertices.Count; i++)
             {
-                gCost[i] = Mathf.Infinity;
-                fCost[i] = Mathf.Infinity;
+                vertices[i].fCost = Mathf.Infinity;
+                vertices[i].gCost = Mathf.Infinity;
                 prev[i] = -1; // vacio
             }
 
-            gCost[start.id] = 0;
-            fCost[start.id] = h(start, goal);
-            start.cost = fCost[start.id];
+            start.fCost = h(start, goal);
+            start.gCost = 0;
 
             // aniadimos el vertice origen a visitar
             open.Add(start);
@@ -163,15 +162,16 @@ namespace UCM.IAV.Navegacion
                     Vertex neighbor = neighbours[i];
 
                     // coste g de start al vecino PASANDO por act
-                    float gProbado = gCost[act.id] + neighboursCosts[i];
+                    //float gProbado = gCost[act.id] + neighboursCosts[i];
+                    float gProbado = act.gCost + neighboursCosts[i];
 
-                    if (gProbado < gCost[neighbor.id]) // si la tentativa de coste es menor que [infinito] (en un principio) -> lo actualizas
+                    //if (gProbado < gCost[neighbor.id]) // si la tentativa de coste es menor que [infinito] (en un principio) -> lo actualizas
+                    if (gProbado < neighbor.gCost) // si la tentativa de coste es menor que [infinito] (en un principio) -> lo actualizas
                     {
                         // este camino a neighbor es mejor que el anterior asi que lo guardamos ->
                         prev[neighbor.id] = act.id; // el anterior al neighbor es el actual
-                        gCost[neighbor.id] = gProbado; // actualizamos coste
-                        fCost[neighbor.id] = gProbado + h(neighbor, goal);
-                        neighbor.cost = fCost[neighbor.id];
+                        neighbor.gCost = gProbado; // actualizamos coste
+                        neighbor.fCost = gProbado + h(neighbor, goal);
 
                         if (!open.Contains(neighbor)) // si neighbor no esta en open lo metemos
                         {

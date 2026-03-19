@@ -25,7 +25,12 @@ namespace UCM.IAV.Navegacion
         /// <summary>
         /// Coste total estimado (f) del vértice 
         /// </summary>
-        public float cost;
+        public float fCost;
+
+        /// <summary>
+        /// Coste total estimado (g) del vértice 
+        /// </summary>
+        public float gCost;
 
         // Para comparar vértices, comparo el coste lo primero, que es lo principal... si el coste es igual, ver de que IDs de nodos estoy hablando
         // (hay que procurar cumplir la convención de que si dos objetos son equals, el CompareTo DEBE devolver un cero)
@@ -45,7 +50,7 @@ namespace UCM.IAV.Navegacion
             //if (ReferenceEquals(this, other)) return 0;
 
             // 1. Comparar por coste (Prioridad principal para ordenar vértices)
-            int costComparison = this.cost.CompareTo(other.cost);
+            int costComparison = this.fCost.CompareTo(other.fCost);
             if (costComparison != 0)
             {
                 return costComparison;

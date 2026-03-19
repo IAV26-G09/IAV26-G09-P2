@@ -93,7 +93,7 @@ namespace UCM.IAV.Navegacion
                     neighbourVertex = new List<List<Vertex>>(numRows * numCols);
                     vertexObjs = new GameObject[numRows * numCols];
                     mapVertices = new bool[numRows, numCols];
-                    costsVertices = new float[numRows, numCols];
+                    gCosts = new float[numRows, numCols];
 
                     // Leer mapa
                     for (i = 0; i < numRows; i++)
@@ -192,7 +192,7 @@ namespace UCM.IAV.Navegacion
 
                 int id = GridToId(j, i);
                 neighbourVertex[vertexId].Add(vertices[id]);
-                costsVertices[i, j] = defaultCost;
+                gCosts[i, j] = defaultCost;
             }
         }
 
@@ -267,12 +267,12 @@ namespace UCM.IAV.Navegacion
 
 
             if (x > 0 && x < numRows - 1 && y > 0 && y < numCols - 1)
-                costsVertices[x, y] = defaultCost * costMultiplier * costMultiplier;
+                gCosts[x, y] = defaultCost * costMultiplier * costMultiplier;
 
-            if(x > 0) costsVertices[x - 1, y] = defaultCost * costMultiplier;
-            if(x < numRows - 1) costsVertices[x + 1, y] = defaultCost * costMultiplier;
-            if(y > 0) costsVertices[x, y - 1] = defaultCost * costMultiplier;
-            if(y < numCols - 1) costsVertices[x, y + 1] = defaultCost * costMultiplier;
+            if(x > 0) gCosts[x - 1, y] = defaultCost * costMultiplier;
+            if(x < numRows - 1) gCosts[x + 1, y] = defaultCost * costMultiplier;
+            if(y > 0) gCosts[x, y - 1] = defaultCost * costMultiplier;
+            if(y < numCols - 1) gCosts[x, y + 1] = defaultCost * costMultiplier;
 
         }
 

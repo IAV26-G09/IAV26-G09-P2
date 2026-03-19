@@ -1728,6 +1728,16 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 5587432493576105248, guid: c391d0bafd410864ca5d0cc1bd083ed3,
+        type: 3}
+      propertyPath: velocidadMax
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5587432493576105248, guid: c391d0bafd410864ca5d0cc1bd083ed3,
+        type: 3}
+      propertyPath: aceleracionMax
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 5587432493576105249, guid: c391d0bafd410864ca5d0cc1bd083ed3,
         type: 3}
       propertyPath: m_Name
