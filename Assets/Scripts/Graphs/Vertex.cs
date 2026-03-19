@@ -28,7 +28,7 @@ namespace UCM.IAV.Navegacion
         public float fCost;
 
         /// <summary>
-        /// Coste total estimado (g) del vértice 
+        /// Coste real (g) del vértice 
         /// </summary>
         public float gCost;
 
