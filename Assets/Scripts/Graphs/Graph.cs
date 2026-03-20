@@ -26,7 +26,7 @@ namespace UCM.IAV.Navegacion
         public GameObject vertexPrefab;
         protected List<Vertex> vertices;
         protected List<List<Vertex>> neighbourVertex;
-        protected List<List<float>> costs;
+        //protected List<List<float>> costs;
         protected bool[,] mapVertices;
         protected float[,] gCosts; // Costes reales (g)... aunque también se podría crear una clase
                                           // para las conexiones y poner los costes ahí,
@@ -132,7 +132,13 @@ namespace UCM.IAV.Navegacion
             for (int i = 0; i < vertices.Count; i++)
             {
                 vertices[i].fCost = Mathf.Infinity;
+
+                Debug.Log("antes " + vertices[i].gCost + " " + vertices[i].id);
+
                 vertices[i].gCost = Mathf.Infinity;
+
+                Debug.Log("despues " + vertices[i].gCost);
+
                 prev[i] = -1; // vacio
             }
 
@@ -165,12 +171,20 @@ namespace UCM.IAV.Navegacion
                     //float gProbado = gCost[act.id] + neighboursCosts[i];
                     float gProbado = act.gCost + neighboursCosts[i];
 
+                    //Debug.Log(act.gCost);
+
                     //if (gProbado < gCost[neighbor.id]) // si la tentativa de coste es menor que [infinito] (en un principio) -> lo actualizas
                     if (gProbado < neighbor.gCost) // si la tentativa de coste es menor que [infinito] (en un principio) -> lo actualizas
                     {
                         // este camino a neighbor es mejor que el anterior asi que lo guardamos ->
                         prev[neighbor.id] = act.id; // el anterior al neighbor es el actual
+
+                        //Debug.Log(neighbor.gCost);
+
                         neighbor.gCost = gProbado; // actualizamos coste
+
+                        //Debug.Log(neighbor.gCost);
+
                         neighbor.fCost = gProbado + h(neighbor, goal);
 
                         if (!open.Contains(neighbor)) // si neighbor no esta en open lo metemos
@@ -273,7 +287,7 @@ namespace UCM.IAV.Navegacion
             do
             {
                 path.Add(vertices[prev]);
-
+                //Debug.Log(vertices[prev].gCost);
                 prev = prevList[prev];
 
             } while (prev != srcId && prev != -1);
