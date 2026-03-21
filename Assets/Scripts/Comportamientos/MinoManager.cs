@@ -67,6 +67,11 @@ namespace UCM.IAV.Navegacion
                 minoGO.AddComponent<Vigilar>();
 
             }
+            InfluenceCollision col = minoGO.GetComponent<InfluenceCollision>();
+            if (col != null)
+            {
+                col.graph = graph;
+            }
             GameManager.instance.AddCameraTarget(minoGO.transform);
         }
     }

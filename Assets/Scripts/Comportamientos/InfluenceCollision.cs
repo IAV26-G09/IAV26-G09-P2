@@ -14,28 +14,36 @@ namespace UCM.IAV.Movimiento
         [SerializeField]
         private float costOnCollision = 5.0f;
 
-        private void OnTriggerEnter(Collider collision)
+        public Graph graph;
+
+        //private void OnTriggerEnter(Collider collision)
+        private void OnCollisionEnter(Collision collision)
         {
             var vertex = collision.gameObject.GetComponent<Vertex>();
-            Debug.Log(collision.gameObject.name);
             if (vertex != null)
             {
-                lastVertexCost = vertex.gCost;
+                Debug.Log(collision.gameObject.name);
 
+                //lastVertexCost = vertex.gCost;
                 //Debug.Log("last " + lastVertexCost);
 
-                vertex.gCost = costOnCollision;
+                //vertex.gCost = costOnCollision;
+                graph.UpdateVertexCost(vertex.gameObject.transform.position, costOnCollision);
 
-                Debug.Log("VERTICE " + vertex.id + " AHORA ES " + vertex.gCost);
+
+                Debug.Log("VERTICE " + vertex.id + " AHORA ES " + costOnCollision);
             }
         }
 
-        private void OnTriggerExit(Collider collision)
+        //private void OnTriggerExit(Collider collision)
+        private void OnCollisionExit(Collision collision)
         {
             var vertex = collision.gameObject.GetComponent<Vertex>();
             if (vertex != null)
             {
-                vertex.gCost = lastVertexCost;
+                //vertex.gCost = lastVertexCost;
+
+                graph.UpdateVertexCost(vertex.gameObject.transform.position, 1);
             }
         }
     }

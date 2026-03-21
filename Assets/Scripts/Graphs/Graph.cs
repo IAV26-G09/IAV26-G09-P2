@@ -123,7 +123,7 @@ namespace UCM.IAV.Navegacion
             Vertex start = GetNearestVertex(srcO.transform.position); // vertice del que partimos
             Vertex goal = GetNearestVertex(dstO.transform.position); // vertice al que vamos
 
-            //float[] gCost = new float[vertices.Count]; // coste mas barato que conocemos desde el start hasta un nodo n
+            float[] gCost = new float[vertices.Count]; // coste mas barato que conocemos desde el start hasta un nodo n
             //float[] fCost = new float[vertices.Count]; // gCost + heuristica
             // array del nodo anterior a cada uno por el camino mas barato, usado para reconstruir el camino
             int[] prev = new int[vertices.Count];
@@ -131,19 +131,24 @@ namespace UCM.IAV.Navegacion
             // inicializacion de listas a valores predeterminados infinitos
             for (int i = 0; i < vertices.Count; i++)
             {
-                vertices[i].fCost = Mathf.Infinity;
+                //vertices[i].fCost = Mathf.Infinity;
 
-                Debug.Log("antes " + vertices[i].gCost + " " + vertices[i].id);
+                //Debug.Log("antes " + vertices[i].gCost + " " + vertices[i].id);
 
-                vertices[i].gCost = Mathf.Infinity;
+                //vertices[i].gCost = Mathf.Infinity;
 
-                Debug.Log("despues " + vertices[i].gCost);
+                //Debug.Log("despues " + vertices[i].gCost);
+
+                gCost[i] = Mathf.Infinity;
 
                 prev[i] = -1; // vacio
             }
 
+            //start.fCost = h(start, goal);
+            //start.gCost = 0;
+
+            gCost[start.id] = 0;
             start.fCost = h(start, goal);
-            start.gCost = 0;
 
             // aniadimos el vertice origen a visitar
             open.Add(start);
@@ -168,24 +173,26 @@ namespace UCM.IAV.Navegacion
                     Vertex neighbor = neighbours[i];
 
                     // coste g de start al vecino PASANDO por act
-                    //float gProbado = gCost[act.id] + neighboursCosts[i];
-                    float gProbado = act.gCost + neighboursCosts[i];
+                    float gProbado = gCost[act.id] + neighboursCosts[i];
+                    //float gProbado = act.gCost + neighboursCosts[i];
 
                     //Debug.Log(act.gCost);
 
-                    //if (gProbado < gCost[neighbor.id]) // si la tentativa de coste es menor que [infinito] (en un principio) -> lo actualizas
-                    if (gProbado < neighbor.gCost) // si la tentativa de coste es menor que [infinito] (en un principio) -> lo actualizas
+                    if (gProbado < gCost[neighbor.id]) // si la tentativa de coste es menor que [infinito] (en un principio) -> lo actualizas
+                    //if (gProbado < neighbor.gCost) // si la tentativa de coste es menor que [infinito] (en un principio) -> lo actualizas
                     {
                         // este camino a neighbor es mejor que el anterior asi que lo guardamos ->
                         prev[neighbor.id] = act.id; // el anterior al neighbor es el actual
 
                         //Debug.Log(neighbor.gCost);
 
-                        neighbor.gCost = gProbado; // actualizamos coste
+                        //neighbor.gCost = gProbado; // actualizamos coste
 
                         //Debug.Log(neighbor.gCost);
 
                         neighbor.fCost = gProbado + h(neighbor, goal);
+
+                        gCost[neighbor.id] = gProbado; // actualizamos coste
 
                         if (!open.Contains(neighbor)) // si neighbor no esta en open lo metemos
                         {
