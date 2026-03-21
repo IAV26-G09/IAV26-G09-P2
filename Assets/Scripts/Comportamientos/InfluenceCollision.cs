@@ -19,31 +19,36 @@ namespace UCM.IAV.Movimiento
         //private void OnTriggerEnter(Collider collision)
         private void OnCollisionEnter(Collision collision)
         {
-            var vertex = collision.gameObject.GetComponent<Vertex>();
-            if (vertex != null)
+            if (this.enabled)
             {
-                Debug.Log(collision.gameObject.name);
+                var vertex = collision.gameObject.GetComponent<Vertex>();
+                if (vertex != null)
+                {
+                    Debug.Log(collision.gameObject.name);
 
-                //lastVertexCost = vertex.gCost;
-                //Debug.Log("last " + lastVertexCost);
+                    //lastVertexCost = vertex.gCost;
+                    //Debug.Log("last " + lastVertexCost);
 
-                //vertex.gCost = costOnCollision;
-                graph.UpdateVertexCost(vertex.gameObject.transform.position, costOnCollision);
+                    //vertex.gCost = costOnCollision;
+                    graph.UpdateVertexCost(vertex.gameObject.transform.position, costOnCollision);
 
-
-                Debug.Log("VERTICE " + vertex.id + " AHORA ES " + costOnCollision);
+                    Debug.Log("VERTICE " + vertex.id + " AHORA ES " + costOnCollision);
+                }
             }
         }
 
         //private void OnTriggerExit(Collider collision)
         private void OnCollisionExit(Collision collision)
         {
-            var vertex = collision.gameObject.GetComponent<Vertex>();
-            if (vertex != null)
+            if (this.enabled)
             {
-                //vertex.gCost = lastVertexCost;
+                var vertex = collision.gameObject.GetComponent<Vertex>();
+                if (vertex != null)
+                {
+                    //vertex.gCost = lastVertexCost;
 
-                graph.UpdateVertexCost(vertex.gameObject.transform.position, 1);
+                    graph.UpdateVertexCost(vertex.gameObject.transform.position, 1);
+                }
             }
         }
     }
