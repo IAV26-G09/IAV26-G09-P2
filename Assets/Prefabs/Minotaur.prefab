@@ -549,7 +549,7 @@ GameObject:
   - component: {fileID: 8357271194336293764}
   - component: {fileID: 1055587080962254686}
   - component: {fileID: 6267089033843014546}
-  - component: {fileID: 350526636344989936}
+  - component: {fileID: 6925531618618025859}
   m_Layer: 7
   m_Name: Minotaur
   m_TagString: Untagged
@@ -711,7 +711,7 @@ MonoBehaviour:
   fuerzaRalentizado: 0
   avoidQuantity: 5
   distance: 7
---- !u!114 &350526636344989936
+--- !u!114 &6925531618618025859
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

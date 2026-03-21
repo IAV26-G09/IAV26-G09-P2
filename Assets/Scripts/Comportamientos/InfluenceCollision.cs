@@ -1,9 +1,9 @@
-using UCM.IAV.Movimiento;
-using UnityEngine;
-
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using UCM.IAV.Movimiento;
 using UCM.IAV.Navegacion;
+using UnityEngine;
 using UnityEngine;
 
 namespace UCM.IAV.Movimiento
@@ -50,6 +50,20 @@ namespace UCM.IAV.Movimiento
                     graph.UpdateVertexCost(vertex.gameObject.transform.position, 1);
                 }
             }
+        }
+
+        virtual public void OnDrawGizmos()
+        {
+            if (!Application.isPlaying)
+                return;
+
+            if (ReferenceEquals(graph, null))
+                return;
+
+            Vertex v;
+            Gizmos.color = Color.red; // Verde es el nodo inicial
+            v = graph.GetNearestVertex(transform.position);
+            Gizmos.DrawSphere(v.transform.position, 0.25f);
         }
     }
 }
