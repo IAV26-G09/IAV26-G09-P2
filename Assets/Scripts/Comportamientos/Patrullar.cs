@@ -147,7 +147,7 @@ namespace UCM.IAV.Movimiento
         {
             Vertex temp = sigNodo;
             sigNodo = antNodo;
-            antNodo = sigNodo;
+            antNodo = temp;
             SetPositions();
         }
     }
