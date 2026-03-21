@@ -28,9 +28,6 @@ namespace UCM.IAV.Movimiento
         [SerializeField]
         float minimuRadius = 3.0f; // radio alrededor del jugador en el que no moverse
 
-        private float velAnd;
-        private float velSpr;
-
         private float accAnd;
         private float accSpr;
 
@@ -40,9 +37,6 @@ namespace UCM.IAV.Movimiento
 
         private void Start()
         {
-            velAnd = agente.velocidadMax / 2;
-            velSpr = agente.velocidadMax;
-
             accAnd = agente.aceleracionMax / 2;
             accSpr = agente.aceleracionMax;
         }
@@ -87,20 +81,10 @@ namespace UCM.IAV.Movimiento
             // Comprobamos si estamos corriendo
             sprinting = Input.GetKey(KeyCode.Mouse0);
 
-            if (sprinting)
-            {
-                agente.aceleracionMax = accSpr;
-                agente.velocidadMax = velSpr;
-            }
-            else
-            {
-                agente.aceleracionMax = accAnd;
-                agente.velocidadMax = velAnd;
-            }
-
             // Resto de calculo de movimiento
             direccion.lineal.Normalize();
-            direccion.lineal *= agente.aceleracionMax;
+            float acc = sprinting ? accSpr : accAnd;
+            direccion.lineal *= acc;
 
             return direccion;
         }
