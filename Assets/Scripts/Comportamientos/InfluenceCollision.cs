@@ -24,7 +24,7 @@ namespace UCM.IAV.Movimiento
                 var vertex = collision.gameObject.GetComponent<Vertex>();
                 if (vertex != null)
                 {
-                    Debug.Log(collision.gameObject.name);
+                    //Debug.Log(collision.gameObject.name);
 
                     //lastVertexCost = vertex.gCost;
                     //Debug.Log("last " + lastVertexCost);
@@ -32,7 +32,7 @@ namespace UCM.IAV.Movimiento
                     //vertex.gCost = costOnCollision;
                     graph.UpdateVertexCost(vertex.gameObject.transform.position, costOnCollision);
 
-                    Debug.Log("VERTICE " + vertex.id + " AHORA ES " + costOnCollision);
+                    //Debug.Log("VERTICE " + vertex.id + " AHORA ES " + costOnCollision);
                 }
             }
         }

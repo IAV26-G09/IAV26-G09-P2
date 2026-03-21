@@ -273,7 +273,7 @@ namespace UCM.IAV.Navegacion
             if(x < numRows - 1) gCosts[x + 1, y] = defaultCost * costMultiplier;
             if(y > 0) gCosts[x, y - 1] = defaultCost * costMultiplier;
             if(y < numCols - 1) gCosts[x, y + 1] = defaultCost * costMultiplier;
-
+            Debug.Log("Updated cost of vertex " + v.id + " to " + gCosts[x, y]);
         }
 
         private GameObject WallInstantiate(Vector3 position, int i, int j)
