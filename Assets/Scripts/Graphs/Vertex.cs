@@ -27,11 +27,6 @@ namespace UCM.IAV.Navegacion
         /// </summary>
         public float fCost;
 
-        /// <summary>
-        /// Coste real (g) del vértice 
-        /// </summary>
-        public float gCost;
-
         // Para comparar vértices, comparo el coste lo primero, que es lo principal... si el coste es igual, ver de que IDs de nodos estoy hablando
         // (hay que procurar cumplir la convención de que si dos objetos son equals, el CompareTo DEBE devolver un cero)
         public int CompareTo(Vertex other)
