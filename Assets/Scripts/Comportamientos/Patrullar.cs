@@ -34,7 +34,7 @@ namespace UCM.IAV.Movimiento
         bool idling = false;
         float counter = 0.0f;
         [SerializeField]
-        float idleTime = 3.0f;
+        float idleTime = 5f;
 
         private void Start()
         {
@@ -60,7 +60,6 @@ namespace UCM.IAV.Movimiento
             {
                 antNodo = sigNodo; // antes de cambiarlo guardas el anterior
                 sigNodo = neighbours[0];
-                idling = true;
             }
             SetPositions();
         }
@@ -73,6 +72,10 @@ namespace UCM.IAV.Movimiento
 
             if (newNode.id != antNodo.id) // para no poder volver hacia atras
             {
+                if (IsTurn(antNodo, sigNodo, newNode))
+                {
+                    idling = true;
+                }
                 antNodo = sigNodo;
                 return newNode;
             }
@@ -89,12 +92,18 @@ namespace UCM.IAV.Movimiento
             if (idling)
             {
                 counter += Time.deltaTime;
+
+                direccion.angular = 0;
+                direccion.lineal = Vector3.zero;
+
                 if (counter >= idleTime)
                 {
                     counter = 0.0f;
                     idling = false;
                     ChooseNextNode();
                 }
+
+                return direccion;
             }
             else
             {
@@ -149,6 +158,26 @@ namespace UCM.IAV.Movimiento
             sigNodo = antNodo;
             antNodo = temp;
             SetPositions();
+        }
+
+        bool IsTurn(Vertex from, Vertex current, Vertex to)
+        {
+            Vector3 dir1 = graph.GetVertexPos(current) - graph.GetVertexPos(from);
+            Vector3 dir2 = graph.GetVertexPos(to) - graph.GetVertexPos(current);
+
+            dir1.y = 0;
+            dir2.y = 0;
+
+            dir1.Normalize();
+            dir2.Normalize();
+
+            float dot = Vector3.Dot(dir1, dir2);
+
+            //1 -> 0º
+            //-1 -> 180º
+            //0 -> 90º
+
+            return dot < 0.9f;
         }
     }
 }
