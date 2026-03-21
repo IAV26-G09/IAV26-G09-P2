@@ -130,6 +130,10 @@ namespace UCM.IAV.Navegacion
 
                     DibujaHilo();
                 }
+                else
+                {
+                    hilo.positionCount = 0;
+                }
             }
         }
 
