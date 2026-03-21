@@ -2,7 +2,7 @@
    Copyright (C) 2020-2023 Federico Peinado
    http://www.federicopeinado.com
    Este fichero forma parte del material de la asignatura Inteligencia Artificial para Videojuegos.
-   Esta asignatura se imparte en la Facultad de Inform·tica de la Universidad Complutense de Madrid (EspaÒa).
+   Esta asignatura se imparte en la Facultad de Inform√°tica de la Universidad Complutense de Madrid (Espa√±a).
    Autor: Federico Peinado 
    Contacto: email@federicopeinado.com
 */
@@ -67,11 +67,17 @@ namespace UCM.IAV.Navegacion
                 minoGO.AddComponent<Vigilar>();
 
             }
+
             InfluenceCollision col = minoGO.GetComponent<InfluenceCollision>();
             if (col != null)
             {
                 col.graph = graph;
+                Transform slow = minoGO.transform.Find("Sphere");
+                InfluenceCollision slowCol = slow.GetComponent<InfluenceCollision>();
+                if (slowCol != null)
+                    slowCol.graph = graph;  
             }
+
             GameManager.instance.AddCameraTarget(minoGO.transform);
         }
     }

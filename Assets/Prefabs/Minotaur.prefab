@@ -167,7 +167,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8072408929486011096
 Transform:
   m_ObjectHideFlags: 0
@@ -725,6 +725,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   costOnCollision: Infinity
   graph: {fileID: 0}
+  useTrigger: 0
+  debugging: 1
 --- !u!1 &6227627562668922387
 GameObject:
   m_ObjectHideFlags: 0
@@ -914,7 +916,8 @@ GameObject:
   - component: {fileID: 6714168204369594045}
   - component: {fileID: 4847393998361609635}
   - component: {fileID: 2088125191281208512}
-  m_Layer: 0
+  - component: {fileID: 919198803794663792}
+  m_Layer: 7
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1034,6 +1037,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13684ffe492191840b7059313990e5a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &919198803794663792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7872998543525572461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f59da60a863d88f4a8205de34bd1db22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  costOnCollision: 5
+  graph: {fileID: 0}
+  useTrigger: 1
+  debugging: 1
 --- !u!1 &7873725490849595519
 GameObject:
   m_ObjectHideFlags: 0

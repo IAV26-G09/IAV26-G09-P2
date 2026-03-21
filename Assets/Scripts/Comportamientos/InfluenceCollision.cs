@@ -10,50 +10,86 @@ namespace UCM.IAV.Movimiento
 {
     public class InfluenceCollision : MonoBehaviour
     {
-        private float lastVertexCost;
         [SerializeField]
         private float costOnCollision = 5.0f;
 
         public Graph graph;
 
-        //private void OnTriggerEnter(Collider collision)
-        private void OnCollisionEnter(Collision collision)
+        [SerializeField]
+        bool useTrigger = true;
+
+        [SerializeField]
+        bool debugging = true;
+        List<Vertex> affectedVertexes = new List<Vertex>();
+        float gizmoRadius = 0.25f;
+
+        private void EnterVertex(Vertex vertex)
         {
-            if (this.enabled)
+            if (vertex != null)
             {
-                var vertex = collision.gameObject.GetComponent<Vertex>();
-                if (vertex != null)
-                {
-                    //Debug.Log(collision.gameObject.name);
+                //Debug.Log(collision.gameObject.name);
+                //Debug.Log("last " + lastVertexCost);
 
-                    //lastVertexCost = vertex.gCost;
-                    //Debug.Log("last " + lastVertexCost);
-
-                    //vertex.gCost = costOnCollision;
+                if (vertex.fCost < costOnCollision)
                     graph.UpdateVertexCost(vertex.gameObject.transform.position, costOnCollision);
 
-                    //Debug.Log("VERTICE " + vertex.id + " AHORA ES " + costOnCollision);
-                }
+                if (debugging)
+                    affectedVertexes.Add(vertex);
+
+                //Debug.Log("VERTICE " + vertex.id + " AHORA ES " + costOnCollision);
             }
         }
 
-        //private void OnTriggerExit(Collider collision)
-        private void OnCollisionExit(Collision collision)
+        private void ExitVertex(Vertex vertex, float exitCost)
         {
-            if (this.enabled)
+            if (vertex != null)
+            {
+                graph.UpdateVertexCost(vertex.gameObject.transform.position, exitCost);
+
+                if (debugging)
+                    affectedVertexes.Remove(vertex);
+            }
+        }
+
+        private void OnTriggerEnter(Collider collision)
+        {
+            if (this.enabled && useTrigger)
             {
                 var vertex = collision.gameObject.GetComponent<Vertex>();
-                if (vertex != null)
-                {
-                    //vertex.gCost = lastVertexCost;
+                EnterVertex(vertex);
+            }
+        }
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (this.enabled && !useTrigger)
+            {
+                var vertex = collision.gameObject.GetComponent<Vertex>();
+                EnterVertex(vertex);
+            }
+        }
 
-                    graph.UpdateVertexCost(vertex.gameObject.transform.position, 1);
-                }
+        private void OnCollisionExit(Collision collision)
+        {
+            if (this.enabled && !useTrigger)
+            {
+                var vertex = collision.gameObject.GetComponent<Vertex>();
+                ExitVertex(vertex, 5);
+            }
+        }
+        private void OnTriggerExit(Collider collision)
+        {
+            if (this.enabled && useTrigger)
+            {
+                var vertex = collision.gameObject.GetComponent<Vertex>();
+                ExitVertex(vertex, 1);  
             }
         }
 
         virtual public void OnDrawGizmos()
         {
+            if (!debugging)
+                return;
+
             if (!Application.isPlaying)
                 return;
 
@@ -63,7 +99,13 @@ namespace UCM.IAV.Movimiento
             Vertex v;
             Gizmos.color = Color.red; // Verde es el nodo inicial
             v = graph.GetNearestVertex(transform.position);
-            Gizmos.DrawSphere(v.transform.position, 0.25f);
+            Gizmos.DrawSphere(v.transform.position, gizmoRadius);
+
+            foreach (Vertex vv in affectedVertexes)
+            {
+                Gizmos.color = Color.yellow; // Amarillo es el nodo afectado
+                Gizmos.DrawSphere(vv.transform.position, gizmoRadius);
+            }
         }
     }
 }
