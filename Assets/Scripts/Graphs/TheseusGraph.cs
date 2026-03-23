@@ -6,10 +6,11 @@
    Autor: Federico Peinado 
    Contacto: email@federicopeinado.com
 */
+using System;
+using System.Collections.Generic;
+using System.IO;
 using UCM.IAV.Movimiento;
 using UnityEngine;
-using System.Collections.Generic;
-using System;
 
 namespace UCM.IAV.Navegacion
 {
@@ -122,6 +123,12 @@ namespace UCM.IAV.Navegacion
                 if (smoothPath)
                 {
                     path = graph.Smooth(path); // Suavizar el camino, una vez calculado
+
+                    TakeNodeMetrics(path.Count, "nodossmooth.csv");
+                }
+                else
+                {
+                    TakeNodeMetrics(path.Count, "nodos.csv");
                 }
 
                 if (path.Count > 0)
@@ -191,15 +198,6 @@ namespace UCM.IAV.Navegacion
                 Vertex v = path[i];
                 Ovillo o = v.gameObject.GetComponentInChildren<Ovillo>();
                 o.Show(true);
-
-                //GameObject r = v.gameObject;
-                //foreach (Transform target in v.transform)
-                //{
-                //    if (target.gameObject.CompareTag("Ovillo"))
-                //    {
-                //        target.gameObject.SetActive(true);
-                //    }
-                //}
             }
         }
 
@@ -278,6 +276,15 @@ namespace UCM.IAV.Navegacion
         public bool GetSmooth()
         {
             return smoothPath;
+        }
+
+        private void TakeNodeMetrics(int nodes, string file)
+        {
+            StreamWriter salida = new StreamWriter(file, true);
+
+            salida.WriteLine(nodes + ",");
+
+            salida.Close();
         }
     }
 }
