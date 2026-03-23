@@ -94,7 +94,7 @@ namespace UCM.IAV.Navegacion
             {
                 updateAriadna(!ariadna);
             }
-            
+
             if (Input.GetKeyDown(KeyCode.S))
                 smoothPath = !smoothPath;
 
@@ -276,6 +276,11 @@ namespace UCM.IAV.Navegacion
         public bool GetSmooth()
         {
             return smoothPath;
+        }
+
+        public void ToggleSmooth()
+        {
+            smoothPath = !smoothPath;
         }
 
         private void TakeNodeMetrics(int nodes, string file)

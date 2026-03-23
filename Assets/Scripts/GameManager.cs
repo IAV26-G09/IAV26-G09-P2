@@ -303,5 +303,11 @@ namespace UCM.IAV.Movimiento
             }
 #endif
         }
+
+        public void ToggleSmooth()
+        {
+            suavizadoText.text = theseusGraph.GetSmooth() ? "No" : "Si";
+            theseusGraph.ToggleSmooth();
+        }
     }
 }

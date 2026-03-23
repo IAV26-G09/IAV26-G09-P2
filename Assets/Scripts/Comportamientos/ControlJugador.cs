@@ -45,6 +45,9 @@ namespace UCM.IAV.Movimiento
         {
             Direccion direccion = new Direccion();
 
+            if (Input.GetKeyDown(KeyCode.M))
+                able = !able;
+
             if (!able)
             {
                 return direccion;
