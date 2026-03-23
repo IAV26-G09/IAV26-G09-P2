@@ -419,7 +419,7 @@ Detallamos a continuación la información sobre cada clase:
 
 | Clases nuevas respecto a la plantilla | Clases de la plantilla modificadas |  
 |:-:|:-:|
-| 🟢​ | 🟡​ |
+| 🟣​​ | 🟡​ |
 
 ### Game Manager 🟡
 El gestor del juego se encarga de actualizar la interfaz de usuario con la información relevante y comprobar si el jugador ha escapado del laberinto. Su método más relevante es Update, que actualiza el framerate, registra la entrada y actúa en consecuencia, cambiando la heurística o reiniciando la escena, cada acción con su propio método. 
@@ -453,12 +453,12 @@ Hereda de comportamientoAgente y es usado por todos los minotauros cuando han de
 * __getDirección()__ se usa para calcular la velocidad y dirección en la que tiene que acercarse a su objetivo, teniendo en cuenta el radio de deceleración y el radio de llegada (momento en el que se considera que ha alcanzado a su objetivo).
 * __raycastCollision()__ detecta si hay algún obstáculo en la dirección en la que nos estamos moviendo. Si encuentra algún obstáculo, calcula la normal con la que ha impactado el rayo del raycast para desviar al agente en esa dirección y devolver ese vector de desviación. Este método es llamado desde el método __avoidance()__, llamado a su vez desde __getDirección()__.
 
-### Vigilar 🟢
+### Vigilar 🟣​
 El comportamientoAgente, usado por los minotauros estáticos, los hace rotar aleatoriamente.
 * __getDirection()__ calcula el ángulo de giro aleatorio que rotarán durante un tiempo también aleatorio.
 * __onCollisionEnter()__, llamado automáticamente cuando colisionan con algo, les redirige en dirección opuesta del objeto con el que han colisionado.
 
-### Patrullar 🟢
+### Patrullar 🟣​
 El comportamientoAgente, usado por los minotauros patrulla, los hace caminar en línea recta, cambiando de dirección aleatoriamente al llegar a un cruce de caminos. Los patrulleros nunca girarán en dirección contraria, a no ser que no les quede otra opción, con tal de simular una mayor inteligencia.
 * __ChooseNextNode()__, usando el atributo graph de la clase se selecciona hacia qué nodo, de entre todos los nodos vecinos del nodo más cercano a cada minotauro, seguir avanzando.
 * __GetNewNode()__ obtiene un nuevo nodo al que ir en caso de encrucijada, teniendo en cuenta que no puedes volver al nodo del que vienes (prohibiendo el giro de 180º).
@@ -466,7 +466,7 @@ El comportamientoAgente, usado por los minotauros patrulla, los hace caminar en 
 * __OnDrawGizmos()__ se usa para debuguear el nodo actual, el siguiente y el anterior, dibuja una esfera de color en cada uno de ellos.
 * __ResetPath()__, en caso de choque con otro minotauro se sigue otro camino.
 
-### CampoVision 🟢
+### CampoVision 🟣​
 Implementa el cono de visión de todos los minotauros y gestiona el estado de estos si se detecta al avatar.
 * __OnTriggerStay()__, si el avatar entra en el trigger de detección, se encuentra en el ángulo de visión del minotauro, y no hay ningún objeto entre el minotauro y él entonces se confirma que ha sido detectado por lo que el minotauro pasará a seguirle hasta que pierda visión de él o le alcance.
 
