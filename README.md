@@ -419,7 +419,7 @@ Detallamos a continuación la información sobre cada clase:
 
 | Clases nuevas respecto a la plantilla | Clases de la plantilla modificadas |  
 |:-:|:-:|
-| 🟢​ | 🟡​ |
+| 🟣​​ | 🟡​ |
 
 ### Game Manager 🟡
 El gestor del juego se encarga de actualizar la interfaz de usuario con la información relevante y comprobar si el jugador ha escapado del laberinto. Su método más relevante es Update, que actualiza el framerate, registra la entrada y actúa en consecuencia, cambiando la heurística o reiniciando la escena, cada acción con su propio método. 
@@ -453,12 +453,12 @@ Hereda de comportamientoAgente y es usado por todos los minotauros cuando han de
 * __getDirección()__ se usa para calcular la velocidad y dirección en la que tiene que acercarse a su objetivo, teniendo en cuenta el radio de deceleración y el radio de llegada (momento en el que se considera que ha alcanzado a su objetivo).
 * __raycastCollision()__ detecta si hay algún obstáculo en la dirección en la que nos estamos moviendo. Si encuentra algún obstáculo, calcula la normal con la que ha impactado el rayo del raycast para desviar al agente en esa dirección y devolver ese vector de desviación. Este método es llamado desde el método __avoidance()__, llamado a su vez desde __getDirección()__.
 
-### Vigilar 🟢
+### Vigilar 🟣​
 El comportamientoAgente, usado por los minotauros estáticos, los hace rotar aleatoriamente.
 * __getDirection()__ calcula el ángulo de giro aleatorio que rotarán durante un tiempo también aleatorio.
 * __onCollisionEnter()__, llamado automáticamente cuando colisionan con algo, les redirige en dirección opuesta del objeto con el que han colisionado.
 
-### Patrullar 🟢
+### Patrullar 🟣​
 El comportamientoAgente, usado por los minotauros patrulla, los hace caminar en línea recta, cambiando de dirección aleatoriamente al llegar a un cruce de caminos. Los patrulleros nunca girarán en dirección contraria, a no ser que no les quede otra opción, con tal de simular una mayor inteligencia.
 * __ChooseNextNode()__, usando el atributo graph de la clase se selecciona hacia qué nodo, de entre todos los nodos vecinos del nodo más cercano a cada minotauro, seguir avanzando.
 * __GetNewNode()__ obtiene un nuevo nodo al que ir en caso de encrucijada, teniendo en cuenta que no puedes volver al nodo del que vienes (prohibiendo el giro de 180º).
@@ -466,7 +466,7 @@ El comportamientoAgente, usado por los minotauros patrulla, los hace caminar en 
 * __OnDrawGizmos()__ se usa para debuguear el nodo actual, el siguiente y el anterior, dibuja una esfera de color en cada uno de ellos.
 * __ResetPath()__, en caso de choque con otro minotauro se sigue otro camino.
 
-### CampoVision 🟢
+### CampoVision 🟣​
 Implementa el cono de visión de todos los minotauros y gestiona el estado de estos si se detecta al avatar.
 * __OnTriggerStay()__, si el avatar entra en el trigger de detección, se encuentra en el ángulo de visión del minotauro, y no hay ningún objeto entre el minotauro y él entonces se confirma que ha sido detectado por lo que el minotauro pasará a seguirle hasta que pierda visión de él o le alcance.
 
@@ -563,24 +563,15 @@ Serie corta y rápida posible de pruebas que pueden realizarse para verificar qu
 * **20 (E).** Repetir los pasos indefinidamente.
 
 ### Métricas tomadas
-Hardware utilizado en las medidas:
+En un PC de estas características:
 - **CPU:** AMD Ryzen 7 5700G a 3.80 GHz
 - **GPU:** NVIDIA GeForce GTX 1660 SUPER 6 GB
 - **RAM:** 16 GB (8x2) de 3200 MT/s
 - **SO:** Windows 11
 - **Versión de Unity:** 6000.0.66f2
 
-<!--
-- **CPU:** Intel Core i5-12600KF a 3.70 GHz
-- **GPU:** NVIDIA GeForce RTX 5070 Ti con 16 GB
-- **RAM:** 32 GB (16x2) de 4800 MT/s
-- **SO:** Windows 11
-- **Versión de Unity:** 6000.0.66f2
- -->
-
-Cuando A* tenga en cuenta los costes de los minotauros se tomarán las siguientes métricas:
+Se han tomado las siguientes métricas:
 - Tiempo empleado en el cálculo por A* para cada tamaño del laberinto.
-
 ```mermaid
 xychart-beta
 title "Tamaño Mapa-Nanosegundos"
@@ -589,8 +580,16 @@ y-axis "Nanosegundos" 2200000 --> 18000000
 line [2200300, 2726300, 3812600, 5105000, 17283900]
 ```
 
-- Número de nodos explorados totales al llegar a la solución para cada tamaño del laberinto.
+- Mediana de tiempo empleado en el cálculo por A* según la distancia restante hasta la casilla final para cada tamaño del laberinto.
+```mermaid
+xychart-beta
+title "Tamaño Mapa-Nanosegundos"
+x-axis "Tamaño Mapa" [10x10, 20x20, 30x30, 60x60, 100x100]
+y-axis "Nanosegundos" 160000 --> 1326900
+line [160000, 300150, 476700, 1326900, 1092000]
+```
 
+- Número de nodos explorados totales al llegar a la solución para cada tamaño del laberinto.
 ```mermaid
 xychart-beta
 title "Tamaño Mapa-Nº nodos explorados"
@@ -600,7 +599,7 @@ line [27, 104, 258, 174, 1194]
 ```
 
 - Número de nodos en el camino solución.
-
+En el siguiente gráfico, la línea azul representa la métrica de nodos en el camino solución desde el nodo de inicio hasta el nodo final y la línea verde representa los nodos en el camino solución desde el nodo de inicio hasta el nodo final habiendo aplicado *Smooth*. Usar el *Smooth* supone una mejora media aproximada del 70.5%.
 ```mermaid
 xychart-beta
 title "Tamaño Mapa-Nº nodos solución"
