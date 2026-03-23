@@ -34,7 +34,15 @@ namespace UCM.IAV.Movimiento
         bool idling = false;
         float counter = 0.0f;
         [SerializeField]
-        float idleTime = 5f;
+        float idleTime = 2f;
+
+        [SerializeField]
+        float idleAngularSpeed = 60f; // grados por segundo
+        [SerializeField]
+        float idleFrequency = 2f; // velocidad de oscilación
+        [SerializeField]
+        float maxIdleAngle = 45f;
+        private float initialYRotation;
 
         private void Start()
         {
@@ -43,6 +51,7 @@ namespace UCM.IAV.Movimiento
             antNodo = sigNodo;
             //sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
             SetPositions();
+            initialYRotation = transform.eulerAngles.y;
         }
 
         void ChooseNextNode()
@@ -60,6 +69,8 @@ namespace UCM.IAV.Movimiento
             {
                 antNodo = sigNodo; // antes de cambiarlo guardas el anterior
                 sigNodo = neighbours[0];
+                idling = true;
+                initialYRotation = transform.eulerAngles.y;
             }
             SetPositions();
         }
@@ -75,6 +86,7 @@ namespace UCM.IAV.Movimiento
                 if (IsTurn(antNodo, sigNodo, newNode))
                 {
                     idling = true;
+                    initialYRotation = transform.eulerAngles.y;
                 }
                 antNodo = sigNodo;
                 return newNode;
@@ -93,8 +105,11 @@ namespace UCM.IAV.Movimiento
             {
                 counter += Time.deltaTime;
 
-                direccion.angular = 0;
                 direccion.lineal = Vector3.zero;
+
+                float angle = Mathf.Sin(counter * idleFrequency) * maxIdleAngle;
+
+                transform.rotation = Quaternion.Euler(0, initialYRotation + angle, 0);
 
                 if (counter >= idleTime)
                 {
