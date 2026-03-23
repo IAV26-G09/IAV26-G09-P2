@@ -14,6 +14,7 @@ using UCM.IAV.Navegacion;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 namespace UCM.IAV.Movimiento
 {
@@ -54,6 +55,7 @@ namespace UCM.IAV.Movimiento
         int numMinosEstaticos = 0;
 
         CameraFollow camFollow = null;
+        [SerializeField] public bool showDebugs = true;
 
         private void Awake()
         {
@@ -269,6 +271,37 @@ namespace UCM.IAV.Movimiento
             {
                 camFollow.AddTarget(t);
             }
+        }
+
+        public void DrawLine(Vector3 pos1, Vector3 pos2, Color c)
+        {
+#if UNITY_EDITOR
+            if (showDebugs)
+            {
+                Debug.DrawLine(pos1, pos2, c);
+            }
+#endif
+        }
+
+        public void DrawRay(Vector3 pos, Vector3 dir, Color c, float dur)
+        {
+#if UNITY_EDITOR
+            if (showDebugs)
+            {
+                Debug.DrawRay(pos, dir, c, dur);
+            }
+#endif
+        }
+
+        public void DrawSphere(Vector3 position, float radius, Color c)
+        {
+#if UNITY_EDITOR
+            if (showDebugs)
+            {
+                Gizmos.color = c;
+                Gizmos.DrawSphere(position, radius);
+            }
+#endif
         }
     }
 }

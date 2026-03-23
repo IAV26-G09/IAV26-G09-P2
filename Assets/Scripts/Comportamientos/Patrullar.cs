@@ -155,19 +155,15 @@ namespace UCM.IAV.Movimiento
             Vertex v;
             if (!ReferenceEquals(srcObj, null))
             {
-                Gizmos.color = Color.magenta; // Magenta es el nodo actual
+                // Magenta es el nodo actual
                 v = graph.GetNearestVertex(srcObj.transform.position);
-                Gizmos.DrawSphere(v.transform.position, pathNodeRadius);
+                GameManager.instance.DrawSphere(v.transform.position, pathNodeRadius, Color.magenta);
             }
-
-            Gizmos.color = Color.cyan; // Cyan es el nodo siguiente
-            Gizmos.DrawSphere(sigNodoPosicion, pathNodeRadius);
-
-            Gizmos.color = Color.yellow; // Negro es el nodo anterior
-            Gizmos.DrawSphere(antNodoPosicion, pathNodeRadius);
+            GameManager.instance.DrawSphere(sigNodoPosicion, pathNodeRadius, Color.cyan);
+            GameManager.instance.DrawSphere(antNodoPosicion, pathNodeRadius, Color.yellow);
         }
 
-        public void SetPositions()
+        public void SetPositions()  
         {
             sigNodoPosicion = graph.GetVertexPos(sigNodo);
             antNodoPosicion = graph.GetVertexPos(antNodo);
@@ -175,6 +171,7 @@ namespace UCM.IAV.Movimiento
 
         public void ResetPath()
         {
+            if (graph == null || sigNodo == null || antNodo == null) return;
             Vertex temp = sigNodo;
             sigNodo = antNodo;
             antNodo = temp;

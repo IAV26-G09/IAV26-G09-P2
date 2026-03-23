@@ -87,7 +87,6 @@ public class CampoVision : MonoBehaviour
 
     private void Update()
     {
-#if UNITY_EDITOR
         // Debug
         if (debug)
         {
@@ -98,10 +97,9 @@ public class CampoVision : MonoBehaviour
             Vector3 v1 = Vector3.RotateTowards(t.forward, t.right * -1, a * Mathf.Deg2Rad, 0);
             Vector3 v2 = Vector3.RotateTowards(t.forward, t.right, a * Mathf.Deg2Rad, 0);
 
-            Debug.DrawRay(t.position, t.forward * r, new Color(1, 1, 1), 0.2f);
-            Debug.DrawRay(t.position, v1 * r, new Color(1, 1, 0), 0.2f);
-            Debug.DrawRay(t.position, v2 * r, new Color(1, 1, 0), 0.2f);
+            GameManager.instance.DrawRay(t.position, t.forward * r, Color.white, 0.1f);
+            GameManager.instance.DrawRay(t.position, v1 * r, Color.yellow, 0.1f);
+            GameManager.instance.DrawRay(t.position, v2 * r, Color.yellow, 0.1f);
         }
-#endif
     }
 }

@@ -256,9 +256,8 @@ namespace UCM.IAV.Navegacion
             return vertexObjs[v.id].transform.position;
         }
 
-        public override void UpdateVertexCost(Vector3 position, float costMultiplier)
-        {
-            Vertex v = GetNearestVertex(position);
+        public override void UpdateVertexCost(Vertex v, float costMultiplier)
+        { // no tenia sentido alguno hacerlo con la posicion
             Vector2 gridPos = IdToGrid(v.id);
 
             int x = (int) gridPos.y;
@@ -267,10 +266,6 @@ namespace UCM.IAV.Navegacion
             if (x > 0 && x < numRows - 1 && y > 0 && y < numCols - 1)
                 gCosts[x, y] = defaultCost * costMultiplier;
 
-            //if(x > 0) gCosts[x - 1, y] = defaultCost * costMultiplier;
-            //if(x < numRows - 1) gCosts[x + 1, y] = defaultCost * costMultiplier;
-            //if(y > 0) gCosts[x, y - 1] = defaultCost * costMultiplier;
-            //if(y < numCols - 1) gCosts[x, y + 1] = defaultCost * costMultiplier;
             //Debug.Log("Updated cost of vertex " + v.id + " to " + gCosts[x, y]);
         }
 

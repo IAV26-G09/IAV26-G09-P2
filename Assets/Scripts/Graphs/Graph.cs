@@ -62,7 +62,7 @@ namespace UCM.IAV.Navegacion
             return vertices.Count;
         }
 
-        public virtual void UpdateVertexCost(Vector3 position, float costMultipliyer) { }
+        public virtual void UpdateVertexCost(Vertex v, float costMultipliyer) { }
 
         public virtual Vertex GetNearestVertex(Vector3 position)
         {
@@ -267,9 +267,12 @@ namespace UCM.IAV.Navegacion
             );
 
             // debug: verde si raycast libre y rojo si choca
-            Color c1 = Color.green;
-            if (hit) c1 = Color.red;
-            UnityEngine.Debug.DrawLine(posA, posB, c1);
+            if (GameManager.instance.showDebugs)
+            {
+                Color c1 = Color.green;
+                if (hit) c1 = Color.red;
+                GameManager.instance.DrawLine(posA, posB, c1);
+            }
 
             return !hit;
         }

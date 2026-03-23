@@ -4,7 +4,6 @@ using System.IO;
 using UCM.IAV.Movimiento;
 using UCM.IAV.Navegacion;
 using UnityEngine;
-using UnityEngine;
 
 namespace UCM.IAV.Movimiento
 {
@@ -31,7 +30,7 @@ namespace UCM.IAV.Movimiento
                 //Debug.Log("last " + lastVertexCost);
 
                 if (vertex.fCost < costOnCollision)
-                    graph.UpdateVertexCost(vertex.gameObject.transform.position, costOnCollision);
+                    graph.UpdateVertexCost(vertex, costOnCollision);
 
                 if (debugging)
                     affectedVertexes.Add(vertex);
@@ -44,7 +43,7 @@ namespace UCM.IAV.Movimiento
         {
             if (vertex != null)
             {
-                graph.UpdateVertexCost(vertex.gameObject.transform.position, exitCost);
+                graph.UpdateVertexCost(vertex, exitCost);
 
                 if (debugging)
                     affectedVertexes.Remove(vertex);
@@ -96,15 +95,9 @@ namespace UCM.IAV.Movimiento
             if (ReferenceEquals(graph, null))
                 return;
 
-            Vertex v;
-            Gizmos.color = Color.red; // Verde es el nodo inicial
-            v = graph.GetNearestVertex(transform.position);
-            Gizmos.DrawSphere(v.transform.position, gizmoRadius);
-
             foreach (Vertex vv in affectedVertexes)
             {
-                Gizmos.color = Color.yellow; // Amarillo es el nodo afectado
-                Gizmos.DrawSphere(vv.transform.position, gizmoRadius);
+                GameManager.instance.DrawSphere(vv.transform.position, gizmoRadius, new Color(0.95f, 0.65f, 0f));
             }
         }
     }
