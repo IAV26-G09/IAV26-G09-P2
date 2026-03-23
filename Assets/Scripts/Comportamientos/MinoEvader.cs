@@ -18,8 +18,6 @@ namespace UCM.IAV.Navegacion
         //private void OnTriggerEnter(Collider other)
         private void OnCollisionEnter(Collision other)
         {
-            Debug.Log(other.gameObject.name);
-
             MinoCollision collision = other.gameObject.GetComponent<MinoCollision>();
             if (!ReferenceEquals(collision, null))
             {

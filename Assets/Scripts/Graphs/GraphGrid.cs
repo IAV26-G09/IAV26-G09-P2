@@ -256,8 +256,9 @@ namespace UCM.IAV.Navegacion
             return vertexObjs[v.id].transform.position;
         }
 
-        public override void UpdateVertexCost(Vertex v, float costMultiplier)
-        { // no tenia sentido alguno hacerlo con la posicion
+        public override void UpdateVertexCost(Vector3 position, float costMultiplier)
+        {
+            Vertex v = GetNearestVertex(position);
             Vector2 gridPos = IdToGrid(v.id);
 
             int x = (int) gridPos.y;

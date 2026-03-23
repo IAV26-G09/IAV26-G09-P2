@@ -26,16 +26,11 @@ namespace UCM.IAV.Movimiento
         {
             if (vertex != null)
             {
-                //Debug.Log(collision.gameObject.name);
-                //Debug.Log("last " + lastVertexCost);
-
                 if (vertex.fCost < costOnCollision)
-                    graph.UpdateVertexCost(vertex, costOnCollision);
+                    graph.UpdateVertexCost(vertex.transform.position, costOnCollision);
 
                 if (debugging)
                     affectedVertexes.Add(vertex);
-
-                //Debug.Log("VERTICE " + vertex.id + " AHORA ES " + costOnCollision);
             }
         }
 
@@ -43,7 +38,7 @@ namespace UCM.IAV.Movimiento
         {
             if (vertex != null)
             {
-                graph.UpdateVertexCost(vertex, exitCost);
+                graph.UpdateVertexCost(vertex.transform.position, exitCost);
 
                 if (debugging)
                     affectedVertexes.Remove(vertex);

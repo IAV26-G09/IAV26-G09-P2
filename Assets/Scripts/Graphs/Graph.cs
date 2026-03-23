@@ -62,7 +62,7 @@ namespace UCM.IAV.Navegacion
             return vertices.Count;
         }
 
-        public virtual void UpdateVertexCost(Vertex v, float costMultipliyer) { }
+        public virtual void UpdateVertexCost(Vector3 position, float costMultipliyer) { }
 
         public virtual Vertex GetNearestVertex(Vector3 position)
         {
