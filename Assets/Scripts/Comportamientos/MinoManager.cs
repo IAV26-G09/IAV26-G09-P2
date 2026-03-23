@@ -56,8 +56,7 @@ namespace UCM.IAV.Navegacion
             if (type == MinoType.PATRULLEROS)
             {
                 // patrullero con llegada
-                //SeguirCamino cam = minoGO.AddComponent<SeguirCamino>();
-                //cam.enabled = false;
+                minoGO.AddComponent<MinoEvader>();
                 Patrullar patrulla = minoGO.AddComponent<Patrullar>();
                 patrulla.graph = graph;
             }
@@ -65,7 +64,6 @@ namespace UCM.IAV.Navegacion
             {
                 // estatico con merodeo
                 minoGO.AddComponent<Vigilar>();
-
             }
 
             InfluenceCollision col = minoGO.GetComponent<InfluenceCollision>();
@@ -73,9 +71,12 @@ namespace UCM.IAV.Navegacion
             {
                 col.graph = graph;
                 Transform slow = minoGO.transform.Find("Sphere");
-                InfluenceCollision slowCol = slow.GetComponent<InfluenceCollision>();
-                if (slowCol != null)
-                    slowCol.graph = graph;  
+                if (slow != null)
+                {
+                    InfluenceCollision slowCol = slow.GetComponent<InfluenceCollision>();
+                    if (slowCol != null)
+                        slowCol.graph = graph;  
+                }
             }
 
             GameManager.instance.AddCameraTarget(minoGO.transform);

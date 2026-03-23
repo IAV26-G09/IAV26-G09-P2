@@ -15,13 +15,19 @@ namespace UCM.IAV.Navegacion
 {
     public class MinoEvader : MonoBehaviour
     {
-        private void OnTriggerEnter(Collider other)
+        //private void OnTriggerEnter(Collider other)
+        private void OnCollisionEnter(Collision other)
         {
+            Debug.Log(other.gameObject.name);
+
             MinoCollision collision = other.gameObject.GetComponent<MinoCollision>();
             if (!ReferenceEquals(collision, null))
             {
                 Patrullar own = gameObject.GetComponent<Patrullar>();
-                if (own != null) own.ResetPath();
+                if (own != null)
+                {
+                    own.ResetPath();
+                }
             }
         }
     }
