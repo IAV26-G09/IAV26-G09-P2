@@ -274,9 +274,12 @@ namespace UCM.IAV.Navegacion
             );
 
             // debug: verde si raycast libre y rojo si choca
-            Color c1 = Color.green;
-            if (hit) c1 = Color.red;
-            Debug.DrawLine(posA, posB, c1);
+            if (GameManager.instance.showDebugs)
+            {
+                Color c1 = Color.green;
+                if (hit) c1 = Color.red;
+                GameManager.instance.DrawLine(posA, posB, c1);
+            }
 
             return !hit;
         }

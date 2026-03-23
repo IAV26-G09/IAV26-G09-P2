@@ -158,15 +158,16 @@ namespace UCM.IAV.Navegacion
             Vertex v;
             if (!ReferenceEquals(srcObj, null))
             {
-                Gizmos.color = Color.green; // Verde es el nodo inicial
+                // Verde es el nodo inicial
                 v = graph.GetNearestVertex(srcObj.transform.position);
                 Gizmos.DrawSphere(v.transform.position, pathNodeRadius);
+                GameManager.instance.DrawSphere(v.transform.position, pathNodeRadius, Color.green);
             }
             if (!ReferenceEquals(dstObj, null))
             {
-                Gizmos.color = Color.red; // Rojo es el color del nodo de destino
+                // Rojo es el color del nodo de destino
                 v = graph.GetNearestVertex(dstObj.transform.position);
-                Gizmos.DrawSphere(v.transform.position, pathNodeRadius);
+                GameManager.instance.DrawSphere(v.transform.position, pathNodeRadius, Color.red);
             }
             int i;
             Gizmos.color = pathColor;

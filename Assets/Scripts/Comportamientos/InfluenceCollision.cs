@@ -96,15 +96,9 @@ namespace UCM.IAV.Movimiento
             if (ReferenceEquals(graph, null))
                 return;
 
-            Vertex v;
-            Gizmos.color = Color.red; // Verde es el nodo inicial
-            v = graph.GetNearestVertex(transform.position);
-            Gizmos.DrawSphere(v.transform.position, gizmoRadius);
-
             foreach (Vertex vv in affectedVertexes)
             {
-                Gizmos.color = Color.yellow; // Amarillo es el nodo afectado
-                Gizmos.DrawSphere(vv.transform.position, gizmoRadius);
+                GameManager.instance.DrawSphere(vv.transform.position, gizmoRadius, new Color(0.95f, 0.65f, 0f));
             }
         }
     }
