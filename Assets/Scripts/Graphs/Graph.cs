@@ -296,6 +296,8 @@ namespace UCM.IAV.Navegacion
 
         private void TakeTimeMetrics(long ns, string file)
         {
+            UnityEngine.Debug.Log(ns);
+
             StreamWriter salida = new StreamWriter(file, true);
 
             salida.WriteLine(ns + ",");
