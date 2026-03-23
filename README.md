@@ -563,24 +563,15 @@ Serie corta y rápida posible de pruebas que pueden realizarse para verificar qu
 * **20 (E).** Repetir los pasos indefinidamente.
 
 ### Métricas tomadas
-Hardware utilizado en las medidas:
+En un PC de estas características:
 - **CPU:** AMD Ryzen 7 5700G a 3.80 GHz
 - **GPU:** NVIDIA GeForce GTX 1660 SUPER 6 GB
 - **RAM:** 16 GB (8x2) de 3200 MT/s
 - **SO:** Windows 11
 - **Versión de Unity:** 6000.0.66f2
 
-<!--
-- **CPU:** Intel Core i5-12600KF a 3.70 GHz
-- **GPU:** NVIDIA GeForce RTX 5070 Ti con 16 GB
-- **RAM:** 32 GB (16x2) de 4800 MT/s
-- **SO:** Windows 11
-- **Versión de Unity:** 6000.0.66f2
- -->
-
-Cuando A* tenga en cuenta los costes de los minotauros se tomarán las siguientes métricas:
+Se han tomado las siguientes métricas:
 - Tiempo empleado en el cálculo por A* para cada tamaño del laberinto.
-
 ```mermaid
 xychart-beta
 title "Tamaño Mapa-Nanosegundos"
@@ -589,8 +580,16 @@ y-axis "Nanosegundos" 2200000 --> 18000000
 line [2200300, 2726300, 3812600, 5105000, 17283900]
 ```
 
-- Número de nodos explorados totales al llegar a la solución para cada tamaño del laberinto.
+- Mediana de tiempo empleado en el cálculo por A* según la distancia restante hasta la casilla final para cada tamaño del laberinto.
+```mermaid
+xychart-beta
+title "Tamaño Mapa-Nanosegundos"
+x-axis "Tamaño Mapa" [10x10, 20x20, 30x30, 60x60, 100x100]
+y-axis "Nanosegundos" 160000 --> 1326900
+line [160000, 300150, 476700, 1326900, 1092000]
+```
 
+- Número de nodos explorados totales al llegar a la solución para cada tamaño del laberinto.
 ```mermaid
 xychart-beta
 title "Tamaño Mapa-Nº nodos explorados"
@@ -600,7 +599,7 @@ line [27, 104, 258, 174, 1194]
 ```
 
 - Número de nodos en el camino solución.
-
+En el siguiente gráfico, la línea azul representa la métrica de nodos en el camino solución desde el nodo de inicio hasta el nodo final y la línea verde representa los nodos en el camino solución desde el nodo de inicio hasta el nodo final habiendo aplicado *Smooth*. Usar el *Smooth* supone una mejora media aproximada del 70.5%.
 ```mermaid
 xychart-beta
 title "Tamaño Mapa-Nº nodos solución"

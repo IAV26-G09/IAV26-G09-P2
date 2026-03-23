@@ -48,6 +48,8 @@ namespace UCM.IAV.Navegacion
         // Used for getting path in frames
         public List<Vertex> path;
 
+        private int exploredNodes = 0;
+
         public virtual void Start()
         {
             Load();
@@ -154,6 +156,7 @@ namespace UCM.IAV.Navegacion
                 // miramos el primero en la lista: el elemento de menor coste (pq ya se ordenan por si solos por coste e id)
                 // y lo quitamos (ya lo hemos "expandido")
                 Vertex act = open.Remove();
+                ++exploredNodes;
 
                 // si hemos llegado
                 if (act == goal)
@@ -163,6 +166,9 @@ namespace UCM.IAV.Navegacion
                     long nanosecPerTick = (1000L * 1000L * 1000L) / frequency;
                     long nanos = watch.ElapsedTicks * nanosecPerTick;
                     TakeTimeMetrics(nanos, "timeastar.csv");
+
+                    UnityEngine.Debug.Log(exploredNodes);
+                    exploredNodes = 0;
 
                     return BuildPath(start.id, goal.id, ref prev); // devuelve el camino reconstruido
                 }
@@ -299,7 +305,7 @@ namespace UCM.IAV.Navegacion
 
         private void TakeTimeMetrics(long ns, string file)
         {
-            UnityEngine.Debug.Log(ns);
+            //UnityEngine.Debug.Log(ns);
 
             StreamWriter salida = new StreamWriter(file, true);
 
