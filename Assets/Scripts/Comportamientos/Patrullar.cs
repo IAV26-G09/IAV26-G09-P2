@@ -43,6 +43,7 @@ namespace UCM.IAV.Movimiento
         [SerializeField]
         float maxIdleAngle = 45f;
         private float initialYRotation;
+        bool justFinishedIdle = false;
 
         private void Start()
         {
@@ -69,8 +70,11 @@ namespace UCM.IAV.Movimiento
             {
                 antNodo = sigNodo; // antes de cambiarlo guardas el anterior
                 sigNodo = neighbours[0];
-                idling = true;
-                initialYRotation = transform.eulerAngles.y;
+                if (!justFinishedIdle)
+                {
+                    idling = true;
+                    initialYRotation = transform.eulerAngles.y;
+                }
             }
             SetPositions();
         }
@@ -83,11 +87,12 @@ namespace UCM.IAV.Movimiento
 
             if (newNode.id != antNodo.id) // para no poder volver hacia atras
             {
-                if (IsTurn(antNodo, sigNodo, newNode))
+                if (IsTurn(antNodo, sigNodo, newNode) && !justFinishedIdle)
                 {
                     idling = true;
                     initialYRotation = transform.eulerAngles.y;
                 }
+                justFinishedIdle = false;
                 antNodo = sigNodo;
                 return newNode;
             }
@@ -115,6 +120,7 @@ namespace UCM.IAV.Movimiento
                 {
                     counter = 0.0f;
                     idling = false;
+                    justFinishedIdle = true;
                     ChooseNextNode();
                 }
 
