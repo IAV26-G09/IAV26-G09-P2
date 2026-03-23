@@ -109,14 +109,87 @@ namespace UCM.IAV.Navegacion
         // Encuentra caminos óptimos
         public List<Vertex> GetPathBFS(GameObject srcO, GameObject dstO)
         {
-            // IMPLEMENTAR ALGORITMO BFS
+            Vertex start = GetNearestVertex(srcO.transform.position);
+            Vertex goal = GetNearestVertex(dstO.transform.position);
+
+            bool[] visited = new bool[vertices.Count];
+            int[] prev = new int[vertices.Count];
+
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                visited[i] = false;
+                prev[i] = -1;
+            }
+
+            Queue<Vertex> queue = new Queue<Vertex>();
+            queue.Enqueue(start);
+            visited[start.id] = true;
+
+            while (queue.Count > 0)
+            {
+                Vertex act = queue.Dequeue();
+
+                if (act == goal)
+                    return BuildPath(start.id, goal.id, ref prev);
+
+                Vertex[] neighbours = GetNeighbours(act);
+
+                foreach (Vertex neighbor in neighbours)
+                {
+                    if (!visited[neighbor.id])
+                    {
+                        visited[neighbor.id] = true;
+                        prev[neighbor.id] = act.id;
+                        queue.Enqueue(neighbor);
+                    }
+                }
+            }
+
             return new List<Vertex>();
         }
 
         // No encuentra caminos óptimos
         public List<Vertex> GetPathDFS(GameObject srcO, GameObject dstO)
         {
-            // IMPLEMENTAR ALGORITMO DFS
+            Vertex start = GetNearestVertex(srcO.transform.position);
+            Vertex goal = GetNearestVertex(dstO.transform.position);
+
+            bool[] visited = new bool[vertices.Count];
+            int[] prev = new int[vertices.Count];
+
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                visited[i] = false;
+                prev[i] = -1;
+            }
+
+            Stack<Vertex> stack = new Stack<Vertex>();
+            stack.Push(start);
+
+            while (stack.Count > 0)
+            {
+                Vertex act = stack.Pop();
+
+                if (visited[act.id])
+                    continue;
+
+                visited[act.id] = true;
+
+                if (act == goal)
+                    return BuildPath(start.id, goal.id, ref prev);
+
+                Vertex[] neighbours = GetNeighbours(act);
+
+                foreach (Vertex neighbor in neighbours)
+                {
+                    if (!visited[neighbor.id])
+                    {
+                        prev[neighbor.id] = act.id;
+                        stack.Push(neighbor);
+                    }
+                }
+            }
+
             return new List<Vertex>();
         }
 
