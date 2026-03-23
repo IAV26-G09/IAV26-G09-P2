@@ -6,6 +6,9 @@
    Autor: Federico Peinado 
    Contacto: email@federicopeinado.com
 */
+
+using System.IO;
+
 namespace UCM.IAV.Navegacion
 {
 
@@ -13,6 +16,7 @@ namespace UCM.IAV.Navegacion
     using System.Collections.Generic;
     using UCM.IAV.Movimiento;
     using UnityEngine;
+    using System.Diagnostics;
 
     /// <summary>
     /// Abstract class for graphs
@@ -116,6 +120,9 @@ namespace UCM.IAV.Navegacion
 
         public List<Vertex> GetPathAstar(GameObject srcO, GameObject dstO, Heuristic h = null)
         {
+            Stopwatch watch = new System.Diagnostics.Stopwatch();
+            watch.Start();
+
             // creamos las listas de nodos abiertos
             BinaryHeap<Vertex> open = new BinaryHeap<Vertex>(); // nodos que vamos conociendo y que seran expandidos (si no son el nodo dst)
 
@@ -131,21 +138,9 @@ namespace UCM.IAV.Navegacion
             // inicializacion de listas a valores predeterminados infinitos
             for (int i = 0; i < vertices.Count; i++)
             {
-                //vertices[i].fCost = Mathf.Infinity;
-
-                //Debug.Log("antes " + vertices[i].gCost + " " + vertices[i].id);
-
-                //vertices[i].gCost = Mathf.Infinity;
-
-                //Debug.Log("despues " + vertices[i].gCost);
-
                 gCost[i] = Mathf.Infinity;
-
                 prev[i] = -1; // vacio
             }
-
-            //start.fCost = h(start, goal);
-            //start.gCost = 0;
 
             gCost[start.id] = 0;
             start.fCost = h(start, goal);
@@ -161,9 +156,17 @@ namespace UCM.IAV.Navegacion
                 Vertex act = open.Remove();
 
                 // si hemos llegado
-                if (act == goal) 
-                    return BuildPath(start.id, goal.id, ref prev); // devuelve el camino reconstruido
+                if (act == goal)
+                {
+                    watch.Stop();
+                    long frequency = Stopwatch.Frequency;
+                    long nanosecPerTick = (1000L * 1000L * 1000L) / frequency;
+                    long nanos = watch.ElapsedTicks * nanosecPerTick;
+                    TakeTimeMetrics(nanos, "timeastar.csv");
 
+                    return BuildPath(start.id, goal.id, ref prev); // devuelve el camino reconstruido
+                }
+                
                 Vertex[] neighbours = GetNeighbours(act);
                 float[] neighboursCosts = GetNeighboursCosts(act);
 
@@ -174,21 +177,11 @@ namespace UCM.IAV.Navegacion
 
                     // coste g de start al vecino PASANDO por act
                     float gProbado = gCost[act.id] + neighboursCosts[i];
-                    //float gProbado = act.gCost + neighboursCosts[i];
-
-                    //Debug.Log(act.gCost);
 
                     if (gProbado < gCost[neighbor.id]) // si la tentativa de coste es menor que [infinito] (en un principio) -> lo actualizas
-                    //if (gProbado < neighbor.gCost) // si la tentativa de coste es menor que [infinito] (en un principio) -> lo actualizas
                     {
                         // este camino a neighbor es mejor que el anterior asi que lo guardamos ->
                         prev[neighbor.id] = act.id; // el anterior al neighbor es el actual
-
-                        //Debug.Log(neighbor.gCost);
-
-                        //neighbor.gCost = gProbado; // actualizamos coste
-
-                        //Debug.Log(neighbor.gCost);
 
                         neighbor.fCost = gProbado + h(neighbor, goal);
 
@@ -276,7 +269,7 @@ namespace UCM.IAV.Navegacion
             // debug: verde si raycast libre y rojo si choca
             Color c1 = Color.green;
             if (hit) c1 = Color.red;
-            Debug.DrawLine(posA, posB, c1);
+            UnityEngine.Debug.DrawLine(posA, posB, c1);
 
             return !hit;
         }
@@ -299,6 +292,15 @@ namespace UCM.IAV.Navegacion
 
             } while (prev != srcId && prev != -1);
             return path;
+        }
+
+        private void TakeTimeMetrics(long ns, string file)
+        {
+            StreamWriter salida = new StreamWriter(file, true);
+
+            salida.WriteLine(ns + ",");
+
+            salida.Close();
         }
     }
 }
