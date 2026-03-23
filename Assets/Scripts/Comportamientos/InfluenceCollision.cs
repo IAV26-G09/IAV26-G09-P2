@@ -4,7 +4,6 @@ using System.IO;
 using UCM.IAV.Movimiento;
 using UCM.IAV.Navegacion;
 using UnityEngine;
-using UnityEngine;
 
 namespace UCM.IAV.Movimiento
 {
@@ -31,7 +30,7 @@ namespace UCM.IAV.Movimiento
                 //Debug.Log("last " + lastVertexCost);
 
                 if (vertex.fCost < costOnCollision)
-                    graph.UpdateVertexCost(vertex.gameObject.transform.position, costOnCollision);
+                    graph.UpdateVertexCost(vertex, costOnCollision);
 
                 if (debugging)
                     affectedVertexes.Add(vertex);
@@ -44,7 +43,7 @@ namespace UCM.IAV.Movimiento
         {
             if (vertex != null)
             {
-                graph.UpdateVertexCost(vertex.gameObject.transform.position, exitCost);
+                graph.UpdateVertexCost(vertex, exitCost);
 
                 if (debugging)
                     affectedVertexes.Remove(vertex);

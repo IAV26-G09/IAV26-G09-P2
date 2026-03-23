@@ -20,8 +20,8 @@ namespace UCM.IAV.Navegacion
             MinoCollision collision = other.gameObject.GetComponent<MinoCollision>();
             if (!ReferenceEquals(collision, null))
             {
-                Patrullar follow = other.gameObject.GetComponent<Patrullar>();
-                if (follow != null) follow.ResetPath();
+                Patrullar own = gameObject.GetComponent<Patrullar>();
+                if (own != null) own.ResetPath();
             }
         }
     }

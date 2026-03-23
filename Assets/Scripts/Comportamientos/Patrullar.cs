@@ -171,6 +171,7 @@ namespace UCM.IAV.Movimiento
 
         public void ResetPath()
         {
+            if (graph == null || sigNodo == null || antNodo == null) return;
             Vertex temp = sigNodo;
             sigNodo = antNodo;
             antNodo = temp;
