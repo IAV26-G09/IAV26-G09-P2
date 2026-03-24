@@ -24,7 +24,7 @@ namespace UCM.IAV.Movimiento
 
         private void EnterVertex(Vertex vertex)
         {
-            if (vertex != null)
+            if (vertex != null && RayClear(vertex))
             {
                 if (vertex.fCost < costOnCollision)
                     graph.UpdateVertexCost(vertex.transform.position, costOnCollision);
@@ -36,7 +36,7 @@ namespace UCM.IAV.Movimiento
 
         private void ExitVertex(Vertex vertex, float exitCost)
         {
-            if (vertex != null)
+            if (vertex != null && RayClear(vertex))
             {
                 graph.UpdateVertexCost(vertex.transform.position, exitCost);
 
@@ -94,6 +94,19 @@ namespace UCM.IAV.Movimiento
             {
                 GameManager.instance.DrawSphere(vv.transform.position, gizmoRadius, new Color(0.95f, 0.65f, 0f));
             }
+        }
+
+        // si el minotauro tiene campo de vision hasta el vertice...
+        private bool RayClear(Vertex v)
+        {
+            Vector3 origin = transform.position;
+            Vector3 target = v.transform.position;
+
+            Vector3 dir = target - origin;
+            float distance = Vector3.Distance(origin, target);
+
+            int layerMask = 1 << 6;
+            return !Physics.Raycast(origin, dir, out RaycastHit hitInfo, distance, layerMask);
         }
     }
 }
