@@ -652,8 +652,7 @@ line [5, 9, 19, 21, 32]
 ```
 
 ### Vídeo
-- Próximamente
-<!-- - [Vídeo demostración]() -->
+- [Vídeo demostración](https://youtu.be/h1cJnG4QdyM)
 
 ## Ampliaciones
 | ✔ | Patrulleros con idle | 23-3-2026 |
