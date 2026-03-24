@@ -16,33 +16,77 @@ namespace UCM.IAV.Navegacion
 
     public class Slow : MonoBehaviour
     {
-        float vel = 0.0f;
-        
         /*
          *  Cuando el jugador (identificado con el ControlJugador) se acerca al trigger del
-         *  minotauro, su velocidad máxima en el componente Agente se ve reducida enormemente.
-         *  Si logra abandonar el trigger, se restaura su velocidad.
+         *  minotauro, su velocidad máxima en el componente Agente se ve reducida enormemente
+         *  si no tiene un obstaculo entre medias.
+         *  Si logra abandonar el campo de vision, se restaura su velocidad.
          */
+
+        private Agente playerAgent;
+        private bool playerInside = false;
+        private bool slowed = false;
+        private float originalSpeed;
+        [SerializeField]
+        private float slowSpeed = 1.0f;
 
         private void OnTriggerEnter(Collider other)
         {
-            ControlJugador animator = other.gameObject.GetComponent<ControlJugador>();
-            if(!ReferenceEquals(animator, null))
+            ControlJugador cj = other.GetComponent<ControlJugador>();
+            if (cj != null)
             {
-                Agente agent = other.gameObject.GetComponent<Agente>();
-                vel = agent.velocidadMax;
-                agent.velocidadMax = 1;
+                playerInside = true;
+                playerAgent = other.GetComponent<Agente>();
+                originalSpeed = playerAgent.velocidadMax;
             }
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (!playerInside || playerAgent == null)
+                return;
+
+            bool canSee = RayClear(playerAgent.transform.position);
+
+            if (canSee && !slowed)
+            {
+                playerAgent.velocidadMax = slowSpeed;
+                slowed = true;
+            }
+            else if (!canSee && slowed)
+            {
+                RestoreSpeed();
+            }
+        }
+
+        private void RestoreSpeed()
+        {
+            if (playerAgent != null)
+            {
+                playerAgent.velocidadMax = originalSpeed;
+            }
+            slowed = false;
         }
 
         private void OnTriggerExit(Collider other)
         {
-            ControlJugador animator = other.gameObject.GetComponent<ControlJugador>();
-            if (!ReferenceEquals(animator, null))
+            ControlJugador cj = other.GetComponent<ControlJugador>();
+            if (cj != null)
             {
-                Agente agent = other.gameObject.GetComponent<Agente>();
-                agent.velocidadMax = vel;
+                RestoreSpeed();
+                playerInside = false;
+                playerAgent = null;
             }
+        }
+
+        // si el minotauro tiene campo de vision hasta el objetivo...
+        private bool RayClear(Vector3 target)
+        {
+            Vector3 origin = transform.position;
+            Vector3 dir = target - origin;
+            float distance = Vector3.Distance(origin, target);
+            int layerMask = 1 << 6;
+            return !Physics.Raycast(origin, dir, out RaycastHit hitInfo, distance, layerMask);
         }
     }
 }
