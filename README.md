@@ -133,8 +133,9 @@ graph TD;
 - **Minotauros Patrulla**:
 ```mermaid
 graph TD;
-  PATRULLANDO-- Detecta a Teseo -->SIGUIENDO_TESEO
-  SIGUIENDO_TESEO-- Pierde de vista a Teseo -->PATRULLANDO;
+  OCIOSO<-- Cambio o no de sentido -->PATRULLANDO;
+  PATRULLANDO<-- Detecta o no a Teseo -->SIGUIENDO_TESEO
+  OCIOSO<-- Detecta o no a Teseo -->SIGUIENDO_TESEO
 ```
 
 - **Minotauros Vigía**:
@@ -289,13 +290,19 @@ Las tareas y el esfuerzo ha sido repartido de manera equitativa entre las autora
 | ✔ | Avatar sigue el hilo | 14-3-2026 |
 | ✔ | Suavizado de A* | 17-3-2026 |
 | ✔ | README | 18-3-2026 |
-| ✖ | A* teniendo en cuenta a los minotauros | XX-X-XXXX |
+| ✔ | A* teniendo en cuenta a los minotauros | 21-3-2026 |
+| ✔ | Mejora slow | 23-3-2026 |
+| ✔ | Gestión choque minotauros | 23-3-2026 |
+| ✔ | Influencia Manhattan 3 visible | 23-3-2026 |
+| ✔ | Toma de métricas | 23-3-2026 |
+| ✔ | README | 24-3-2026 |
 | ✖ | Organizar y limpiar proyecto | XX-X-XXXX |
 |  | AMPLIACIONES |  |
 | ✔ | Interfaz de creación de minotauros | 10-3-2026 |
 | ✔ | Cámara puede cambiar de agente objetivo | 12-3-2026 |
 | ✔ | Ciclo de juego | 17-3-2026 |
 | ✔ | Heurística por interfaz | 18-3-2026 |
+| ✔ | Patrulleros con idle | 23-3-2026 |
 
 **Diagrama de clases:**
 Las clases principales que se han desarrollados son las siguientes:
@@ -357,6 +364,9 @@ classDiagram
           +OnTriggerExit(Collider)
           +Update()
     }
+
+    InfluenceCollision <|-- MonoBehaviour
+    ExitCollision <|-- MonoBehaviour
 
     Ovillo <|-- MonoBehaviour
 
@@ -430,6 +440,7 @@ Implementación: Se adjuntan los scripts con el código fuente que implementan l
 | B | Seguimiento hacia el avatar | [Llegada](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Comportamientos/Llegada.cs) |
 | B | Área de influencia | [Slow](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Comportamientos/Slow.cs) |
 | C | A* | [Graph](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs) |
+| C | A* costes dinámicos | [InfluenceCollision](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Comportamientos/InfluenceCollision.cs) |
 | C | Mostrar hilo | [TheseusGraph](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/TheseusGraph.cs) |
 | C | Mostrar ovillos | [Ovillo](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Extra/Ovillo.cs) |
 | C | Heurísticas | [TheseusGraph](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/TheseusGraph.cs) |
@@ -466,18 +477,32 @@ Avisa a una instancia del script agente para que combine,bien por peso o por pri
 ### Direccion
 Guarda los valores de la velocidad lineal y angular.
 
+### CampoVision 🟣​
+Implementa el cono de visión de todos los minotauros y gestiona el estado de estos si se detecta al avatar.
+* __OnTriggerStay()__, si el avatar entra en el trigger de detección, se encuentra en el ángulo de visión del minotauro, y no hay ningún objeto entre el minotauro y él entonces se confirma que ha sido detectado por lo que el minotauro pasará a seguirle hasta que pierda visión de él o le alcance.
+
 ### ControlJugador 🟡
 Hereda de ComportamientoAgente y simplemente usa el método __GetDirección()__, que registra el input de ratón de tal manera que si el puntero está más allá de cierta distancia del avatar, este camina en línea recta hacia su posición y mientras se mantiene pulsado el clic izquierdo, el avatar corre más rápido.
+
+### ExitCollision 🟣
+Se encarga de detectar la colisión con el vértice destino y, en caso de que colisione, reiniciar el juego desde el menú.
+
+### InfluenceCollision 🟣
+Se encarga de detectar la colisión con los vértices afectados por los minotauros o por su área de influencia y, en caso de que colisione, actualizar su coste (inifito en caso del minotauro y 5 en caso del área de influecia). Si deja de colisionar devuelve el vértice a su coste antes de la colisión.
 
 ### Llegada
 Hereda de comportamientoAgente y es usado por todos los minotauros cuando han de perseguir a Teseo.
 * __getDirección()__ se usa para calcular la velocidad y dirección en la que tiene que acercarse a su objetivo, teniendo en cuenta el radio de deceleración y el radio de llegada (momento en el que se considera que ha alcanzado a su objetivo).
 * __raycastCollision()__ detecta si hay algún obstáculo en la dirección en la que nos estamos moviendo. Si encuentra algún obstáculo, calcula la normal con la que ha impactado el rayo del raycast para desviar al agente en esa dirección y devolver ese vector de desviación. Este método es llamado desde el método __avoidance()__, llamado a su vez desde __getDirección()__.
 
-### Vigilar 🟣​
-El comportamientoAgente, usado por los minotauros estáticos, los hace rotar aleatoriamente.
-* __getDirection()__ calcula el ángulo de giro aleatorio que rotarán durante un tiempo también aleatorio.
-* __onCollisionEnter()__, llamado automáticamente cuando colisionan con algo, les redirige en dirección opuesta del objeto con el que han colisionado.
+### MinoCollision 
+Se encarga de detectar las colisiones con Teseo y, en caso de que colisione, re-comenzar el laberinto.
+
+### Mino Evader 🟡
+Usado por los minotauros patrulleros. Cuando colisionan dos minotauros, todo minotauro que tenga el componente seguirCamino (usado por los patrulleros), se resetea su camino para que sigan un camino diferente.
+
+### Mino Manager 🟡
+Nodo padre de todos los minotauros, se encarga de instanciar minotauros, asignándoles una referencia al mapa del laberinto para que puedan recorrerlo.
 
 ### Patrullar 🟣​
 El comportamientoAgente, usado por los minotauros patrulla, los hace caminar en línea recta, cambiando de dirección aleatoriamente al llegar a un cruce de caminos. Los patrulleros nunca girarán en dirección contraria, a no ser que no les quede otra opción, con tal de simular una mayor inteligencia.
@@ -487,30 +512,23 @@ El comportamientoAgente, usado por los minotauros patrulla, los hace caminar en 
 * __OnDrawGizmos()__ se usa para debuguear el nodo actual, el siguiente y el anterior, dibuja una esfera de color en cada uno de ellos.
 * __ResetPath()__, en caso de choque con otro minotauro se sigue otro camino.
 
-### CampoVision 🟣​
-Implementa el cono de visión de todos los minotauros y gestiona el estado de estos si se detecta al avatar.
-* __OnTriggerStay()__, si el avatar entra en el trigger de detección, se encuentra en el ángulo de visión del minotauro, y no hay ningún objeto entre el minotauro y él entonces se confirma que ha sido detectado por lo que el minotauro pasará a seguirle hasta que pierda visión de él o le alcance.
-
 ### Seguir camino 🟡
 Hereda de ComportamientoAgente, usa su atributo graph para seguir el camino marcado por este, cogiendo el siguiente nodo en su update().
 * __getDirección()__, como siempre, calcula la dirección en la que se tiene que mover, calculando en qué dirección está el siguiente nodo.
 
+### Slow 🟡
+Equipado por los minotauros, se encarga de relentizar a Teseo cada vez que entra en su radio.
+* __OnTriggerEnter()__, si es Teseo, guarda su referencia y su velocidad máxima original para tenerla en cuenta en _OnTriggerStay()_.
+* __OnTriggerStay()__, si es Teseo, comprueba si se encuentra en el campo de visión con un RayCast y le reduce la velocidad máxima a 1 si todavía no lo ha hecho. Si sale de su campo de visión le restaura la velocidad.
+* __OnTriggerExit()__, si es Teseo, vuelve a asignar su velocidad a la velocidad que guardó al entrar en el Trigger.
+
 ### Teseo 🟡
 Se encarga de controlar al jugador, manejando si sigue el camino marcado o es controlado por el jugador, activando y desactivando comportamientos agentes, y registrando el input para cambiar entre ellos.
 
-### Slow
-Equipado por los minotauros, se encarga de relentizar a Teseo cada vez que entra en su radio.
-* __OnTriggerEnter()__, si es Teseo, reduce su velocidad máxima a 1.
-* __OnTriggerExit()__, si es Teseo, vuelve a asignar su velocidad a la velocidad que guardó cuando redujo su velocidad a 1.
-
-### Mino Evader 🟡
-Usado por los minotauros patrulleros. Cuando colisionan dos minotauros, todo minotauro que tenga el componente seguirCamino (usado por los patrulleros), se resetea su camino para que sigan un camino diferente.
-
-### Mino Manager 🟡
-Nodo padre de todos los minotauros, se encarga de instanciar minotauros, asignándoles una referencia al mapa del laberinto para que puedan recorrerlo.
-
-### MinoCollision 
-Se encarga de detectar las colisiones con Teseo y, en caso de que colisione, re-comenzar el laberinto.
+### Vigilar 🟣​
+El comportamientoAgente, usado por los minotauros estáticos, los hace rotar aleatoriamente.
+* __getDirection()__ calcula el ángulo de giro aleatorio que rotarán durante un tiempo también aleatorio.
+* __onCollisionEnter()__, llamado automáticamente cuando colisionan con algo, les redirige en dirección opuesta del objeto con el que han colisionado.
 
 ### Vertex
 Representa los vértices o nodos de un grafo, asi que todos los métodos son para operaciones dentro del grafo.
@@ -549,6 +567,9 @@ Es una clase que posee un atributo de tipo Grid, pensada para acompañar a Teseo
 * __UpdateAriadna()__ cambia el estado de Ariadna (seguir el hilo) de true a false o viceversa.
 * __ChangeHeuristic()__ cambia la heurística
 * __ResetPath()__ cambia el camino que se sigue actualmente a null.
+
+### Vertex
+Clase que representa los vértices del mapa, guarda el id del nodo y el coste f.
 
 También es importante mencionar los scripts animal animation controller y player animator, encargados de las animaciones de los minotauros y el jugador respectivamente, al igual que el script cameraFollow, que simplemente sigue al jugador con un cierto offset. Estos scripts no se mencionan en más detalle pues no son muy relevantes en cuanto a la implementación de la solución.
 
@@ -635,7 +656,7 @@ line [5, 9, 19, 21, 32]
 <!-- - [Vídeo demostración]() -->
 
 ## Ampliaciones
-
+| ✔ | Patrulleros con idle | 23-3-2026 |
 ### Ampliaciones realizadas
 Se han realizado las siguientes ampliaciones:
 1. Se puede configurar en el menú inicial la cantidad de minotauros por tipo.
@@ -648,11 +669,7 @@ Se han realizado las siguientes ampliaciones:
         - Suavizar camino (S)
         - Toggle hilo (Clic derecho)
         - Cambiar cámara (N)
-
-### Posibles ampliaciones
-Se han pensado las siguientes posibles ampliaciones:
-1. Generacion procedimental de los laberintos en vez de por fichero de texto.
-1. Cuando un minotauro patrullero va a tomar un cambio de dirección, darle un tiempo de estado "ocioso" para que parezca un comportamiento menos frenético y más natural.
+1. Cuando un minotauro patrullero va a tomar un cambio de dirección tiene un tiempo de estado "ocioso" en el que mira a su alrededor como "dudando" qué camino tomar, realizado con tal de aparentar un comportamiento menos frenético y más natural.
 
 ## Conclusiones
 Esta práctica ha servido para aprender en profundidad uno de los algoritmos más importantes y más usados en la industria del videojuego en un entorno de problema clásico y entendible, aplicándolo sobre un sistema de navegación orientado a grafos.
