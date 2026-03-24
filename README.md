@@ -72,7 +72,28 @@ Los recursos que conforman el proyecto están organizados de esta forma:
   * **Animation**. Las clases relativas al movimiento de la cámara y las animaciones.
   * **Comportamientos**. Las clases relativas al control de Teseo, el avatar protagonista, el movimiento de los minotauros, enemigos del juego, y todos los comportamientos de dirección necesarios.
   * **Extra**. Las clases adicionales para un tema del menú y la implementación de la cola de prioridad (en caso de que se quiera usar esta en lugar de la estándar de C#).
-  * **Graphs**. Las clases necesarias para representar el espacio de búsqueda en forma de grafo, grafo basado en una rejilla y estructuras auxiliares como los nodos de dicho grafo. 
+  * **Graphs**. Las clases necesarias para representar el espacio de búsqueda en forma de grafo, grafo basado en una rejilla y estructuras auxiliares como los nodos de dicho grafo.
+
+#### Jerarquía de recursos
+```text
+Assets
+├── Animations
+├── Fullscreen
+├── Materials
+├── Models
+│   ├── Fonts
+│   ├── Images
+│   └── Materials
+├── Prefabs
+├── Resources 
+│   └── Maps
+├── Scenes
+└── Scripts
+    ├── Agent
+    ├── Animation
+    ├── Extra
+    └── Graphs
+```
 
 ### Estructura de las escenas
 
