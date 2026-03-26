@@ -1,7 +1,28 @@
 # Inteligencia Artificial para Videojuegos - Práctica 2: El secreto del laberinto
 
 > [!NOTE]
-> Versión: 1
+> Versión: 2
+
+> [!NOTE]
+> Changelog: 
+- [Punto de partida](#punto-de-partida)
+  - Añadido diagrama de jerarquía de clases inicial.
+- [Diseño de la solución](#diseño-de-la-solución)  
+  - Diagrama de minotauro patrullero actualizado en función de nuevo estado ocioso.
+- [Implementación](#implementación)
+  - Rellenada lista de tareas.
+  - Actualizados marcadores de archivos modificados.
+  - Añadidas entradas sobre scripts nuevos y actualizados los scripts modificados.
+  - Actualizado UML.
+- [Pruebas y métricas](#pruebas-y-métricas) 
+  - Hardware actualizado.
+  - Métricas tomadas.
+  - Gráficas añadidas.
+  - Explicación añadida.
+  - Añadido enlace al vídeo demostración.
+  - Restaurada sección de posibles ampliaciones.
+- [Ampliaciones](#ampliaciones)
+  - Ampliación de minotauro patrullero.
 
 ## Índice
 1. [Autores](#autores)
@@ -296,7 +317,8 @@ Las tareas y el esfuerzo ha sido repartido de manera equitativa entre las autora
 | ✔ | Influencia Manhattan 3 visible | 23-3-2026 |
 | ✔ | Toma de métricas | 23-3-2026 |
 | ✔ | README | 24-3-2026 |
-| ✖ | Organizar y limpiar proyecto | XX-X-XXXX |
+| ✔ | Organizar y limpiar proyecto | 26-3-2026 |
+| ✔ | README actualizado | 26-3-2026 |
 |  | AMPLIACIONES |  |
 | ✔ | Interfaz de creación de minotauros | 10-3-2026 |
 | ✔ | Cámara puede cambiar de agente objetivo | 12-3-2026 |
@@ -548,12 +570,12 @@ Se encarga de unir vértices y registrar sus costes.
 
 getNearestVertex, getRandomPos y updateVertexCost__ son métodos virtuales que se implementan en GraphGrid
 
-### GraphGrid
+### GraphGrid 🟡
 Hereda de graph y mientras mantiene el sistema de vértices y aristas, también añade un prefab de casilla de laberinto a cada nodo, siendo también la clase encargada de cargar la escena con el método Load() (leyendo la grid de un archivo de texto).
 * __SetNeighbors()__ crea las aristas entre vértices (casillas vecinas).
 * __GetNearestVertex()__ devuelve la casilla (vertice) más cercana a una posición en el mundo.
 * __GetRandomPos()__ devuelve una casilla aleatoria del laberinto.
-* __UpdateVertexCost()__ cambia el coste de un vértice a otro coste.
+* __UpdateVertexCost()__ cambia el coste de un vértice a otro coste. 🟡
 * __WallInstantiate()__ instancia un muro.
 
 ### TheseusGraph 🟡
@@ -562,7 +584,6 @@ Es una clase que posee un atributo de tipo Grid, pensada para acompañar a Teseo
 * __GetNextNode()__ calcula el próximo nodo al que va a moverse en su camino predefinido.
 * __OnDrawGizmos()__ se encarga de activar y desactivar los gizmos y demás dibujos de dentro de las casillas.
 * __ShowPathVertices()__ es usado por los otros métodos para cambiar el color de las casillas.
-* __GetNodeFromScene()__ es usado para sacar una casilla a partir de una posición en el mundo.
 * __DibujaHilo()__ recorre el camino que va a seguir el personaje, y colorea una a una las casillas.
 * __UpdateAriadna()__ cambia el estado de Ariadna (seguir el hilo) de true a false o viceversa.
 * __ChangeHeuristic()__ cambia la heurística
@@ -655,7 +676,6 @@ line [5, 9, 19, 21, 32]
 - [Vídeo demostración](https://youtu.be/h1cJnG4QdyM)
 
 ## Ampliaciones
-| ✔ | Patrulleros con idle | 23-3-2026 |
 ### Ampliaciones realizadas
 Se han realizado las siguientes ampliaciones:
 1. Se puede configurar en el menú inicial la cantidad de minotauros por tipo.
@@ -669,6 +689,10 @@ Se han realizado las siguientes ampliaciones:
         - Toggle hilo (Clic derecho)
         - Cambiar cámara (N)
 1. Cuando un minotauro patrullero va a tomar un cambio de dirección tiene un tiempo de estado "ocioso" en el que mira a su alrededor como "dudando" qué camino tomar, realizado con tal de aparentar un comportamiento menos frenético y más natural.
+
+### Posibles ampliaciones
+Se han pensado las siguientes posibles ampliaciones:
+1. Generacion procedimental de los laberintos en vez de por fichero de texto.
 
 ## Conclusiones
 Esta práctica ha servido para aprender en profundidad uno de los algoritmos más importantes y más usados en la industria del videojuego en un entorno de problema clásico y entendible, aplicándolo sobre un sistema de navegación orientado a grafos.
