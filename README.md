@@ -117,14 +117,9 @@ Assets
 ```
 
 ### Estructura de las escenas
-
-Hay sólamente dos escenas en el juego.
-
-### Menú
-Se muestra el título del juego, una lista de mapas de laberintos disponibles para elegir, y dos campos para seleccionar el número de minotauros patrulla y el número de minotauros estáticos/vigías.
-
-### Principal
-La escena genera un laberinto en base al mapa que es haya elegido en el menú, generando el suelo y los muros casilla por casilla. Además, se guardan la casilla de entrada y la de salida. Otros game objects son el avatar del jugador y el minotaur manager, que instancia y controla los minotauros, con su correspondiente esfera de deceleración y comportamientos según su tipo.
+Hay sólamente dos escenas en el juego:
+- **Menu**: Se muestra el título del juego, una lista de mapas de laberintos disponibles para elegir, y dos campos para seleccionar el número de minotauros patrulla y el número de minotauros estáticos/vigías.
+- **Labyrinth**: La escena genera un laberinto en base al mapa que es haya elegido en el menú, generando el suelo y los muros casilla por casilla. Además, se guardan la casilla de entrada y la de salida. Otros game objects son el avatar del jugador y el minotaur manager, que instancia y controla los minotauros, con su correspondiente esfera de deceleración y comportamientos según su tipo.
 
 ## Planteamiento del problema
 
