@@ -232,7 +232,7 @@ function A_Star(start, goal, h)
     // Open set is empty but goal was never reached
     return failure
 ```
-#### Explicación sobre su [*implementación*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs#L117) en el proyecto:
+#### Explicación sobre su [*implementación*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs#L191) en el proyecto:
 El método *GetPathAstar()* de la clase *Graph* será el encargado de calcular la lista de vértices solución que conformarán el camino más corto que deberá seguir Teseo desde cualquier vértice del mapa hasta el vértice final, o *goal*. 
 
 Este método hace uso de una lista abierta de vértices, se llama lista abierta a la lista que guarda todas las referencias a los nodos/vértices visitados sobre los que no se ha iterado aún, esta se implementa mediante un BinaryHeap de vértices que llamamos *open* y que se llena en primera instancia únicamente con el vértice origen *start*. Con esto se puede empezar a iterar sobre open. 
@@ -249,7 +249,7 @@ Si se contase con .NET 6, la cola de prioridad se puede implementar con Priority
 
 #### Explicación sobre su [*implementación*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs#L188) en el proyecto:
 
-El suavizado del camino pretende eliminar la mayor cantidad posible de vértices intermedios del camino, siempre que haya línea de visión directa entre ellos. Esta línea de visión actúa a través del método [*RayClear()*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs#L237), que devuelve verdadero si dos vértices no tienen un obstáculo entre ellos, con un 'radio' para el rayo predeterminado, y falso si el rayo choca contra un obstáculo. 
+El suavizado del camino pretende eliminar la mayor cantidad posible de vértices intermedios del camino, siempre que haya línea de visión directa entre ellos. Esta línea de visión actúa a través del método [*RayClear()*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/Graph.cs#L326), que devuelve verdadero si dos vértices no tienen un obstáculo entre ellos, con un 'radio' para el rayo predeterminado, y falso si el rayo choca contra un obstáculo.
 
 Antes de empezar, se crea el camino de salida que estará suavizado, y se controla el caso base de un camino de un sólo vértice, que es devuelto tal como entró. A continuación se añade siempre el primer vértice del camino de entrada, que es el último del camino real pues está ordenado "al revés".
 
@@ -282,10 +282,10 @@ Una heurística es una función que estima cuánto falta para llegar al objetivo
 
 Se han tomado dos heurísticas clásicas para A* en cuenta. Se pueden seleccionar y cambiar desde la interfaz:
 
-- [*Distancia Manhattan*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/TheseusGraph.cs#L253):
+- [*Distancia Manhattan*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/TheseusGraph.cs#L237):
     - Cuenta cuántos pasos horizontales y verticales faltan.
     - Movimiento restringido a las cuatro direcciones.
-- [*Distancia Euclídea*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/TheseusGraph.cs#L258)
+- [*Distancia Euclídea*](https://github.com/IAV26-G09/IAV26-G09-P2/blob/main/Assets/Scripts/Graphs/TheseusGraph.cs#L242)
     - Distancia real en línea recta.
     - Movimiento continuo sin restricciones.
 
@@ -641,15 +641,6 @@ title "Tamaño Mapa-Nanosegundos"
 x-axis "Tamaño Mapa" [10x10, 20x20, 30x30, 60x60, 100x100]
 y-axis "Nanosegundos" 2200000 --> 18000000
 line [2200300, 2726300, 3812600, 5105000, 17283900]
-```
-
-- Mediana de tiempo empleado en el cálculo por A* según la distancia restante hasta la casilla final para cada tamaño del laberinto.
-```mermaid
-xychart-beta
-title "Tamaño Mapa-Nanosegundos"
-x-axis "Tamaño Mapa" [10x10, 20x20, 30x30, 60x60, 100x100]
-y-axis "Nanosegundos" 160000 --> 1326900
-line [160000, 300150, 476700, 1326900, 1092000]
 ```
 
 - Número de nodos explorados totales al llegar a la solución para cada tamaño del laberinto.
