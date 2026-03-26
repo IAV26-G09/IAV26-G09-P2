@@ -59,18 +59,18 @@ namespace UCM.IAV.Movimiento
         {
             Vertex[] neighbours = graph.GetNeighbours(sigNodo);
 
-            // si tienes mas de una opcion
+            // si tienes mas de una opcion (mas de un vecino)
             if (neighbours.Length > 1)
             {
                 sigNodo = GetNewNode(ref neighbours);
             }
-            // si tienes un vecino o menos significa que estas en una encrucijada
+            // si tienes un vecino o menos significa que estas en un callejon sin salida
             // eliges el disponible
-            else
+            else if (neighbours.Length == 1) 
             {
                 antNodo = sigNodo; // antes de cambiarlo guardas el anterior
-                sigNodo = neighbours[0];
-                if (!justFinishedIdle)
+                sigNodo = neighbours[0]; // escoges el unico disponible
+                if (!justFinishedIdle) // reiniciamos idle
                 {
                     idling = true;
                     initialYRotation = transform.eulerAngles.y;
@@ -85,19 +85,20 @@ namespace UCM.IAV.Movimiento
             int rnd = Random.Range(0, neighbours.Length);
             Vertex newNode = neighbours[rnd];
 
-            if (newNode.id != antNodo.id) // para no poder volver hacia atras
-            {
-                if (IsTurn(antNodo, sigNodo, newNode) && !justFinishedIdle)
-                {
+            if (newNode.id != antNodo.id)
+            { // para no poder volver hacia atras
+                if (IsTurn(antNodo, sigNodo, newNode) && !justFinishedIdle) 
+                { // si va a girar y no acaba de estar en idle reiniciamos el idle
                     idling = true;
                     initialYRotation = transform.eulerAngles.y;
                 }
+                // actualizamos valores
                 justFinishedIdle = false;
                 antNodo = sigNodo;
                 return newNode;
             }
             else
-            {
+            { // volvemos a buscar
                 return GetNewNode(ref neighbours);
             }
         }
@@ -106,18 +107,19 @@ namespace UCM.IAV.Movimiento
         {
             Direccion direccion = new Direccion();
 
+            // el idle dura un cierto tiempo idleTime y se lleva la cuenta con counter
             if (idling)
             {
                 counter += Time.deltaTime;
 
-                direccion.lineal = Vector3.zero;
-
+                // rotacion manual con el seno del contador y una frecuencia dentro de un angulo maximo
                 float angle = Mathf.Sin(counter * idleFrequency) * maxIdleAngle;
-
+                // la aplicamos sobre la rotacion inicial cuando se quedo quieto
                 transform.rotation = Quaternion.Euler(0, initialYRotation + angle, 0);
 
                 if (counter >= idleTime)
                 {
+                    // si hemos acabado el idle reiniciamos valores y reescogemos nodo al que ir
                     counter = 0.0f;
                     idling = false;
                     justFinishedIdle = true;
@@ -132,7 +134,7 @@ namespace UCM.IAV.Movimiento
                 dir.y = 0;
 
                 if (dir.magnitude <= magnitudeRange)
-                {
+                { // si ha llegado a un nodo escogemos el siguiente al que ir
                     ChooseNextNode();
                 }
 

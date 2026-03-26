@@ -54,7 +54,9 @@ namespace UCM.IAV.Navegacion
 
         void GenerateMino(MinoType type)
         {
+            // generamos nuevo minotauro
             GameObject minoGO = Instantiate(minotaur, graph.GetRandomPos().transform.position + new Vector3(0, 0.3f, 0), Quaternion.identity);
+
             if (type == MinoType.PATRULLEROS)
             {
                 // patrullero con llegada
@@ -68,6 +70,7 @@ namespace UCM.IAV.Navegacion
                 minoGO.AddComponent<Vigilar>();
             }
 
+            // a ambos tipos le actualizamos el grafo de su influencia
             InfluenceCollision col = minoGO.GetComponent<InfluenceCollision>();
             if (col != null)
             {
@@ -75,12 +78,14 @@ namespace UCM.IAV.Navegacion
                 Transform slow = minoGO.transform.Find("Sphere");
                 if (slow != null)
                 {
+                    // si tienen radio de ralentizado tambien
                     InfluenceCollision slowCol = slow.GetComponent<InfluenceCollision>();
                     if (slowCol != null)
                         slowCol.graph = graph;  
                 }
             }
 
+            // actualizamos lista de targets de la camara
             GameManager.instance.AddCameraTarget(minoGO.transform);
         }
     }

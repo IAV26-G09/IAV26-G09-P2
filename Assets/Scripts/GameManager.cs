@@ -269,6 +269,7 @@ namespace UCM.IAV.Movimiento
             }
         }
 
+        // para dibujar lineas en el editor
         public void DrawLine(Vector3 pos1, Vector3 pos2, Color c)
         {
 #if UNITY_EDITOR
@@ -279,6 +280,7 @@ namespace UCM.IAV.Movimiento
 #endif
         }
 
+        // para dibujar rayos en el editor
         public void DrawRay(Vector3 pos, Vector3 dir, Color c, float dur)
         {
 #if UNITY_EDITOR
@@ -289,6 +291,7 @@ namespace UCM.IAV.Movimiento
 #endif
         }
 
+        // para dibujar esferas SOLO EN ONGIZMO en el editor
         public void DrawSphere(Vector3 position, float radius, Color c)
         {
 #if UNITY_EDITOR
