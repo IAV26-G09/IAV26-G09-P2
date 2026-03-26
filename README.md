@@ -6,7 +6,7 @@
 > [!NOTE]
 > Changelog: 
 - [Punto de partida](#punto-de-partida)
-  - Añadido diagrama de jerarquía de clases inicial.
+  - Añadido diagrama de jerarquía de recursos inicial.
 - [Diseño de la solución](#diseño-de-la-solución)  
   - Diagrama de minotauro patrullero actualizado en función de nuevo estado ocioso.
 - [Implementación](#implementación)
@@ -20,7 +20,6 @@
   - Gráficas añadidas.
   - Explicación añadida.
   - Añadido enlace al vídeo demostración.
-  - Restaurada sección de posibles ampliaciones.
 - [Ampliaciones](#ampliaciones)
   - Ampliación de minotauro patrullero.
 
