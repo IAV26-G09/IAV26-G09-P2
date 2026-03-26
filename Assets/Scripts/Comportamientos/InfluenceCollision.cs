@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace UCM.IAV.Movimiento
 {
+    /// <summary>
+    /// Clase para actualizar el coste de los nodos en colision con agentes minotauros y su area de influencia
+    /// </summary>
     public class InfluenceCollision : MonoBehaviour
     {
         [SerializeField]

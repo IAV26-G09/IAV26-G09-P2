@@ -13,7 +13,7 @@ using UnityEngine;
 namespace UCM.IAV.Movimiento
 {
     /// <summary>
-    /// Clase para modelar el comportamiento de WANDER a otro agente
+    /// Clase para el comportamiento de los minotauros vigias, rotacion aleatoria
     /// </summary>
     public class Vigilar : ComportamientoAgente
     {
@@ -39,13 +39,6 @@ namespace UCM.IAV.Movimiento
             {
                 Direccion direccion = new Direccion();
 
-                /*
-                Vector2 dir = Random.insideUnitCircle.normalized;
-                direccion.lineal = new Vector3(dir.x, 0, dir.y);
-                direccion.lineal.Normalize();
-                direccion.lineal *= agente.aceleracionMax;
-                */
-
                 float wanderOrientation = Random.Range(minRan, maxRan);
 
                 direccion.angular = wanderOrientation;
@@ -62,19 +55,6 @@ namespace UCM.IAV.Movimiento
             }
 
             return lastDir;
-        }
-
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (collision.gameObject.layer != 7)
-            {
-                /*
-                t = 0;
-                lastDir.lineal = transform.position - collision.transform.position;
-                lastDir.lineal.Normalize();
-                lastDir.lineal *= agente.aceleracionMax;
-                */
-            }
         }
     }
 }

@@ -13,6 +13,9 @@ namespace UCM.IAV.Movimiento
     using UCM.IAV.Navegacion;
     using UnityEngine;
 
+    /// <summary>
+    /// Clase para el comportamiento de los minotauros patrulla
+    /// </summary>
     public class Patrullar : ComportamientoAgente
     {
         Vertex sigNodo;
@@ -37,8 +40,6 @@ namespace UCM.IAV.Movimiento
         float idleTime = 2f;
 
         [SerializeField]
-        float idleAngularSpeed = 60f; // grados por segundo
-        [SerializeField]
         float idleFrequency = 2f; // velocidad de oscilación
         [SerializeField]
         float maxIdleAngle = 45f;
@@ -50,7 +51,6 @@ namespace UCM.IAV.Movimiento
             srcObj = gameObject;
             sigNodo = graph.GetNearestVertex(srcObj.transform.position);
             antNodo = sigNodo;
-            //sigNodoPosicion = graph.vertexObjs[sigNodo.id].transform.position;
             SetPositions();
             initialYRotation = transform.eulerAngles.y;
         }

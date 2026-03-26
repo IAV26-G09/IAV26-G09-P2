@@ -17,13 +17,6 @@ namespace UCM.IAV.Movimiento
     /// </summary>
     public class Llegada : ComportamientoAgente
     {
-        /// <summary>
-        /// Obtiene la dirección
-        /// </summary>
-        /// <returns></returns>
-        /// 
-
-
         // El radio para llegar al objetivo
         public float radioObjetivo;
 
@@ -53,23 +46,21 @@ namespace UCM.IAV.Movimiento
 
             float targetAccel;
 
-            // Máxima aceleración desde fuera del radio de frenado
+            // Maxima aceleracion desde fuera del radio de frenado
             if (distance > radioRalentizado)
                 targetAccel = agente.aceleracionMax;
-            // Aceleración escalada
+            // Aceleracion escalada
             else
                 targetAccel = agente.aceleracionMax * distance / (radioRalentizado * fuerzaRalentizado);
 
-            // Velocity combina aceleración y dirección
+            // Velocity combina aceleracion y direccion
             Vector3 targetVelocity = objetivo.transform.position - transform.position;
             targetVelocity.Normalize();
             targetVelocity *= targetAccel;
 
-            // La aceleración se posiciona al nivel de la del objetivo
+            // La aceleracion se posiciona al nivel de la del objetivo
             direccion.lineal = targetVelocity - agente.velocidad;
             direccion.lineal /= timeToTarget;
-
-            //direccion.lineal += Avoidance();
 
             // Comprobamos que no se pase de aceleración
             if (direccion.lineal.magnitude > agente.aceleracionMax)
@@ -77,7 +68,6 @@ namespace UCM.IAV.Movimiento
                 direccion.lineal.Normalize();
                 direccion.lineal *= agente.aceleracionMax;
             }
-
 
             return direccion;
         }
@@ -87,37 +77,18 @@ namespace UCM.IAV.Movimiento
             RaycastHit hit;
             if (Physics.Raycast(pos, dir, out hit, distance, lMask))
             {
-                // Find the line from the gun to the point that was clicked.
                 Vector3 incomingVec = hit.point - pos;
 
                 if (incomingVec.magnitude > distance) return Vector3.zero;
 
-                // Use the point's normal to calculate the reflection vector.
                 Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
-
-                // Draw lines to show the incoming "beam" and the reflection.
-                //Debug.DrawLine(pos, hit.point, Color.red);
-                //Debug.DrawRay(hit.point, reflectVec, Color.green);
 
                 return hit.point + hit.normal * avoidQuantity;
             }
             else
             {
-                //Debug.DrawLine(pos, dir * distance, Color.yellow);
                 return Vector3.zero;
             }
-        }
-
-        Vector3 Avoidance()
-        {
-            LayerMask lMask = 1 << 8;
-
-            Vector3 dirAcc = Vector3.zero;
-            dirAcc += RayCastCollision(transform.position, transform.forward, lMask) * 10;
-            dirAcc += RayCastCollision(transform.position, (transform.forward * 2 + transform.right).normalized, lMask);
-            dirAcc += RayCastCollision(transform.position, (transform.forward * 2 - transform.right).normalized, lMask);
-
-            return dirAcc.normalized * avoidQuantity;
         }
     }
 }

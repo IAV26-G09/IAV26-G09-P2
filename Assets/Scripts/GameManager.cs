@@ -18,6 +18,9 @@ using UnityEngine.UIElements;
 
 namespace UCM.IAV.Movimiento
 {
+    /// <summary>
+    /// Clase para gestionar el juego
+    /// </summary>
     public class GameManager : MonoBehaviour
     {
         public static GameManager instance = null;
@@ -41,9 +44,6 @@ namespace UCM.IAV.Movimiento
         float m_timeCounter = 0.0f;
         float m_lastFramerate = 0.0f;
         float m_refreshTime = 0.5f;
-
-        // No recuerdo para que puse este atributo...
-        //private bool cameraPerspective = true;
 
         GameObject player = null;
         GameObject exitSlab = null;
@@ -91,7 +91,6 @@ namespace UCM.IAV.Movimiento
             FindGO();
         }
 
-
         // Se llama cuando el juego ha terminado
         void OnDisable()
         {
@@ -126,9 +125,6 @@ namespace UCM.IAV.Movimiento
                 RestartScene();
             if (Input.GetKeyDown(KeyCode.F))
                 ChangeFrameRate();
-
-            //if (Input.GetKeyDown(KeyCode.C))
-            //    theseusGraph.ChangeHeuristic(heuristicText.text);
 
             if (Input.GetKeyDown(KeyCode.S))
                 suavizadoText.text = theseusGraph.GetSmooth() ? "No" : "Si";

@@ -13,7 +13,9 @@ using UnityEngine;
 
 namespace UCM.IAV.Navegacion
 {
-   
+    /// <summary>
+    /// Clase para gestionar la generacion de minotauros
+    /// </summary>
     public class MinoManager : MonoBehaviour
     {
         public GameObject minotaur;

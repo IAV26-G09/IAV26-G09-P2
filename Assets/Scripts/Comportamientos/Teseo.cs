@@ -12,33 +12,37 @@ using UnityEngine;
 
 namespace UCM.IAV.Movimiento
 {
+    /// <summary>
+    /// Clase para controlar el comportamiento de Teseo (seguir/no seguir camino)
+    /// </summary>
     public class Teseo : MonoBehaviour
     {
-
         bool ariadna = false;
 
         SeguirCamino segCam;
         ControlJugador contJug;
 
-        // Start is called before the first frame update
         void Start()
         {
             segCam = GetComponent<SeguirCamino>();
             contJug = GetComponent<ControlJugador>();
         }
 
-        // Update is called once per frame
         void Update()
         {
             if (Input.GetKey(KeyCode.Space))
             {
-                if(!ariadna)
-                updateAriadna(true);
+                if (!ariadna)
+                {
+                    updateAriadna(true);
+                }
             }
             else
             {
-                if(ariadna)
-                updateAriadna(false);
+                if (ariadna)
+                {
+                    updateAriadna(false);
+                }
             }
         }
 

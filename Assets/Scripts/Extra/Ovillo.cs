@@ -1,10 +1,12 @@
 using UnityEngine;
 
+/// <summary>
+/// Clase para mostrar los ovillos en los nodos del camino
+/// </summary>
 public class Ovillo : MonoBehaviour
 {
     MeshRenderer mr;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         mr = GetComponent<MeshRenderer>();
@@ -19,10 +21,5 @@ public class Ovillo : MonoBehaviour
     public void Show(bool show)
     {
         mr.enabled = show;
-    }
-
-    private void LateUpdate()
-    {
-        
     }
 }

@@ -14,11 +14,14 @@ namespace UCM.IAV.Navegacion
 {
     using UCM.IAV.Movimiento;
 
+    /// <summary>
+    /// Clase para gestionar el area de influencia de los minotauros
+    /// </summary>
     public class Slow : MonoBehaviour
     {
         /*
          *  Cuando el jugador (identificado con el ControlJugador) se acerca al trigger del
-         *  minotauro, su velocidad máxima en el componente Agente se ve reducida enormemente
+         *  minotauro, su velocidad maxima en el componente Agente se ve reducida enormemente
          *  si no tiene un obstaculo entre medias.
          *  Si logra abandonar el campo de vision, se restaura su velocidad.
          */

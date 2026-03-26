@@ -13,9 +13,11 @@ using UnityEngine;
 
 namespace UCM.IAV.Navegacion
 {
+    /// <summary>
+    /// Clara para gestionar la colision entre dos minotauros
+    /// </summary>
     public class MinoEvader : MonoBehaviour
     {
-        //private void OnTriggerEnter(Collider other)
         private void OnCollisionEnter(Collision other)
         {
             MinoCollision collision = other.gameObject.GetComponent<MinoCollision>();
@@ -24,7 +26,7 @@ namespace UCM.IAV.Navegacion
                 Patrullar own = gameObject.GetComponent<Patrullar>();
                 if (own != null)
                 {
-                    own.ResetPath();
+                    own.ResetPath(); // al chocar con otro minotauro deshace su camino
                 }
             }
         }

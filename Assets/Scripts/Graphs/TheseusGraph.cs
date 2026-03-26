@@ -14,8 +14,7 @@ using UnityEngine;
 
 namespace UCM.IAV.Navegacion
 {
-    // Posibles algoritmos para buscar caminos en grafos
-    // REALMENTE PARA ESTA PRÁCTICA SÓLO SE NECESITA ASTAR, los otros no los usaremos...
+    // Algoritmos para buscar caminos en grafos
     public enum TesterGraphAlgorithm
     {
         BFS, DFS, ASTAR
@@ -26,6 +25,9 @@ namespace UCM.IAV.Navegacion
         Euclidea
     }
 
+    /// <summary>
+    /// Clase para gestionar el camino de Teseo
+    /// </summary>
     public class TheseusGraph : MonoBehaviour
     {
         [SerializeField]
@@ -86,7 +88,6 @@ namespace UCM.IAV.Navegacion
             }
         }
 
-        // Update is called once per frame
         public virtual void Update()
         {
             // clic derecho desactiva el hilo
@@ -103,8 +104,6 @@ namespace UCM.IAV.Navegacion
                 //Source jugador y destino el nodo final
                 if (srcObj == null) srcObj = GameManager.instance.GetPlayer();
                 if (dstObj == null) dstObj = GameManager.instance.GetExitNode();
-
-                //path = new List<Vertex>();
 
                 switch (algorithm)
                 {
@@ -123,18 +122,18 @@ namespace UCM.IAV.Navegacion
                 if (smoothPath)
                 {
                     path = graph.Smooth(path); // Suavizar el camino, una vez calculado
-
+                    #if UNITY_EDITOR
                     TakeNodeMetrics(path.Count, "nodossmooth.csv");
+                    #endif
                 }
                 else
                 {
+                    #if UNITY_EDITOR
                     TakeNodeMetrics(path.Count, "nodos.csv");
+                    #endif
                 }
-
                 if (path.Count > 0)
                 {
-                    //GameManager.instance.SetPlayerNode(path[path.Count - 1].transform);
-
                     DibujaHilo();
                 }
                 else
@@ -153,7 +152,6 @@ namespace UCM.IAV.Navegacion
         }
 
         // Dibujado de artilugios en el editor
-        // OJO, ESTO SÓLO SE PUEDE VER EN LA PESTAÑA DE SCENE DE UNITY
         virtual public void OnDrawGizmos()
         {
             if (!Application.isPlaying)
@@ -181,7 +179,6 @@ namespace UCM.IAV.Navegacion
             for (i = 0; i < path.Count; i++)
             {
                 v = path[i];
-                //Gizmos.DrawSphere(v.transform.position, pathNodeRadius);
                 if (smoothPath && i != 0)
                 {
                     Vertex prev = path[i - 1];
@@ -199,22 +196,6 @@ namespace UCM.IAV.Navegacion
                 Ovillo o = v.gameObject.GetComponentInChildren<Ovillo>();
                 o.Show(true);
             }
-        }
-
-        // Cuantificación, cómo traduce de posiciones del espacio (la pantalla) a nodos
-        private GameObject GetNodeFromScreen(Vector3 screenPosition)
-        {
-            GameObject node = null;
-            Ray ray = mainCamera.ScreenPointToRay(screenPosition);
-            RaycastHit[] hits = Physics.RaycastAll(ray);
-            foreach (RaycastHit h in hits)
-            {
-                if (!h.collider.CompareTag(vertexTag) && !h.collider.CompareTag(obstacleTag))
-                    continue;
-                node = h.collider.gameObject;
-                break;
-            }
-            return node;
         }
 
         // Dibuja el hilo de Ariadna

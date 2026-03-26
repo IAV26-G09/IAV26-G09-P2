@@ -23,26 +23,21 @@ namespace UCM.IAV.Navegacion
     /// </summary>
     public abstract class Graph : MonoBehaviour
     {
-        // Aquí el grafo entero es representado con estas listas, que luego puede aprovechar el algoritmo A*.
-        // El pseudocódigo de Millington no asume que tengamos toda la información del grafo representada y
+        // Aqui el grafo entero es representado con estas listas, que luego puede aprovechar el algoritmo A*.
+        // El pseudocódigo de Millington no asume que tengamos toda la informacion del grafo representada y
         // por eso va guardando registros de los nodos que visita... pero si nos es posible,
-        // OPCIONALMENTE podemos usar estas variables como una CACHÉ donde tener toda la información
+        // OPCIONALMENTE podemos usar estas variables como una CACHE donde tener toda la informacion
         public GameObject vertexPrefab;
         protected List<Vertex> vertices;
         protected List<List<Vertex>> neighbourVertex;
         //protected List<List<float>> costs;
         protected bool[,] mapVertices;
-        protected float[,] gCosts; // Costes reales (g)... aunque también se podría crear una clase
-                                          // para las conexiones y poner los costes ahí,
-                                          // como en el pseudocódigo de Millington (NodeRecord).
-                                          // Esto está 'optimizado' porque sabemos que trabajamos con una rejilla...
+        protected float[,] gCosts; // Costes reales (g)
         protected int numCols, numRows;
 
-        // Esto de la heurística es para algoritmos de búsqueda con estrategias informadas como A*, naturalmente.
-        // Un delegado especifica la cabecera de una función, la que sea, que cumpla con esos parámetros y
+        // Esto de la heuristica es para algoritmos de busqueda con estrategias informadas como A*, naturalmente.
+        // Un delegado especifica la cabecera de una funcion, la que sea, que cumpla con esos parametros y
         // devuelva ese tipo.
-        // Cuidado al implementarlas, porque no puede ser que la distancia -por ejemplo-
-        // entre dos casillas tenga una heurística más cara que el coste real de navegar de una a otra.
         public delegate float Heuristic(Vertex a, Vertex b);
 
         // Used for getting path in frames
@@ -106,7 +101,7 @@ namespace UCM.IAV.Navegacion
             return costsV;
         }
 
-        // Encuentra caminos óptimos
+        // Encuentra caminos optimos
         public List<Vertex> GetPathBFS(GameObject srcO, GameObject dstO)
         {
             Vertex start = GetNearestVertex(srcO.transform.position);
@@ -148,7 +143,7 @@ namespace UCM.IAV.Navegacion
             return new List<Vertex>();
         }
 
-        // No encuentra caminos óptimos
+        // No encuentra caminos optimos
         public List<Vertex> GetPathDFS(GameObject srcO, GameObject dstO)
         {
             Vertex start = GetNearestVertex(srcO.transform.position);
@@ -206,7 +201,6 @@ namespace UCM.IAV.Navegacion
             Vertex goal = GetNearestVertex(dstO.transform.position); // vertice al que vamos
 
             float[] gCost = new float[vertices.Count]; // coste mas barato que conocemos desde el start hasta un nodo n
-            //float[] fCost = new float[vertices.Count]; // gCost + heuristica
             // array del nodo anterior a cada uno por el camino mas barato, usado para reconstruir el camino
             int[] prev = new int[vertices.Count];
 
@@ -235,10 +229,12 @@ namespace UCM.IAV.Navegacion
                 if (act == goal)
                 {
                     watch.Stop();
+                    #if UNITY_EDITOR
                     long frequency = Stopwatch.Frequency;
                     long nanosecPerTick = (1000L * 1000L * 1000L) / frequency;
                     long nanos = watch.ElapsedTicks * nanosecPerTick;
                     TakeTimeMetrics(nanos, "timeastar.csv");
+                    #endif
 
                     UnityEngine.Debug.Log(exploredNodes);
                     exploredNodes = 0;
@@ -369,7 +365,6 @@ namespace UCM.IAV.Navegacion
             do
             {
                 path.Add(vertices[prev]);
-                //Debug.Log(vertices[prev].gCost);
                 prev = prevList[prev];
 
             } while (prev != srcId && prev != -1);
@@ -378,8 +373,6 @@ namespace UCM.IAV.Navegacion
 
         private void TakeTimeMetrics(long ns, string file)
         {
-            //UnityEngine.Debug.Log(ns);
-
             StreamWriter salida = new StreamWriter(file, true);
 
             salida.WriteLine(ns + ",");

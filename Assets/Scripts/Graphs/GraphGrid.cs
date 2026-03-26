@@ -8,7 +8,6 @@
 */
 namespace UCM.IAV.Navegacion
 {
-
     using UnityEngine;
     using System;
     using System.Collections.Generic;
@@ -42,7 +41,6 @@ namespace UCM.IAV.Navegacion
         [Range(0, Mathf.Infinity)]
         public float maximumCost = Mathf.Infinity;
 
-
         public GameObject[] vertexObjs;
 
         private void Awake()
@@ -66,7 +64,7 @@ namespace UCM.IAV.Navegacion
 
         private void LoadMap(string filename)
         {
-            // Quitamos la extensión al fichero
+            // Quitamos la extension al fichero
             string path = Path.ChangeExtension(mapsDir + "/" + filename,null);
             TextAsset mapAsset = Resources.Load<TextAsset>(path);
           
@@ -266,8 +264,6 @@ namespace UCM.IAV.Navegacion
 
             if (x > 0 && x < numRows - 1 && y > 0 && y < numCols - 1)
                 gCosts[x, y] = defaultCost * costMultiplier;
-
-            //Debug.Log("Updated cost of vertex " + v.id + " to " + gCosts[x, y]);
         }
 
         private GameObject WallInstantiate(Vector3 position, int i, int j)
@@ -333,6 +329,5 @@ namespace UCM.IAV.Navegacion
 
             return Instantiate(obstaclePrefab, position, Quaternion.identity, this.gameObject.transform) as GameObject;
         }
-
     }
 }

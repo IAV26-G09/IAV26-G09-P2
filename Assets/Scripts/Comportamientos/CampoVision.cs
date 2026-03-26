@@ -1,6 +1,9 @@
 ﻿using UCM.IAV.Movimiento;
 using UnityEngine;
 
+/// <summary>
+/// Clase para gestionar el cono de vision de los minotauros
+/// </summary>
 public class CampoVision : MonoBehaviour
 {
     private Patrullar patrullar;

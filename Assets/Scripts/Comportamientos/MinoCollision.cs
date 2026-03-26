@@ -13,15 +13,13 @@ using UnityEngine;
 
 namespace UCM.IAV.Movimiento
 {
+    /// <summary>
+    /// Clase para gestionar la colision de Teseo con un minotauro
+    /// </summary>
     public class MinoCollision : MonoBehaviour
     {
+        // Gestion de reinicio de nivel al ser atrapado Teseo por un minotauro
         private void OnCollisionEnter(Collision collision)
-        {
-            if (collision.gameObject.GetComponent<Teseo>() != null)
-                GameManager.instance.RestartScene();
-        }
-
-        private void OnCollisionExit(Collision collision)
         {
             if (collision.gameObject.GetComponent<Teseo>() != null)
                 GameManager.instance.RestartScene();

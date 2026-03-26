@@ -12,6 +12,9 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
+/// <summary>
+/// Clara para gestionar los callbacks de los dropdowns de las interfaces
+/// </summary>
 public class DropDown : MonoBehaviour
 {
     enum DropdownType
@@ -27,8 +30,6 @@ public class DropDown : MonoBehaviour
 
     void Start()
     {
-       // Establece changeSize al OnValueChanged del Dropdown
-        
        if(type == DropdownType.SIZE)
             gameObject.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { UCM.IAV.Movimiento.GameManager.instance.ChangeSize(); });
        else if(type == DropdownType.PATRULLEROS)

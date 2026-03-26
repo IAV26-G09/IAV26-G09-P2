@@ -16,15 +16,6 @@ namespace UCM.IAV.Movimiento
     /// </summary>
     public class ControlJugador: ComportamientoAgente
     {
-        /// <summary>
-        /// Obtiene la dirección
-        /// </summary>
-        /// <returns></returns>
-        /// 
-
-        //float tiempoGiroSuave = 0.1f;
-        //float velocidadGiroSuave;
-
         [SerializeField]
         float minimuRadius = 3.0f; // radio alrededor del jugador en el que no moverse
 
@@ -33,7 +24,6 @@ namespace UCM.IAV.Movimiento
 
         private bool able = true;
         private bool sprinting = false;
-
 
         private void Start()
         {
@@ -52,12 +42,7 @@ namespace UCM.IAV.Movimiento
             {
                 return direccion;
             }
-                
-            // Direccion actual
-            // Control por teclado
-            direccion.lineal.x = Input.GetAxis("Horizontal");
-            direccion.lineal.z = Input.GetAxis("Vertical");
-
+            
             // Control por raton
             RaycastHit hit;
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);

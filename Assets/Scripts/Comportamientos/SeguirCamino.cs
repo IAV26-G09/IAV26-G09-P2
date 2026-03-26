@@ -13,6 +13,9 @@ namespace UCM.IAV.Movimiento
     using UCM.IAV.Navegacion;
     using UnityEngine;
 
+    /// <summary>
+    /// Clase para el comportamiento de seguir un camino
+    /// </summary>
     public class SeguirCamino: ComportamientoAgente
     {
         Transform sigNodo;
@@ -31,7 +34,7 @@ namespace UCM.IAV.Movimiento
 
             if (sigNodo != null)
             {
-                //Direccion actual
+                // Direccion actual
                 direccion.lineal = sigNodo.position - transform.position;
             }
             else
@@ -39,11 +42,9 @@ namespace UCM.IAV.Movimiento
                 direccion.lineal = new Vector3(0, 0, 0);
             }
 
-            //Resto de cálculo de movimiento
+            // Resto de calculo de movimiento
             direccion.lineal.Normalize();
             direccion.lineal *= agente.aceleracionMax;
-
-            // Podríamos meter una rotación automática en la dirección del movimiento, si quisiéramos
 
             return direccion;
         }
