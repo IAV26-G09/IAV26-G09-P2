@@ -98,7 +98,6 @@ Los recursos que conforman el proyecto están organizados de esta forma:
 ```text
 Assets
 ├── Animations
-├── Fullscreen
 ├── Materials
 ├── Models
 │   ├── Fonts
