@@ -144,6 +144,7 @@ namespace UCM.IAV.Movimiento
             return direccion;
         }
 
+        // muestra con bolitas los nodos anterior, actual y siguiente
         private void OnDrawGizmos()
         {
             if (!Application.isPlaying)
@@ -163,12 +164,14 @@ namespace UCM.IAV.Movimiento
             GameManager.instance.DrawSphere(antNodoPosicion, pathNodeRadius, Color.yellow);
         }
 
+        // metodo para actualizar las referencias a las posiciones de los vertices que tiene marcados
         public void SetPositions()  
         {
             sigNodoPosicion = graph.GetVertexPos(sigNodo);
             antNodoPosicion = graph.GetVertexPos(antNodo);
         }
 
+        // supone un giro de 180 grados porque hace que el agente vuelva al nodo anterior
         public void ResetPath()
         {
             if (graph == null || sigNodo == null || antNodo == null) return;
@@ -178,8 +181,9 @@ namespace UCM.IAV.Movimiento
             SetPositions();
         }
 
+        // hace el dot product de los vectores desde la posicion actual (current) a la anterior (from) y a la proxima (to) para ver el angulo que suponen y por tanto si es un giro
         bool IsTurn(Vertex from, Vertex current, Vertex to)
-        {
+        { 
             Vector3 dir1 = graph.GetVertexPos(current) - graph.GetVertexPos(from);
             Vector3 dir2 = graph.GetVertexPos(to) - graph.GetVertexPos(current);
 

@@ -26,18 +26,18 @@ namespace UCM.IAV.Navegacion
          *  Si logra abandonar el campo de vision, se restaura su velocidad.
          */
 
-        private Agente playerAgent;
-        private bool playerInside = false;
-        private bool slowed = false;
-        private float originalSpeed;
+        private Agente playerAgent; // componente agente del avatar
+        private bool playerInside = false; // si el jugador se encuentra dentro de la esfera de influencia
+        private bool slowed = false; // si el jugador ha sido ralentizado
+        private float originalSpeed; // cada vez que el jugador entre en el trigger aqui se guardara su velocidadi nicial
         [SerializeField]
-        private float slowSpeed = 1.0f;
+        private float slowSpeed = 1.0f; // velocidad maxima a aplicar cuando ralentizamos al jugador
 
         private void OnTriggerEnter(Collider other)
         {
             ControlJugador cj = other.GetComponent<ControlJugador>();
             if (cj != null)
-            {
+            { // cuando entra el jugador en el radio se actualizan sus datos
                 playerInside = true;
                 playerAgent = other.GetComponent<Agente>();
                 originalSpeed = playerAgent.velocidadMax;
@@ -46,22 +46,26 @@ namespace UCM.IAV.Navegacion
 
         private void OnTriggerStay(Collider other)
         {
+            // si no esta el jugador o no hay referencia a su agente no se hace nada
             if (!playerInside || playerAgent == null)
                 return;
 
+            // raycast para ver si el minotauro esta viendo al jugador
             bool canSee = RayClear(playerAgent.transform.position);
 
+            // sii puede ver al jugador y este todavia no esta ralentizado
             if (canSee && !slowed)
-            {
+            { // se le ralentiza y se actualiza el booleano
                 playerAgent.velocidadMax = slowSpeed;
                 slowed = true;
             }
             else if (!canSee && slowed)
-            {
+            { // si ha dejado de poder ver y estaba siendo ralentizado se le devuelve su velocidad original
                 RestoreSpeed();
             }
         }
 
+        // metodo para devolver la velocidad original al agente del jugador
         private void RestoreSpeed()
         {
             if (playerAgent != null)
@@ -71,6 +75,7 @@ namespace UCM.IAV.Navegacion
             slowed = false;
         }
 
+        // si sale del trigger se actualizan los datos y se le devuelve su velocidad original
         private void OnTriggerExit(Collider other)
         {
             ControlJugador cj = other.GetComponent<ControlJugador>();

@@ -215,7 +215,7 @@ public class BinaryHeap<T> : ICollection<T> where T : IComparable<T>
     /// <returns>true si el monticulo contiene el elemento; false en caso contrario.</returns>
     public bool Contains(T item)
     {
-        EnsureSort();
+        //EnsureSort();
         return data.Contains(item);
         //return Array.BinarySearch<T>(data, 0, inUse, item) >= 0;
     }

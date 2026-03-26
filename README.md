@@ -292,7 +292,7 @@ Se han tomado dos heurísticas clásicas para A* en cuenta. Se pueden selecciona
 | Heurística | Fórmula      |
 | ---------- | ------------ |
 | Manhattan  | abs(dx) + abs(dz)  |
-| Euclídea   | √(dx² + dz²)* |
+| Euclídea   | √(dx² + dz²) |
 
 
 

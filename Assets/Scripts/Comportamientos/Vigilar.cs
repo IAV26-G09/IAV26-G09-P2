@@ -18,25 +18,26 @@ namespace UCM.IAV.Movimiento
     public class Vigilar : ComportamientoAgente
     {
         [SerializeField]
-        float maxTime = 2.0f;
+        float maxTime = 2.0f; // tiempo maximo de espera antes de girar
+        [SerializeField]
+        float minTime = 1.0f; // tiempo minimo de espera antes de girar
 
         [SerializeField]
-        float minTime = 1.0f;
-
+        float minRan = -0.05f; // rango minimo de velocidad angular para girar
         [SerializeField]
-        float minRan = -0.05f;
-        [SerializeField]
-        float maxRan = 0.05f;
+        float maxRan = 0.05f; // rango maximo de velocidad angular para girar
 
-        float t = 3.0f;
-        float actualT = 2.0f;
+        float t = 3.0f; // tiempo de espera, valores iniciales para asegurar giro al empezar
+        float actualT = 2.0f; // contador de tiempo de espera, valores iniciales para asegurar giro al empezar
 
         Direccion lastDir = new Direccion();
 
+        // cada tiempo actualT aleatorizada entre un rango minTime y maxTime se le da una velocidad angular aleatorizada entre minRan y maxRan al minotauro para hacerle girar
         public override Direccion GetDireccion()
         {
             if (t >= actualT)
-            {
+            { 
+                
                 Direccion direccion = new Direccion();
 
                 float wanderOrientation = Random.Range(minRan, maxRan);

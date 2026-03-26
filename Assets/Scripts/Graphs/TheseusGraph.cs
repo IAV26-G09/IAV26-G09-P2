@@ -235,12 +235,12 @@ namespace UCM.IAV.Navegacion
         }
 
         float Manhattan(Vertex a, Vertex b)
-        {
+        { // heuristica: distancia manhattan (abs(dx) + abs(dz))
             return Mathf.Abs(a.transform.position.x - b.transform.position.x) +
                    Mathf.Abs(a.transform.position.z - b.transform.position.z);
         }
         float Euclidean(Vertex a, Vertex b)
-        {
+        { // heuristica: distancia euclidea (√(dx² + dz²))
             return Vector3.Distance(a.transform.position, b.transform.position);
         }
 
@@ -260,12 +260,12 @@ namespace UCM.IAV.Navegacion
         }
 
         public void ToggleSmooth()
-        {
+        { 
             smoothPath = !smoothPath;
         }
 
         private void TakeNodeMetrics(int nodes, string file)
-        {
+        { // metodo para guardar a archivo las metricas tomadas
             StreamWriter salida = new StreamWriter(file, true);
 
             salida.WriteLine(nodes + ",");
